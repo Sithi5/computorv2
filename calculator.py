@@ -6,17 +6,16 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/02/04 11:50:32 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/01 20:44:55 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-import argparse, parser, re
+import re
 
 from globals_vars import (
     _OPERATORS,
     _OPERATORS_PRIORITY,
     _SIGN,
-    _COMMA,
     _OPEN_PARENTHESES,
     _CLOSING_PARENTHESES,
 )
@@ -33,16 +32,11 @@ from utils import (
 
 
 class _Calculator:
-
-    _tokens = None
-    _npi_list = None
-    var_name = None
-
     def stack_last_element(self, elem: list) -> str:
         try:
             return elem[-1][0]
         except IndexError:
-            return []
+            return ""
 
     def _check_have_var(self, var) -> bool:
         if self.var_name in var:
@@ -153,7 +147,7 @@ class _Calculator:
             else:
                 # Same for simple X, the var name shouln't be followed by a power operator
                 pattern = "[{sign}]*[.\d]*[\*]*{var_name}(?!\^)".format(
-                    var_name=self.var_name, second_var_power=second_var_power, sign=_SIGN
+                    var_name=self.var_name, sign=_SIGN
                 )
             split = re.split(pattern=pattern, string=first_var)
             if len(split) > 1:
@@ -340,7 +334,7 @@ class _Calculator:
                 # Doing usual calc
                 elif elem == "^":
                     result = my_round(
-                        my_power(float(last_two_in_stack[0]), float(last_two_in_stack[1]))
+                        my_power(float(last_two_in_stack[0]), int(float(last_two_in_stack[1])))
                     )
                 elif elem == "*":
                     result = my_round(float(last_two_in_stack[0]) * float(last_two_in_stack[1]))

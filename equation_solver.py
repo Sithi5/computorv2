@@ -6,24 +6,18 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/02/04 11:47:19 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/01 20:42:02 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-import argparse, parser, re
+import re
 
 from globals_vars import (
-    _OPERATORS,
-    _OPERATORS_PRIORITY,
     _SIGN,
-    _COMMA,
-    _OPEN_PARENTHESES,
-    _CLOSING_PARENTHESES,
 )
 
 from utils import (
     convert_to_tokens,
-    is_number,
     convert_signed_number,
     parse_sign,
     get_var_multiplier,
@@ -35,16 +29,9 @@ from utils import (
 
 
 class _EquationSolver:
-    _tokens: list = None
+    _tokens: list = []
     _left_part: list = []
     _right_part: list = []
-    _reduced_form: str = None
-    _polynom_dict_right: dict = None
-    _polynom_dict_left: dict = None
-    _polynom_degree = float
-    var_name: str = None
-    _calculator = None
-    solution: None
 
     def __init__(self, calculator):
         self._calculator = calculator
@@ -166,7 +153,7 @@ class _EquationSolver:
         self._polynom_degree = polynom_max_degree
 
     def _get_discriminant(self, a: float, b: float, c: float) -> float:
-        return my_power(b, 2.0) - 4.0 * a * c
+        return my_power(b, 2) - 4.0 * a * c
 
     def _solve_polynom_degree_two(self):
         try:
@@ -265,7 +252,7 @@ class _EquationSolver:
         if self.solution == "-0.0":
             self.solution = "0.0"
 
-    def _check_var_negative_power(self, string: str) -> bool:
+    def _check_var_negative_power(self, string: str):
         split = string.split(self.var_name + "^")
         index = 1
         while index < len(split):

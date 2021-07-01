@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/02/04 11:47:28 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/01 20:38:57 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,6 @@ from equation_solver import _EquationSolver
 from calculator import _Calculator
 from globals_vars import (
     _OPERATORS,
-    _OPERATORS_PRIORITY,
     _SIGN,
     _COMMA,
     _OPEN_PARENTHESES,
@@ -33,13 +32,6 @@ from utils import (
 
 
 class ExpressionResolver:
-
-    expression = None
-    _vars_set = None
-    _verbose = None
-    _force_calculator_verbose = None
-    _solver = None
-
     def __init__(self, verbose: bool = False, force_calculator_verbose: bool = False):
         self._verbose = verbose
         self._force_calculator_verbose = force_calculator_verbose
@@ -116,8 +108,8 @@ class ExpressionResolver:
 
     def _add_implicit_cross_operator_when_parenthesis(self):
         """
-            Checking for numbers before open or after closing parenthesis without sign and add a
-            multiplicator operator.
+        Checking for numbers before open or after closing parenthesis without sign and add a
+        multiplicator operator.
         """
         # Checking open parenthesis
         for open_parenthese in _OPEN_PARENTHESES:
@@ -239,7 +231,7 @@ class ExpressionResolver:
 
     def _set_solver(self):
         """
-            Setting the right class to solve the expression
+        Setting the right class to solve the expression
         """
         # Check if it is an equation
         equal_operator = [elem for elem in self.expression if elem == "="]
@@ -252,7 +244,7 @@ class ExpressionResolver:
 
     def solve(self, expression: str):
         """
-            Use the solver of the class set by set_solver to solve the expression.
+        Use the solver of the class set by set_solver to solve the expression.
         """
         print("\nEXPRESSION RESOLVER\n") if self._verbose is True else None
         self.expression = expression.upper()
@@ -265,4 +257,3 @@ class ExpressionResolver:
         )
         print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self._verbose is True else None
         return result
-

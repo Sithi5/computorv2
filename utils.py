@@ -6,20 +6,17 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 18:10:41 by mabouce           #+#    #+#              #
-#    Updated: 2021/01/19 18:03:50 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/01 20:38:44 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 from globals_vars import (
     _OPERATORS,
-    _OPERATORS_PRIORITY,
     _SIGN,
     _COMMA,
     _OPEN_PARENTHESES,
     _CLOSING_PARENTHESES,
 )
-
-import time
 
 
 def is_number(n: str) -> bool:
@@ -156,7 +153,7 @@ def add_implicit_cross_operator_for_vars(vars_list: list, expression: str):
 
 def parse_sign(expression: str):
     """
-        Removing extra _sign
+    Removing extra _sign
     """
     while "--" in expression or "++" in expression or "-+" in expression or "+-" in expression:
         expression = (
@@ -224,7 +221,7 @@ def my_sqrt(number: int):
     if number < 0:
         raise ValueError("input should be a positive number.")
 
-    result = number
+    result = float(number)
     precision = my_power(10, -15)
     index = 0
     while my_abs(number - result * result) > precision:
@@ -256,7 +253,7 @@ def my_power(number: float, power: int) -> float:
     if power == negative_infinity_float or power == infinity_float:
         return power
 
-    result = 1
+    result = 1.0
 
     if power > 0:
         while power > 0:
