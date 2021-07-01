@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/01 20:41:08 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/01 21:28:20 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,11 +32,17 @@ def main(argv=None):
         help="Add all verbose and force the calculator verbose.",
         action="store_true",
     )
+    parser.add_argument(
+        "--output_graph",
+        help="In case there is a possible graph to create, it will output it in a new file.",
+        action="store_true",
+    )
     args = parser.parse_args(argv)
 
     resolver = ExpressionResolver(
         verbose=args.verbose | args.force_calculator_verbose,
         force_calculator_verbose=args.force_calculator_verbose,
+        output_graph=args.output_graph,
     )
     try:
         result = resolver.solve(args.expression)

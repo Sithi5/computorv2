@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/01 20:42:02 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/01 21:30:57 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,8 @@ class _EquationSolver:
     _left_part: list = []
     _right_part: list = []
 
-    def __init__(self, calculator):
+    def __init__(self, calculator, output_graph: bool = False):
+        self._output_graph = output_graph
         self._calculator = calculator
 
     def _check_vars(self):
@@ -283,6 +284,29 @@ class _EquationSolver:
 
         print("Reduced form : ", self._reduced_form)
 
+    def _create_graph_file(self):
+        import matplotlib.pyplot as plt
+
+        try:
+            a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self.var_name)
+        except:
+            a = 0.0
+        try:
+            b = get_var_multiplier(self._polynom_dict_left["b"], var_name=self.var_name)
+        except:
+            b = 0.0
+        try:
+            c = float(self._polynom_dict_left["c"])
+        except:
+            c = 0.0
+
+        x = [i - 20 for i in range(40)]  # Array of x values
+        y = [a * (i ** 2) + b * i + c for i in x]  # Array of corresponding y values
+        plt.plot(x, y)
+
+        # show the plot
+        plt.savefig("equation_graph.png")
+
     def solve(self, tokens: list, verbose: bool = False, force_calculator_verbose: bool = False):
         self._verbose = verbose
         self._force_calculator_verbose = force_calculator_verbose
@@ -339,6 +363,10 @@ class _EquationSolver:
                 self._solve_polynom_degree_two()
             else:
                 self._solve_polynom_degree_one()
+
+        # Check if need to output graph
+        if self._output_graph is True:
+            self._create_graph_file()
 
         print("\nEND OF EQUATION SOLVER\n----------\n") if self._verbose is True else None
         return self.solution

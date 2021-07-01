@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/01 20:38:57 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/01 21:19:55 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,8 +32,14 @@ from utils import (
 
 
 class ExpressionResolver:
-    def __init__(self, verbose: bool = False, force_calculator_verbose: bool = False):
+    def __init__(
+        self,
+        verbose: bool = False,
+        force_calculator_verbose: bool = False,
+        output_graph: bool = False,
+    ):
         self._verbose = verbose
+        self._output_graph = output_graph
         self._force_calculator_verbose = force_calculator_verbose
 
     def _check_args(self):
@@ -238,7 +244,7 @@ class ExpressionResolver:
         if len(equal_operator) == 0:
             self._solver = _Calculator()
         elif len(equal_operator) == 1:
-            self._solver = _EquationSolver(_Calculator())
+            self._solver = _EquationSolver(_Calculator(), self._output_graph)
         else:
             raise NotImplementedError("More than one comparison is not supported for the moment.")
 
