@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/02 11:31:27 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/02 11:38:35 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -300,10 +300,11 @@ class _EquationSolver:
         except:
             c = 0.0
 
-        x = [i - 20 for i in range(40)]  # Array of x values
+        x = [i - 50 for i in range(100)]  # Array of x values
         y = [a * (i ** 2) + b * i + c for i in x]  # Array of corresponding y values
         plt.plot(x, y)
 
+        plt.axhline(y=0, color="b", linestyle="--")
         plt.title(
             "".join(self._reduced_form),
         )
