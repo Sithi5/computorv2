@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/01 21:30:57 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/02 11:31:27 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -261,7 +261,7 @@ class _EquationSolver:
                 raise NotImplementedError(f"Some part of the polynomial var have negative power.")
             index += 1
 
-    def _reduced_form(self):
+    def _reducing_form(self):
         self._reduced_form = ""
         a, b, c = "0.0", "0.0", "0.0"
         for key, value in self._polynom_dict_left.items():
@@ -284,7 +284,7 @@ class _EquationSolver:
 
         print("Reduced form : ", self._reduced_form)
 
-    def _create_graph_file(self):
+    def _create_graph_file(self, graph_name: str = "equation_graph"):
         import matplotlib.pyplot as plt
 
         try:
@@ -304,8 +304,11 @@ class _EquationSolver:
         y = [a * (i ** 2) + b * i + c for i in x]  # Array of corresponding y values
         plt.plot(x, y)
 
+        plt.title(
+            "".join(self._reduced_form),
+        )
         # show the plot
-        plt.savefig("equation_graph.png")
+        plt.savefig(graph_name + ".png")
 
     def solve(self, tokens: list, verbose: bool = False, force_calculator_verbose: bool = False):
         self._verbose = verbose
@@ -348,9 +351,9 @@ class _EquationSolver:
                 self.solution = "X can be any real number."
             else:
                 self.solution = "The equation is False."
-            self._reduced_form()
+            self._reducing_form()
         else:
-            self._reduced_form()
+            self._reducing_form()
             self._check_polynom_degree()
 
             print("Polynomial degree: ", self._polynom_degree)
@@ -366,7 +369,11 @@ class _EquationSolver:
 
         # Check if need to output graph
         if self._output_graph is True:
-            self._create_graph_file()
+            import uuid
+
+            self._create_graph_file(
+                "Polynomial_degree_" + str(int(self._polynom_degree)) + "_" + str(uuid.uuid4())[1:6]
+            )
 
         print("\nEND OF EQUATION SOLVER\n----------\n") if self._verbose is True else None
         return self.solution
