@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 16:25:53 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 16:49:08 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -91,6 +91,10 @@ class ExpressionResolver:
                 raise SyntaxError(
                     "Operators must be followed by a value or a variable, not another operator."
                 )
+            elif c in "=" and last_c in "=":
+                raise SyntaxError(
+                    "Equality operator '=' shouln't be follow by another equality operator."
+                )
             elif c in _OPERATORS or c in _SIGN:
                 last_operator = c
             elif c.isalnum():
@@ -102,7 +106,7 @@ class ExpressionResolver:
 
             if parentheses_count < 0:
                 raise SyntaxError("Closing parenthesis with no opened one.")
-
+            last_c = c
         if (
             self.expression[-1] in _OPERATORS
             or self.expression[-1] in _SIGN
