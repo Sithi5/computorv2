@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 16:13:03 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 16:25:53 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -190,6 +190,11 @@ class ExpressionResolver:
 
         # Removing all spaces
         self.expression = self.expression.replace(" ", "")
+        # Replace ',' comma type by '.' comma.
+        self.expression = self.expression.replace(",", ".")
+        # Replace '{' parenthesis type by '(' parenthesis type.
+        self.expression = self.expression.replace("{", "(")
+        self.expression = self.expression.replace("}", ")")
 
         print(
             "Removing all space from the expression : ", self.expression

@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/02 11:38:35 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 16:18:18 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -285,7 +285,7 @@ class _EquationSolver:
         print("Reduced form : ", self._reduced_form)
 
     def _create_graph_file(self, graph_name: str = "equation_graph"):
-        import matplotlib.pyplot as plt
+        import matplotlib.pyplot as plt # type: ignore
 
         try:
             a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self.var_name)

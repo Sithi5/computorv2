@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:33 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 16:11:46 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 16:39:22 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,25 +19,25 @@ def test_expression_parser():
     resolver = ExpressionResolver(verbose=False)
 
     # Test sign before var
-    ret = resolver.solve(expression="+X = 10")
+    resolver.solve(expression="+X = 10")
 
     # Test sign before var
-    ret = resolver.solve(expression="-X = 10")
+    resolver.solve(expression="-X = 10")
 
     # Test sign before var
-    ret = resolver.solve(expression="-X")
+    resolver.solve(expression="-X")
 
     # Test sign before var
-    ret = resolver.solve(expression="   +X")
+    resolver.solve(expression="   +X")
 
     # Test addition with sign before var
-    ret = resolver.solve(expression="+X  = -x")
+    resolver.solve(expression="+X  = -x")
 
     # lot of sign
-    ret = resolver.solve(expression="4-+-2 ------+-----++++++2")
+    resolver.solve(expression="4-+-2 ------+-----++++++2")
 
     # lot of sign
-    ret = resolver.solve(expression="4-+-2 *+-+++- 0")
+    resolver.solve(expression="4-+-2 *+-+++- 0")
 
     # Extra zero
     ret = resolver.solve(expression="04578 + 000450")
@@ -52,7 +52,7 @@ def test_expression_parser():
     assert ret == "4579.0"
 
     # Test replacing sign before numbers
-    ret = resolver.solve(expression="-4 + (+15 * -45)-0")
+    resolver.solve(expression="-4 + (+15 * -45)-0")
 
     # Test with var
     ret = resolver.solve(expression="X ^ 2 + X ^ 1 + x ^ 2")

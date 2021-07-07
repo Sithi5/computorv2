@@ -21,7 +21,7 @@ class Application(Frame):
         Frame.__init__(self)
         self.option_add("*Font", "arial 20 bold")
         self.pack(expand=YES, fill=BOTH)
-        self.master.title("Calculator")
+        self.master.title("Calculator") # type: ignore
         display = StringVar()
         Entry(self, relief=RIDGE, textvariable=display, justify="right", bd=30, bg="#c94d00").pack(
             side=TOP, expand=YES, fill=BOTH

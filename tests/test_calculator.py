@@ -55,15 +55,15 @@ def test_calculator():
     assert ret == "175.0"
 
     # Test different parenthesis
-    ret = resolver.solve(expression="(5 + 2]25")
+    ret = resolver.solve(expression="(5 + 2}25")
     assert ret == "175.0"
 
     # Test different parenthesis
-    ret = resolver.solve(expression="[5 + 2]25")
+    ret = resolver.solve(expression="{5 + 2}25")
     assert ret == "175.0"
 
     # Test different parenthesis
-    ret = resolver.solve(expression="[5 + 2}25")
+    ret = resolver.solve(expression="(5 + 2}25")
     assert ret == "175.0"
 
     # Test multiplying by a signed number

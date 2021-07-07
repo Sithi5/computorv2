@@ -12,7 +12,7 @@ def test_any_calc():
         ret = resolver.solve(expression=" (5 + 2y)(2 - (2y * 3y))")
     assert str(e.value) == "Var cannot be inside a parenthesis for the moment."
 
-    ret = resolver.solve(expression="y[5 + 2](2 - {2 * -3.54]]")
+    ret = resolver.solve(expression="y{5 + 2}(2 - {2 * -3.54}}")
     assert ret == "63.56*Y"
 
     ret = resolver.solve(expression="5y/y")
