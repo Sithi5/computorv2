@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/06 15:58:29 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 16:00:07 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,11 +40,21 @@ def resolve_input(resolver: ExpressionResolver, expression: str):
         print("An exception appened : ", e)
 
 
-
 def main_gui(resolver: ExpressionResolver):
     root = tk.Tk()
     app = Application(master=root, resolver=resolver)
     app.mainloop()
+
+
+def print_shell_help():
+    print(
+        """
+    Available commands:
+    - HELP : Get available commands
+    - EXIT : Quit program
+    - QUIT : Quit program
+    """
+    )
 
 
 def main(argv=None):
@@ -89,10 +99,17 @@ def main(argv=None):
         print("Launch in GUI mode.")
         main_gui(resolver=resolver)
     elif str(args.expression).lower() == "shell":
-        print("Starting inline shell expression resolver : ")
+        print("""Starting inline shell expression resolver : """)
+        print_shell_help()
         while 1:
             expression = input("> ")
-            resolve_input(resolver=resolver, expression=expression)
+            if expression.upper() == "EXIT" or expression.upper() == "QUIT":
+                print("Exit ", __file__[0:-3], " shell.")
+                break
+            elif expression.upper() == "HELP":
+                print_shell_help()
+            else:
+                resolve_input(resolver=resolver, expression=expression)
     else:
         resolve_input(resolver=resolver, expression=args.expression)
 
