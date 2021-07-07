@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 17:47:24 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 17:54:20 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,9 +95,7 @@ class ExpressionResolver:
                 )
             if c in "?" and (idx != len(self.expression) - 1 or last_c is False or last_c != "="):
                 if last_c is False:
-                    raise SyntaxError(
-                        "Operators '?' can't be in the first position."
-                    )
+                    raise SyntaxError("Operators '?' can't be in the first position.")
                 else:
                     raise SyntaxError(
                         "Operators '?' must follow operator '=' and be at the end of the expression."
@@ -256,7 +254,9 @@ class ExpressionResolver:
         """
         # Check if it is an equation
         equal_operator = [elem for elem in self.expression if elem == "="]
-        if len(equal_operator) == 0:
+        if self.expression[-1] == "?":
+            pass
+        elif len(equal_operator) == 0:
             self._solver = _Calculator()
         elif len(equal_operator) == 1:
             self._solver = _EquationSolver(_Calculator(), self._output_graph)

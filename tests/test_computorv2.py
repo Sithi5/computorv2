@@ -37,4 +37,7 @@ def test_computorv2_parsing():
         resolver.solve(expression="5 = ? 5 * 2")
     assert str(e.value) == "Operators '?' must be at the end of the expression."
 
-    resolver.solve(expression="5 = ? 5 * 2")
+    # Test operator '=' at the end only
+    with pytest.raises(SyntaxError) as e:
+        resolver.solve(expression="= 5 + 2")
+    assert str(e.value) == "Equality operator '=' shouln't be placed at the first position."
