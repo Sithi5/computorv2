@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 16:49:08 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 17:47:24 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,9 +68,11 @@ class ExpressionResolver:
                 raise SyntaxError("Some numbers are not well formated (Comma error).")
 
         # Check allowed char.
-        for c in self.expression:
+        last_c = False
+        for idx, c in enumerate(self.expression):
             if (
                 c not in "="
+                and c not in "?"
                 and c not in _OPERATORS
                 and c not in _SIGN
                 and c not in _OPEN_PARENTHESES
@@ -91,10 +93,24 @@ class ExpressionResolver:
                 raise SyntaxError(
                     "Operators must be followed by a value or a variable, not another operator."
                 )
-            elif c in "=" and last_c in "=":
-                raise SyntaxError(
-                    "Equality operator '=' shouln't be follow by another equality operator."
-                )
+            if c in "?" and (idx != len(self.expression) - 1 or last_c is False or last_c != "="):
+                if last_c is False:
+                    raise SyntaxError(
+                        "Operators '?' can't be in the first position."
+                    )
+                else:
+                    raise SyntaxError(
+                        "Operators '?' must follow operator '=' and be at the end of the expression."
+                    )
+            elif c in "=" and (last_c is False or last_c in "="):
+                if last_c is False:
+                    raise SyntaxError(
+                        "Equality operator '=' shouln't be placed at the first position."
+                    )
+                else:
+                    raise SyntaxError(
+                        "Equality operator '=' shouln't be follow by another equality operator."
+                    )
             elif c in _OPERATORS or c in _SIGN:
                 last_operator = c
             elif c.isalnum():
