@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:33 by mabouce           #+#    #+#              #
-#    Updated: 2021/01/19 18:12:17 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 16:11:46 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,9 +74,18 @@ def test_expression_parser():
     ret = resolver.solve(expression="X ^ 2 + x + x - x ^2 - x")
     assert ret == "X"
 
+    # Test implicit mult
+    ret = resolver.solve(expression="2(5)")
+    assert ret == "10.0"
+
 
 def test_wrong_args():
     resolver = ExpressionResolver(verbose=False)
+
+    # Test wrong parenthesis
+    with pytest.raises(SyntaxError) as e:
+        resolver.solve(expression="2(5")
+    assert str(e.value) == "Problem with parenthesis."
 
     # Wrong args
     with pytest.raises(SyntaxError) as e:
