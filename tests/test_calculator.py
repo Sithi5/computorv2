@@ -107,9 +107,8 @@ def test_calculator_with_one_var():
     resolver = ExpressionResolver(verbose=False)
 
     # Test calc with var, only one var alone, should raise NothingToDoError
-    with pytest.raises(NothingToDoError) as e:
-        resolver.solve(expression="thisisavar")
-    assert str(e.value) == "There is no operators or sign in the expression. Nothing to do here."
+    ret = resolver.solve(expression="thisisavar")
+    assert ret == "THISISAVAR"
 
     # Test calc with var, one var with simple addition
     ret = resolver.solve(expression="thisisavar + 5")

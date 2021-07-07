@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/01 21:19:55 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/07 16:08:02 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -194,16 +194,6 @@ class ExpressionResolver:
         print(
             "Removing all space from the expression : ", self.expression
         ) if self._verbose is True else None
-
-        # Checking if there is any sign or operator in the expression
-        ok = False
-        for operator in _OPERATORS + _SIGN + "=":
-            if operator in self.expression:
-                ok = True
-        if ok is False:
-            raise NothingToDoError(
-                "There is no operators or sign in the expression. Nothing to do here."
-            )
 
         # To put before convert_signed_number because it is creating parenthesis
         self.expression = parse_sign(self.expression)
