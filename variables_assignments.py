@@ -1,6 +1,13 @@
+from os import path
+
 from utils import (
     split_expression_parts_from_tokens,
 )
+from utils_saving_variables import (
+    serialize_and_save_variables_list,
+    open_and_deserialize_variables_list,
+)
+from variables_types import *
 
 
 class _VariablesAssignments:
@@ -28,8 +35,9 @@ class _VariablesAssignments:
                 "A variable name cannot be 'i' because 'i' is kept for imaginary numbers."
             )
 
-        print("Var name is : ", self._new_var_name)
-
-        print(self._left_part)
-        print(self._right_part)
+        variables_list = open_and_deserialize_variables_list()
+        new_variable = Real(self._new_var_name, 10)
+        variables_list.append(new_variable)
+        print("variable_list = ", variables_list)
+        serialize_and_save_variables_list(variables_list=variables_list)
         return "Assignation de variable !"

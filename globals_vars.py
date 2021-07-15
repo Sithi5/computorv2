@@ -4,3 +4,5 @@ _SIGN = "+-"
 _COMMA = "."
 _OPEN_PARENTHESES = "("
 _CLOSING_PARENTHESES = ")"
+
+VARIABLES_FILE_NAME: str = "variables.ser"
