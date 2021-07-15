@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:33 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 16:39:22 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 15:02:59 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,12 +17,6 @@ from expression_resolver import ExpressionResolver
 
 def test_expression_parser():
     resolver = ExpressionResolver(verbose=False)
-
-    # Test sign before var
-    resolver.solve(expression="+X = 10")
-
-    # Test sign before var
-    resolver.solve(expression="-X = 10")
 
     # Test sign before var
     resolver.solve(expression="-X")
@@ -90,7 +84,10 @@ def test_wrong_args():
     # Wrong args
     with pytest.raises(SyntaxError) as e:
         resolver.solve(expression="6&7-2")
-    assert str(e.value) == "This is not an expression or some of the operators are not reconized."
+    assert (
+        str(e.value)
+        == "This is not an expression or some of the characters are not reconized : '&'"
+    )
 
     # Sign without value after
     with pytest.raises(SyntaxError) as e:
@@ -119,7 +116,7 @@ def test_wrong_args():
     # multiple comma in one number
     with pytest.raises(SyntaxError) as e:
         ret = resolver.solve(expression="450.25.45 + 12")
-    assert str(e.value) == "Some numbers are not well formated : 450.25.45"
+    assert str(e.value) == "Some numbers are not well formated (Comma error)."
 
     # wrong use of comma
     with pytest.raises(SyntaxError) as e:

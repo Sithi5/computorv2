@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 13:53:33 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 15:05:02 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -50,39 +50,45 @@ class ExpressionResolver:
         # Checking comma is followed and preceded by a digit.
         # This is not checking the use of more than one comma in same number !
         for comma in _COMMA:
-            comma_split = self.expression.split(comma)
-            try:
-                if len(comma_split) > 1:
-                    for part in comma_split:
-                        if part == comma_split[0]:
-                            assert len(part) >= 1
-                            assert part[-1].isdecimal()
-                        elif part == comma_split[-1]:
-                            assert len(part) >= 1
-                            assert part[0].isdecimal()
-                        else:
-                            assert len(part) >= 2
-                            assert part[0].isdecimal()
-                            assert part[-1].isdecimal()
-            except AssertionError:
+            # Check if there is more than one comma in numbers
+            check_error_multiple_comma_in_one_number = re.search(
+                pattern=rf"\d+[{comma}]\d+[{comma}]", string=self.expression
+            )
+            # Check if comma are followed or preceded by a digit
+            check_error_comma_is_not_followed_by_digit = re.search(
+                pattern=rf"\d+[{comma}](?!\d)", string=self.expression
+            )
+            check_error_comma_is_not_preceded_by_digit = re.search(
+                pattern=rf"^[{comma}]|[^\d][{comma}]\d+", string=self.expression
+            )
+            if (
+                check_error_multiple_comma_in_one_number
+                or check_error_comma_is_not_followed_by_digit is not None
+                or check_error_comma_is_not_preceded_by_digit is not None
+            ):
                 raise SyntaxError("Some numbers are not well formated (Comma error).")
 
-        # Check allowed char.
-        last_c = False
+        # Check allowed char
+        allowed_char_list = (
+            "\="
+            + "\?"
+            + "\\".join(_OPERATORS)
+            + "\\".join(_SIGN)
+            + "\\".join(_OPEN_PARENTHESES)
+            + "\\".join(_CLOSING_PARENTHESES)
+            + "\\".join(_COMMA)
+        )
+        check_allowed_char = re.search(
+            pattern=rf"[^\d\w{allowed_char_list}]", string=self.expression
+        )
+        if check_allowed_char:
+            raise SyntaxError(
+                "This is not an expression or some of the characters are not reconized : '"
+                + check_allowed_char[0]
+                + "'"
+            )
+        last_char = False
         for idx, c in enumerate(self.expression):
-            if (
-                c not in "="
-                and c not in "?"
-                and c not in _OPERATORS
-                and c not in _SIGN
-                and c not in _OPEN_PARENTHESES
-                and c not in _CLOSING_PARENTHESES
-                and not c.isalnum()
-                and c not in _COMMA
-            ):
-                raise SyntaxError(
-                    "This is not an expression or some of the operators are not reconized."
-                )
             # Check multiple operators before alphanum. Check parenthesis count.
             # Checking also that a sign isn't followed by an operator
             if (
@@ -93,15 +99,17 @@ class ExpressionResolver:
                 raise SyntaxError(
                     "Operators must be followed by a value or a variable, not another operator."
                 )
-            if c in "?" and (idx != len(self.expression) - 1 or last_c is False or last_c != "="):
-                if last_c is False:
+            if c in "?" and (
+                idx != len(self.expression) - 1 or last_char is False or last_char != "="
+            ):
+                if last_char is False:
                     raise SyntaxError("Operators '?' can't be in the first position.")
                 else:
                     raise SyntaxError(
                         "Operators '?' must follow operator '=' and be at the end of the expression."
                     )
-            elif c in "=" and (last_c is False or last_c in "="):
-                if last_c is False:
+            elif c in "=" and (last_char is False or last_char in "="):
+                if last_char is False:
                     raise SyntaxError(
                         "Equality operator '=' shouln't be placed at the first position."
                     )
@@ -120,7 +128,7 @@ class ExpressionResolver:
 
             if parentheses_count < 0:
                 raise SyntaxError("Closing parenthesis with no opened one.")
-            last_c = c
+            last_char = c
         if (
             self.expression[-1] in _OPERATORS
             or self.expression[-1] in _SIGN
@@ -253,7 +261,9 @@ class ExpressionResolver:
         Setting the right class to solve the expression
         """
         # Computorv2 part, variable/function/matrice assignation or variable/function/matrice resolving.
-        variable_assigment_search = re.search(pattern=r"^[a-zA-Z]+=.+", string=self.expression)
+        variable_assigment_search = re.search(
+            pattern=r"^[-]?[a-zA-Z]+=.+[?]", string=self.expression
+        )
         if variable_assigment_search and self.expression[-1] == "?":
             # variable resolving.
             print("resolving variable.")

@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:30 by mabouce           #+#    #+#              #
-#    Updated: 2021/02/04 11:22:41 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 14:09:16 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -231,7 +231,7 @@ def test_wrong_equation():
     # Nothing left
     with pytest.raises(SyntaxError) as e:
         ret = resolver.solve(expression=" =0")
-    assert str(e.value) == "The equation is not well formated. No left or right part."
+    assert str(e.value) == "Equality operator '=' shouln't be placed at the first position."
 
 
 def test_others():
