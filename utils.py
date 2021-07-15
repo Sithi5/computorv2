@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 18:10:41 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/01 20:38:44 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 15:39:31 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,33 @@ def is_number(n: str) -> bool:
         return False
 
 
+def split_expression_parts_from_tokens(tokens: list):
+    """
+    This function split a tokenized expression in two part.
+    The left and the right part respectively splitted from the '=' operator.
+    The input tokens list should be in the format of : '...' + '=' + '...'.
+    """
+    add_to_left_part = True
+    left_part: list = []
+    right_part: list = []
+    for token in tokens:
+        if token != "=" and add_to_left_part is True:
+            left_part.append(token)
+        elif token != "=" and add_to_left_part is False:
+            right_part.append(token)
+        elif token == "=":
+            add_to_left_part = False
+    if len(left_part) == 0 or len(right_part) == 0:
+        raise SyntaxError("The equation is not well formated. No left or right part.")
+    else:
+        return (left_part, right_part)
+
+
 def convert_to_tokens(expression: str) -> list:
+    """
+    Convert a string expression into tokens.
+    Numbers and var name will stay in a single token.
+    """
     tokens = []
     current_char = 0
     last_char = 0
@@ -51,7 +77,7 @@ def convert_to_tokens(expression: str) -> list:
 
 def convert_signed_number(expression: str, accept_var: bool = False):
     """
-    This method convert signed number to a sentence readable for npi process.
+    This function convert signed number in a string to a sentence readable for npi process.
     Exemple :
         5 * -5 is converted to 5 * (0 - 5)
         10 / +5 is converted to 10 / (0 + 5)
@@ -127,6 +153,12 @@ def convert_signed_number(expression: str, accept_var: bool = False):
 
 
 def add_implicit_cross_operator_for_vars(vars_list: list, expression: str):
+    """
+    This function take a string expression and add implicit multiplier for variables.
+        Exemple :
+        5X -> 5 * X
+        X(5+2) -> X*(5+2)
+    """
     # Splitting from vars
     for var in vars_list:
         splitted_expression = expression.split(var)

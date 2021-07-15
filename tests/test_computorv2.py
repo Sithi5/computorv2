@@ -42,6 +42,27 @@ def test_computorv2_parsing():
     #     resolver.solve(expression="= 5 + 2")
     # assert str(e.value) == "Equality operator '=' shouln't be placed at the first position."
 
+    # Test wrong char
+    with pytest.raises(SyntaxError) as e:
+        resolver.solve(expression="mab+{5&'}")
+    assert (
+        str(e.value)
+        == "This is not an expression or some of the characters are not reconized : '&'"
+    )
+
+    # Test variable name i
+    with pytest.raises(SyntaxError) as e:
+        resolver.solve(expression="i=500")
+    assert (
+        str(e.value) == "A variable name cannot be 'i' because 'i' is kept for imaginary numbers."
+    )
+
+    with pytest.raises(SyntaxError) as e:
+        resolver.solve(expression="I=500")
+    assert (
+        str(e.value) == "A variable name cannot be 'i' because 'i' is kept for imaginary numbers."
+    )
+
 
 def test_computorv2_assignment():
     resolver = ExpressionResolver(verbose=False)
@@ -51,3 +72,6 @@ def test_computorv2_assignment():
 
     # Test sign before var
     resolver.solve(expression="-X = 10")
+
+    # Test more complicated assignment
+    resolver.solve(expression="X = X")

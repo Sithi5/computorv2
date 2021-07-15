@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 15:13:56 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 15:59:36 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ import re
 
 from equation_solver import _EquationSolver
 from calculator import _Calculator
+from variables_assignments import _VariablesAssignments
 from globals_vars import (
     _OPERATORS,
     _SIGN,
@@ -70,8 +71,8 @@ class ExpressionResolver:
 
         # Check allowed char
         allowed_char_list = (
-            "\="
-            + "\?"
+            "\\="
+            + "\\?"
             + "\\".join(_OPERATORS)
             + "\\".join(_SIGN)
             + "\\".join(_OPEN_PARENTHESES)
@@ -262,23 +263,27 @@ class ExpressionResolver:
         Setting the right class to solve the expression
         """
         # Computorv2 part, variable/function/matrice assignation or variable/function/matrice resolving.
-        variable_assigment_search = re.search(pattern=r"^[-]?[a-zA-Z]+=.+", string=self.expression)
+        variable_assigment_search = re.search(pattern=r"^[a-zA-Z]+=.+", string=self.expression)
         if variable_assigment_search and self.expression[-1] == "?":
             # variable resolving.
-            print("resolving variable.")
+            print("resolving expression with stored variable.")
             pass
         elif variable_assigment_search:
             print("assigning variable.")
-            pass
-
-        # No variable/function/matrice assignation or variable/function/matrice resolving, check if it is an equation.
-        equal_operator = [elem for elem in self._tokens if elem == "="]
-        if len(equal_operator) == 0:
-            self._solver = _Calculator()
-        elif len(equal_operator) == 1:
-            self._solver = _EquationSolver(_Calculator(), self._output_graph)
+            self._solver = _VariablesAssignments(calculator=_Calculator())
         else:
-            raise NotImplementedError("More than one comparison is not supported for the moment.")
+            # No variable/function/matrice assignation or variable/function/matrice resolving, check if it is an equation.
+            equal_operator = [elem for elem in self._tokens if elem == "="]
+            if len(equal_operator) == 0:
+                self._solver = _Calculator()
+            elif len(equal_operator) == 1:
+                self._solver = _EquationSolver(
+                    calculator=_Calculator(), output_graph=self._output_graph
+                )
+            else:
+                raise NotImplementedError(
+                    "More than one comparison is not supported for the moment."
+                )
 
     def solve(self, expression: str):
         """

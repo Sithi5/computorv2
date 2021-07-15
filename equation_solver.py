@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 16:18:18 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 15:44:51 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ from utils import (
     my_sqrt,
     my_round,
     add_implicit_cross_operator_for_vars,
+    split_expression_parts_from_tokens,
 )
 
 
@@ -64,18 +65,6 @@ class _EquationSolver:
             return 1.0
         else:
             return float(split[1])
-
-    def _set_parts(self):
-        left_part = True
-        for token in self._tokens:
-            if token != "=" and left_part is True:
-                self._left_part.append(token)
-            elif token != "=" and left_part is False:
-                self._right_part.append(token)
-            elif token == "=":
-                left_part = False
-        if len(self._left_part) == 0 or len(self._right_part) == 0:
-            raise SyntaxError("The equation is not well formated. No left or right part.")
 
     def _get_polynom_dict(self, simplified_part: str) -> dict:
         polynom_dict = {}
@@ -285,7 +274,7 @@ class _EquationSolver:
         print("Reduced form : ", self._reduced_form)
 
     def _create_graph_file(self, graph_name: str = "equation_graph"):
-        import matplotlib.pyplot as plt # type: ignore
+        import matplotlib.pyplot as plt  # type: ignore
 
         try:
             a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self.var_name)
@@ -315,10 +304,10 @@ class _EquationSolver:
         self._verbose = verbose
         self._force_calculator_verbose = force_calculator_verbose
         self._tokens = tokens
-        self._left_part.clear()
-        self._right_part.clear()
         self._check_vars()
-        self._set_parts()
+        splits_parts = split_expression_parts_from_tokens(self._tokens)
+        self._left_part = splits_parts[0]
+        self._right_part = splits_parts[1]
 
         print("\nEQUATION SOLVER\n") if self._verbose is True else None
         print("Reducing left equation :") if self._verbose is True else None

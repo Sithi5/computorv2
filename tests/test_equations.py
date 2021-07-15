@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:30 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 14:09:16 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 15:42:10 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,9 +46,6 @@ def test_equation_degree_one():
     assert ret == "11858.032106739585"
 
     ret = resolver.solve(expression="X ^1 = X ^ 1")
-    assert ret == "X can be any real number."
-
-    ret = resolver.solve(expression="X = X")
     assert ret == "X can be any real number."
 
     ret = resolver.solve(expression="X^0 = X^0")
