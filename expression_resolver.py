@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 17:54:20 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 13:53:33 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -166,12 +166,12 @@ class ExpressionResolver:
             self.expression = closing_parenthese.join(splitted_expression)
 
     def _removing_trailing_zero_and_converting_numbers_to_float(self):
-        for index, token in enumerate(self.expression):
+        for index, token in enumerate(self._tokens):
             if token.isdecimal():
-                self.expression[index] = str(float(token))
-                if "e" in self.expression[index]:
-                    self.expression[index] = f"{float(token):.6f}"
-                elif "inf" in self.expression[index]:
+                self._tokens[index] = str(float(token))
+                if "e" in self._tokens[index]:
+                    self._tokens[index] = f"{float(token):.6f}"
+                elif "inf" in self._tokens[index]:
                     raise ValueError(
                         "A number is too big, no input number should reach float inf or -inf."
                     )
@@ -240,23 +240,33 @@ class ExpressionResolver:
         self._check_args()
 
         # Transforming expression to tokens
-        self.expression = convert_to_tokens(self.expression)
+        self._tokens = convert_to_tokens(self.expression)
 
-        print("Convert to token : ", self.expression) if self._verbose is True else None
+        print("Convert to token : ", self._tokens) if self._verbose is True else None
         self._removing_trailing_zero_and_converting_numbers_to_float()
         print(
-            "Removing extra zero and converting numbers to float: ", self.expression
+            "Removing extra zero and converting numbers to float: ", self._tokens
         ) if self._verbose is True else None
 
     def _set_solver(self):
         """
         Setting the right class to solve the expression
         """
-        # Check if it is an equation
-        equal_operator = [elem for elem in self.expression if elem == "="]
-        if self.expression[-1] == "?":
+        # Computorv2 part, variable/function/matrice assignation or variable/function/matrice resolving.
+        variable_assigment_search = re.search(pattern=r"^[a-zA-Z]+=.+", string=self.expression)
+        if variable_assigment_search and self.expression[-1] == "?":
+            # variable resolving.
+            print("resolving variable.")
+            exit()
             pass
-        elif len(equal_operator) == 0:
+        elif variable_assigment_search:
+            print("assigning variable.")
+            exit()
+            pass
+
+        # No variable/function/matrice assignation or variable/function/matrice resolving, check if it is an equation.
+        equal_operator = [elem for elem in self._tokens if elem == "="]
+        if len(equal_operator) == 0:
             self._solver = _Calculator()
         elif len(equal_operator) == 1:
             self._solver = _EquationSolver(_Calculator(), self._output_graph)
@@ -272,7 +282,7 @@ class ExpressionResolver:
         self._parse_expression()
         self._set_solver()
         result = self._solver.solve(
-            self.expression,
+            tokens=self._tokens,
             verbose=self._verbose,
             force_calculator_verbose=self._force_calculator_verbose,
         )
