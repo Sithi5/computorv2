@@ -1,4 +1,6 @@
 class BaseType:
+    """Default class for variable Type. Should be used as an abstract class."""
+
     def __init__(self, name, value):
         self.name: str = name
         self.value = value

@@ -1,7 +1,6 @@
 import pickle
 
 from globals_vars import VARIABLES_FILE_NAME
-from os import path
 
 
 def open_and_deserialize_variables_list() -> list:
@@ -27,3 +26,12 @@ def serialize_and_save_variables_list(variables_list: list):
 
 def clear_variables_file():
     open(VARIABLES_FILE_NAME, "w").close()
+
+
+def list_variables_file():
+    variables_list = open_and_deserialize_variables_list()
+    if len(variables_list) == 0:
+        print("no stored variable yet.")
+    else:
+        for variable in variables_list:
+            print(str(variable))
