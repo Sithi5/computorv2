@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 15:05:02 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 15:13:56 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -87,6 +87,7 @@ class ExpressionResolver:
                 + check_allowed_char[0]
                 + "'"
             )
+
         last_char = False
         for idx, c in enumerate(self.expression):
             # Check multiple operators before alphanum. Check parenthesis count.
@@ -261,17 +262,13 @@ class ExpressionResolver:
         Setting the right class to solve the expression
         """
         # Computorv2 part, variable/function/matrice assignation or variable/function/matrice resolving.
-        variable_assigment_search = re.search(
-            pattern=r"^[-]?[a-zA-Z]+=.+[?]", string=self.expression
-        )
+        variable_assigment_search = re.search(pattern=r"^[-]?[a-zA-Z]+=.+", string=self.expression)
         if variable_assigment_search and self.expression[-1] == "?":
             # variable resolving.
             print("resolving variable.")
-            exit()
             pass
         elif variable_assigment_search:
             print("assigning variable.")
-            exit()
             pass
 
         # No variable/function/matrice assignation or variable/function/matrice resolving, check if it is an equation.
