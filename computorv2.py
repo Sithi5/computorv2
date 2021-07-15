@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 16:00:07 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/15 13:52:24 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,6 +53,18 @@ def print_shell_help():
     - HELP : Get available commands
     - EXIT : Quit program
     - QUIT : Quit program
+    Resolve an expression:
+    'expression'
+    Assign a variable:
+    'VariableName' '=' 'expression'
+    Assign a function:
+    'FunctionName(VariableName)' '=' 'expression'
+    Assign a matrice:
+    'MatriceName' '=' 'expression'
+    Resolve a variable/matrice:
+    'VariableName'/'MatriceName'/'FunctionName(VariableName)' '=' '?'
+    Resolve a function:
+    'FunctionName(Value)' '=' '?'
     """
     )
 
