@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 15:59:36 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/16 17:23:13 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,9 @@ from globals_vars import (
     _COMMA,
     _OPEN_PARENTHESES,
     _CLOSING_PARENTHESES,
+    _MATRICE_CLOSING_PARENTHESES,
+    _MATRICE_OPEN_PARENTHESES,
 )
-from exception import NothingToDoError
 
 from utils import (
     convert_to_tokens,
@@ -44,12 +45,6 @@ class ExpressionResolver:
         self._force_calculator_verbose = force_calculator_verbose
 
     def _check_args(self):
-        # Var to check operator is followed by alphanum.
-        last_operator = None
-        # Var to check good parentheses use.
-        parentheses_count = 0
-        # Checking comma is followed and preceded by a digit.
-        # This is not checking the use of more than one comma in same number !
         for comma in _COMMA:
             # Check if there is more than one comma in numbers
             check_error_multiple_comma_in_one_number = re.search(
@@ -78,6 +73,8 @@ class ExpressionResolver:
             + "\\".join(_OPEN_PARENTHESES)
             + "\\".join(_CLOSING_PARENTHESES)
             + "\\".join(_COMMA)
+            + "\\".join(_MATRICE_OPEN_PARENTHESES)
+            + "\\".join(_MATRICE_CLOSING_PARENTHESES)
         )
         check_allowed_char = re.search(
             pattern=rf"[^\d\w{allowed_char_list}]", string=self.expression
@@ -89,6 +86,12 @@ class ExpressionResolver:
                 + "'"
             )
 
+        # Var to check operator is followed by alphanum.
+        last_operator = None
+        # Var to check good parentheses use.
+        parentheses_count = 0
+        # Var to check good matrice parentheses use.
+        matrice_parentheses_count = 0
         last_char = False
         for idx, c in enumerate(self.expression):
             # Check multiple operators before alphanum. Check parenthesis count.
@@ -125,11 +128,17 @@ class ExpressionResolver:
                 last_operator = None
             elif c in _OPEN_PARENTHESES:
                 parentheses_count += 1
+            elif c in _MATRICE_OPEN_PARENTHESES:
+                matrice_parentheses_count += 1
             elif c in _CLOSING_PARENTHESES:
                 parentheses_count -= 1
+            elif c in _MATRICE_CLOSING_PARENTHESES:
+                matrice_parentheses_count -= 1
 
             if parentheses_count < 0:
                 raise SyntaxError("Closing parenthesis with no opened one.")
+            if matrice_parentheses_count < 0:
+                raise SyntaxError("Closing matrice parenthesis with no opened one.")
             last_char = c
         if (
             self.expression[-1] in _OPERATORS
@@ -139,6 +148,8 @@ class ExpressionResolver:
             raise SyntaxError("Operators or sign must be followed by a value or a variable.")
         if parentheses_count != 0:
             raise SyntaxError("Problem with parenthesis.")
+        if matrice_parentheses_count != 0:
+            raise SyntaxError("Problem with matrice parenthesis.")
 
     def _add_implicit_cross_operator_when_parenthesis(self):
         """
@@ -263,14 +274,13 @@ class ExpressionResolver:
         Setting the right class to solve the expression
         """
         # Computorv2 part, variable/function/matrice assignation or variable/function/matrice resolving.
-        variable_assigment_search = re.search(pattern=r"^[a-zA-Z]+=.+", string=self.expression)
-        if variable_assigment_search and self.expression[-1] == "?":
+        if re.search(pattern=r"^[a-zA-Z]+=.*", string=self.expression):
+            print("assigning variable.")
+            self._solver = _VariablesAssignments(calculator=_Calculator())
+        elif re.search(pattern=r".*[a-zA-Z]+.*=.*[?]", string=self.expression):
             # variable resolving.
             print("resolving expression with stored variable.")
             pass
-        elif variable_assigment_search:
-            print("assigning variable.")
-            self._solver = _VariablesAssignments(calculator=_Calculator())
         else:
             # No variable/function/matrice assignation or variable/function/matrice resolving, check if it is an equation.
             equal_operator = [elem for elem in self._tokens if elem == "="]

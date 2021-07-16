@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/16 14:06:07 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/16 14:12:28 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ from utils import (
     split_expression_parts_from_tokens,
 )
 
-from math_functions import my_power, my_round
+from math_functions import my_power, my_round, my_sqrt
 
 
 class _EquationSolver:

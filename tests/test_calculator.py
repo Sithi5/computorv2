@@ -1,7 +1,6 @@
 import pytest
 
 from expression_resolver import ExpressionResolver
-from exception import NothingToDoError
 from math_functions import my_round
 
 

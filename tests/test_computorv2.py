@@ -54,13 +54,15 @@ def test_computorv2_parsing():
     with pytest.raises(SyntaxError) as e:
         resolver.solve(expression="i=500")
     assert (
-        str(e.value) == "A variable name cannot be 'i' because 'i' is kept for imaginary numbers."
+        str(e.value)
+        == "A variable name cannot be named 'i' because 'i' is kept for imaginary numbers."
     )
 
     with pytest.raises(SyntaxError) as e:
         resolver.solve(expression="I=500")
     assert (
-        str(e.value) == "A variable name cannot be 'i' because 'i' is kept for imaginary numbers."
+        str(e.value)
+        == "A variable name cannot be named 'i' because 'i' is kept for imaginary numbers."
     )
 
 
