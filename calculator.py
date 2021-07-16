@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/07 17:56:32 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/16 14:05:31 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,13 +22,12 @@ from globals_vars import (
 
 from utils import (
     convert_to_tokens,
-    is_number,
     parse_sign,
     convert_signed_number,
     add_implicit_cross_operator_for_vars,
-    my_power,
-    my_round,
 )
+
+from math_functions import is_number, my_power, my_round
 
 
 class _Calculator:

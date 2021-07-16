@@ -1,7 +1,7 @@
 import pytest
 import math
 
-from utils import my_power, my_sqrt, my_round
+from math_functions import my_power, my_sqrt, my_round
 
 
 def test_my_power():

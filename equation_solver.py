@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 15:44:51 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/16 14:06:07 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,12 +21,11 @@ from utils import (
     convert_signed_number,
     parse_sign,
     get_var_multiplier,
-    my_power,
-    my_sqrt,
-    my_round,
     add_implicit_cross_operator_for_vars,
     split_expression_parts_from_tokens,
 )
+
+from math_functions import my_power, my_round
 
 
 class _EquationSolver:

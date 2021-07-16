@@ -2,7 +2,7 @@ import pytest
 
 from expression_resolver import ExpressionResolver
 from exception import NothingToDoError
-from utils import my_round
+from math_functions import my_round
 
 
 def test_calculator():

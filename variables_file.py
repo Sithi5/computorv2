@@ -9,10 +9,7 @@ def open_and_deserialize_variables_list() -> list:
             unpickler = pickle.Unpickler(file)
             variables_list = unpickler.load()
     except OSError as err:
-        if err.errno == 2:
-            pass
-        else:
-            print("OS error: {0}".format(err))
+        variables_list = []
     except EOFError:
         variables_list = []
     return variables_list
