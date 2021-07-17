@@ -64,6 +64,7 @@ def convert_expression_to_type_list(expression: str) -> list:
             )
         # Find variables
         elif matched_variable:
+            # TODO something todo here
             print(
                 "matched_variable = ",
                 matched_variable.group(0),

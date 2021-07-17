@@ -78,7 +78,8 @@ class Function(BaseType):
     Function type, the input value should be in the format : 'NameOfTheFunction'.upper() + '(' + 'Value/Variable' + ')'
     """
 
-    def __init__(self, value: str):
+    def __init__(self, value: str = ""):
+        # TODO think about how to handle a function for assignation
         regex_functions = re.compile(rf"[A-Z]+\([\d\{COMMA}A-Z]+\)")
         if regex_functions.fullmatch(string=value):
             self.value = value
