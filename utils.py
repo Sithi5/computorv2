@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 18:10:41 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/16 16:53:50 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 11:54:17 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,6 +67,25 @@ def convert_to_tokens(expression: str) -> list:
         tokens.append(expression[last_char:current_char])
         last_char = current_char
     return tokens
+
+
+def convert_expression_to_upper(input_string: str) -> str:
+    """
+    Convert every alpha char into uppercase except isolated I/i char that will be converted to lowercase because it is imaginary numbers."""
+    converted_string = ""
+    for index, c in enumerate(input_string):
+        if (
+            c.lower() == "i"
+            and (index == 0 or not input_string[index - 1].isalpha())
+            and (index + 1 == len(input_string) or not input_string[index + 1].isalpha())
+        ):
+            converted_string = converted_string + c.lower()
+        elif c.isalpha():
+            converted_string = converted_string + c.upper()
+        else:
+            converted_string = converted_string + c
+
+    return converted_string
 
 
 def convert_signed_number(expression: str, accept_var: bool = False):

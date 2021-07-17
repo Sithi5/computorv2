@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 19:33:51 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 11:41:35 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ def resolve_input(resolver: ExpressionResolver, expression: str):
             print(res)
     else:
         print("result = ", result)
+    print("remettre error handling")
 
 
 # except SyntaxError as e:
@@ -35,10 +36,8 @@ def resolve_input(resolver: ExpressionResolver, expression: str):
 #     print("One of the value in the expression is not accepted : ", e)
 # except NotImplementedError as e:
 #     print("One of the methods needed is not implemented yet : ", e)
-# except NothingToDoError as e:
-#     print(e)
 # except Exception as e:
-# print("An exception appened : ", e)
+#     print("An exception appened : ", e)
 
 
 def main_gui(resolver: ExpressionResolver):
@@ -81,7 +80,7 @@ def print_shell_help():
 
     Resolve a variable/matrice:
 
-    'VariableName'/'MatriceName'/'FunctionName(VariableName)' '=' '?'
+    'VariableName'/'MatriceName' '=' '?'
 
 
     Resolve a function:

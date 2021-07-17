@@ -7,6 +7,7 @@ from variables_file import (
     open_and_deserialize_variables_list,
 )
 from variables_types import *
+from variables_utils import resolve_variable_value
 
 
 class _VariablesAssignments:
@@ -15,27 +16,9 @@ class _VariablesAssignments:
     _right_part: list = []
     _new_var_name: str
 
-    def __init__(self, calculator):
+    def __init__(self, calculator, variables_list):
         self._calculator = calculator
-
-    def _replace_variables_by_values(self):
-        """
-        Check for additional variables in the right part of assignment and replace it by there respective value.
-        """
-        for variable in self._variables_list:
-            for index, token in enumerate(self._right_part):
-                if variable.name == str(token):
-                    variable_tokens = convert_to_tokens(variable.value))
-                    self._right_part = (
-                        self._right_part[: index - 1]
-                        + variable_tokens
-                        + self._right_part[index + 1 :]
-                    )
-                if str(token) == "I":
-                    token = "i"
-
-    def resolve_assignation(self):
-        pass
+        self._variables_list = variables_list
 
     def solve(self, tokens: list, verbose: bool = False, force_calculator_verbose: bool = False):
         self._verbose = verbose
@@ -55,11 +38,6 @@ class _VariablesAssignments:
                 "A variable name cannot be named 'i' because 'i' is kept for imaginary numbers."
             )
 
-        self._variables_list = open_and_deserialize_variables_list()
-
-        self._replace_variables_by_values()
-        if self._resolvable_assignation is True:
-            self.resolve_assignation()
         if self._new_variable_type == "Real":
             new_variable = Real(self._new_var_name, self._right_part)
         elif self._new_variable_type == "Matrice":
@@ -75,4 +53,8 @@ class _VariablesAssignments:
                 self._variables_list.remove(variable)
         self._variables_list.append(new_variable)
         serialize_and_save_variables_list(variables_list=self._variables_list)
-        return str(new_variable.value)
+        return str(
+            resolve_variable_value(
+                variable_to_resolve=new_variable, variables_list=self._variables_list
+            )
+        )

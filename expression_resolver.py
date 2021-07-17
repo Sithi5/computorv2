@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/16 17:23:13 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 11:52:03 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,6 +30,10 @@ from utils import (
     parse_sign,
     convert_signed_number,
     add_implicit_cross_operator_for_vars,
+    convert_expression_to_upper,
+)
+from variables_file import (
+    open_and_deserialize_variables_list,
 )
 
 
@@ -43,6 +47,7 @@ class ExpressionResolver:
         self._verbose = verbose
         self._output_graph = output_graph
         self._force_calculator_verbose = force_calculator_verbose
+        self._variables_list = open_and_deserialize_variables_list()
 
     def _check_args(self):
         for comma in _COMMA:
@@ -66,19 +71,29 @@ class ExpressionResolver:
 
         # Check allowed char
         allowed_char_list = (
-            "\\="
-            + "\\?"
+            "\="
+            + "\?"
+            + "\\"
             + "\\".join(_OPERATORS)
+            + "\\"
             + "\\".join(_SIGN)
+            + "\\"
             + "\\".join(_OPEN_PARENTHESES)
+            + "\\"
             + "\\".join(_CLOSING_PARENTHESES)
+            + "\\"
             + "\\".join(_COMMA)
+            + "\\"
             + "\\".join(_MATRICE_OPEN_PARENTHESES)
+            + "\\"
             + "\\".join(_MATRICE_CLOSING_PARENTHESES)
         )
+        print("self.expression before check = ", self.expression)
+        print("allowed char lst = ", allowed_char_list)
         check_allowed_char = re.search(
             pattern=rf"[^\d\w{allowed_char_list}]", string=self.expression
         )
+        print("allowed_char check = ", check_allowed_char)
         if check_allowed_char:
             raise SyntaxError(
                 "This is not an expression or some of the characters are not reconized : '"
@@ -234,6 +249,7 @@ class ExpressionResolver:
         # Replace '{' parenthesis type by '(' parenthesis type.
         self.expression = self.expression.replace("{", "(")
         self.expression = self.expression.replace("}", ")")
+        self.expression = convert_expression_to_upper(input_string=self.expression)
 
         print(
             "Removing all space from the expression : ", self.expression
@@ -274,9 +290,11 @@ class ExpressionResolver:
         Setting the right class to solve the expression
         """
         # Computorv2 part, variable/function/matrice assignation or variable/function/matrice resolving.
-        if re.search(pattern=r"^[a-zA-Z]+=.*", string=self.expression):
+        if re.search(pattern=r"^[a-zA-Z]+=.+", string=self.expression):
             print("assigning variable.")
-            self._solver = _VariablesAssignments(calculator=_Calculator())
+            self._solver = _VariablesAssignments(
+                calculator=_Calculator(), variables_list=self._variables_list
+            )
         elif re.search(pattern=r".*[a-zA-Z]+.*=.*[?]", string=self.expression):
             # variable resolving.
             print("resolving expression with stored variable.")
@@ -300,7 +318,7 @@ class ExpressionResolver:
         Use the solver of the class set by set_solver to solve the expression.
         """
         print("\nEXPRESSION RESOLVER\n") if self._verbose is True else None
-        self.expression = expression.upper()
+        self.expression = expression
         self._parse_expression()
         self._set_solver()
         result = self._solver.solve(
