@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 15:35:36 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 16:07:03 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,12 +88,9 @@ class ExpressionResolver:
             + "\\"
             + "\\".join(_MATRICE_CLOSING_PARENTHESES)
         )
-        print("self.expression before check = ", self.expression)
-        print("allowed char lst = ", allowed_char_list)
         check_allowed_char = re.search(
             pattern=rf"[^\d\w{allowed_char_list}]", string=self.expression
         )
-        print("allowed_char check = ", check_allowed_char)
         if check_allowed_char:
             raise SyntaxError(
                 "This is not an expression or some of the characters are not reconized : '"
@@ -237,18 +234,61 @@ class ExpressionResolver:
         # Checking args here before converting to token
         self._check_args()
 
-        # Find functions
-        regex = re.compile(rf"[A-Z]+\([\d{_COMMA}A-Z]+\)")
-        match = regex.findall(pattern=regex, string=self.expression)
-        print("findall functions = ", match)
-        match = regex.split(pattern=regex, string=self.expression)
-        print("split functions = ", match)
-        # Find variables
-        regex = re.compile(r"[A-Z]+")
-        match = regex.findall(pattern=regex, string=self.expression)
-        print("findall variables = ", match)
-        match = regex.split(pattern=regex, string=self.expression)
-        print("split variables = ", match)
+        regex_var = f"\{_COMMA}"
+        regex_functions = re.compile(rf"[A-Z]+\([\d{regex_var}A-Z]+\)")
+        regex_variables = re.compile(r"[A-Z]+")
+        regex_var = f"\{_COMMA}"
+        regex_real = re.compile(rf"(\d+{regex_var}*\d+(?!{regex_var}))|(\d+(?!{regex_var}))")
+        regex_var = (
+            "\="
+            + "\?"
+            + "\\"
+            + "\\".join(_OPERATORS)
+            + "\\"
+            + "\\".join(_SIGN)
+            + "\\"
+            + "\\".join(_OPEN_PARENTHESES)
+            + "\\"
+            + "\\".join(_CLOSING_PARENTHESES)
+        )
+        regex_operators = re.compile(rf"[{regex_var}]")
+        while self.expression != "":
+            match_size = 0
+            # Find functions
+            matched_function = regex_functions.match(string=self.expression)
+            matched_variable = regex_variables.match(string=self.expression)
+            matched_operator = regex_operators.match(string=self.expression)
+            matched_real = regex_real.match(string=self.expression)
+
+            if matched_function:
+                match_size = len(matched_function.group(0))
+                print(
+                    "matched_function = ",
+                    matched_function.group(0),
+                )
+            # Find variables
+            elif matched_variable:
+                print(
+                    "matched_variable = ",
+                    matched_variable.group(0),
+                )
+                match_size = len(matched_variable.group(0))
+            elif matched_operator:
+                print(
+                    "matched_operator = ",
+                    matched_operator.group(0),
+                )
+                match_size = len(matched_operator.group(0))
+            elif matched_real:
+                print(
+                    "matched_real = ",
+                    matched_real.group(0),
+                )
+                match_size = len(matched_real.group(0))
+            else:
+                print("expression end loop is : ", self.expression)
+                break
+            self.expression = self.expression[match_size:]
         exit()
         # Transforming expression to tokens
         self._tokens = convert_to_tokens(self.expression)
