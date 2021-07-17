@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 12:18:25 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 12:23:48 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -244,8 +244,6 @@ class ExpressionResolver:
 
         # Removing all spaces
         self.expression = self.expression.replace(" ", "")
-        # Replace ',' comma type by '.' comma.
-        self.expression = self.expression.replace(",", ".")
         # Replace '{' parenthesis type by '(' parenthesis type.
         self.expression = self.expression.replace("{", "(")
         self.expression = self.expression.replace("}", ")")
