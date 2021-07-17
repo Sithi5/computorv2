@@ -1,9 +1,8 @@
 from os import path
 
-from utils import split_expression_parts_from_tokens, convert_to_tokens
+from utils import split_expression_parts_from_tokens
 from variables_file import (
     serialize_and_save_variables_list,
-    open_and_deserialize_variables_list,
 )
 from variables_types import *
 from variables_utils import resolve_variable_value
