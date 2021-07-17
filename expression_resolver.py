@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 11:52:03 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 12:18:25 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -300,6 +300,7 @@ class ExpressionResolver:
             print("resolving expression with stored variable.")
             pass
         else:
+            self.expression = self.expression[:-2]
             # No variable/function/matrice assignation or variable/function/matrice resolving, check if it is an equation.
             equal_operator = [elem for elem in self._tokens if elem == "="]
             if len(equal_operator) == 0:

@@ -25,6 +25,9 @@ class Complex(BaseType):
 
 
 class Matrice(BaseType):
+    _n: int
+    _m: int
+
     def __init__(self, name, value):
         super().__init__(name, value)
 

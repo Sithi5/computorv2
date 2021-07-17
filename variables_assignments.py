@@ -1,4 +1,3 @@
-import re
 from os import path
 
 from utils import split_expression_parts_from_tokens, convert_to_tokens
@@ -15,14 +14,17 @@ class _VariablesAssignments:
     _left_part: list = []
     _right_part: list = []
     _new_var_name: str
+    _new_variable_type: str = "Real"
 
     def __init__(self, calculator, variables_list):
         self._calculator = calculator
         self._variables_list = variables_list
 
+    def _define_new_variable_type(self):
+        self._new_variable_type = "Real"
+
     def solve(self, tokens: list, verbose: bool = False, force_calculator_verbose: bool = False):
         self._verbose = verbose
-        self._new_variable_type: str = "Real"
         self._force_calculator_verbose = force_calculator_verbose
         self._tokens = tokens
         splits_parts = split_expression_parts_from_tokens(self._tokens)
