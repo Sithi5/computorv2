@@ -1,11 +1,10 @@
 from os import path
 
-from utils import split_expression_parts_from_tokens
-from variables_file import (
+from src.utils import split_expression_parts_from_tokens
+from src.variables.variables_file import (
     serialize_and_save_variables_list,
 )
-from variables_types import *
-from variables_utils import resolve_variable_value
+from src.variables.variables import Variable
 
 
 class _VariablesAssignments:
@@ -29,7 +28,7 @@ class _VariablesAssignments:
         splits_parts = split_expression_parts_from_tokens(self._tokens)
         self._left_part = splits_parts[0]
         self._right_part = splits_parts[1]
-        new_variable: BaseType
+        new_variable: Variable
 
         print("\VARIABLES ASSIGNMENTS\n") if self._verbose is True else None
 
@@ -39,23 +38,10 @@ class _VariablesAssignments:
                 "A variable name cannot be named 'i' because 'i' is kept for imaginary numbers."
             )
 
-        if self._new_variable_type == "Real":
-            new_variable = Real(self._new_var_name, self._right_part)
-        elif self._new_variable_type == "Matrice":
-            new_variable = Matrice(self._new_var_name, self._right_part)
-        elif self._new_variable_type == "Complex":
-            new_variable = Complex(self._new_var_name, self._right_part)
-        else:
-            new_variable = Function(self._new_var_name, self._right_part)
-
         # Check if the variable already exist, if it exist, delete old one.
         for variable in self._variables_list:
             if variable.name == str(self._new_var_name):
                 self._variables_list.remove(variable)
         self._variables_list.append(new_variable)
         serialize_and_save_variables_list(variables_list=self._variables_list)
-        return str(
-            resolve_variable_value(
-                variable_to_resolve=new_variable, variables_list=self._variables_list
-            )
-        )
+        return "Nothing yet"

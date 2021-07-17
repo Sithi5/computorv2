@@ -12,7 +12,7 @@
 
 import pytest
 
-from expression_resolver import ExpressionResolver
+from src.expression_resolver import ExpressionResolver
 
 
 def test_computorv2_error():

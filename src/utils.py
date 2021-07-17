@@ -6,19 +6,19 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 18:10:41 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 11:54:17 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:11:03 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 from globals_vars import (
-    _OPERATORS,
-    _SIGN,
-    _COMMA,
-    _OPEN_PARENTHESES,
-    _CLOSING_PARENTHESES,
+    OPERATORS,
+    SIGN,
+    COMMA,
+    OPEN_PARENTHESES,
+    CLOSING_PARENTHESES,
 )
 
-from math_functions import is_number
+from src.math_functions import is_number
 
 
 def split_expression_parts_from_tokens(tokens: list):
@@ -55,7 +55,7 @@ def convert_to_tokens(expression: str) -> list:
         # Getting full number
         if is_number(expression[current_char]):
             while current_char < len(expression) and (
-                is_number(expression[current_char]) or expression[current_char] in _COMMA
+                is_number(expression[current_char]) or expression[current_char] in COMMA
             ):
                 current_char += 1
         # Getting full var name
@@ -97,19 +97,19 @@ def convert_signed_number(expression: str, accept_var: bool = False):
     """
     # Checking for first sign
     if len(expression) > 1:
-        if expression[0] in _SIGN and (
+        if expression[0] in SIGN and (
             is_number(expression[1])
-            or expression[1] in _OPEN_PARENTHESES
+            or expression[1] in OPEN_PARENTHESES
             or (expression[1].isalpha() and accept_var)
         ):
             i = 1
             number = ""
-            if expression[i] in _OPEN_PARENTHESES:
-                while i < len(expression) and (expression[i] not in _CLOSING_PARENTHESES):
+            if expression[i] in OPEN_PARENTHESES:
+                while i < len(expression) and (expression[i] not in CLOSING_PARENTHESES):
                     number = number + expression[i]
                     i += 1
             else:
-                while i < len(expression) and (is_number(expression[i]) or expression[i] in _COMMA):
+                while i < len(expression) and (is_number(expression[i]) or expression[i] in COMMA):
                     number = number + expression[i]
                     i += 1
             if len(number) > 0:
@@ -123,8 +123,8 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                 if len(var_name) > 0:
                     expression = "(0" + expression[0] + var_name + ")" + expression[i:]
 
-    for operator in _OPERATORS + _OPEN_PARENTHESES + "=":
-        for sign in _SIGN:
+    for operator in OPERATORS + OPEN_PARENTHESES + "=":
+        for sign in SIGN:
             split = expression.split(operator + sign)
             if len(split) > 1:
                 # Starting with 2nd part
@@ -134,7 +134,7 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                     number = ""
                     i = 0
                     while i < len(split[index]):
-                        if not is_number(split[index][i]) and not split[index][i] in _COMMA:
+                        if not is_number(split[index][i]) and not split[index][i] in COMMA:
                             break
                         number = number + split[index][i]
                         i += 1
@@ -182,13 +182,13 @@ def add_implicit_cross_operator_for_vars(vars_list: list, expression: str):
                 # Getting previous part to check sign
                 if (
                     splitted_expression[index - 1][-1].isdecimal() is True
-                    or splitted_expression[index - 1][-1] in _CLOSING_PARENTHESES
+                    or splitted_expression[index - 1][-1] in CLOSING_PARENTHESES
                 ):
                     splitted_expression[index - 1] = splitted_expression[index - 1] + "*"
             # Checking implicit mult after the var
             if splitted_expression[index] and (
                 splitted_expression[index][0].isdecimal() is True
-                or splitted_expression[index][0] in _OPEN_PARENTHESES
+                or splitted_expression[index][0] in OPEN_PARENTHESES
             ):
                 splitted_expression[index] = "*" + splitted_expression[index]
             index += 1

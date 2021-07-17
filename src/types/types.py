@@ -1,17 +1,8 @@
 class BaseType:
-    """Default class for variable Type. Should be used as an abstract class."""
+    """Default class for Type. Should be used as an abstract class."""
 
-    _lock: bool = False
-
-    def __init__(self, name, value):
-        self.name: str = name
+    def __init__(self, value):
         self.value = value
-
-    def __str__(self) -> str:
-        return self.name + " = " + str(self.value)
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "(" + self.name + " = " + str(self.value) + ")"
 
 
 class Real(BaseType):

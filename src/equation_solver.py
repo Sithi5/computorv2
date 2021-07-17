@@ -6,17 +6,17 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 11:00:33 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:02:35 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
 
 from globals_vars import (
-    _SIGN,
+    SIGN,
 )
 
-from utils import (
+from src.utils import (
     convert_to_tokens,
     convert_signed_number,
     parse_sign,
@@ -25,7 +25,7 @@ from utils import (
     split_expression_parts_from_tokens,
 )
 
-from math_functions import my_power, my_round, my_sqrt
+from src.math_functions import my_power, my_round, my_sqrt
 
 
 class _EquationSolver:
@@ -71,7 +71,7 @@ class _EquationSolver:
         part = ""
         sign = "+"
         while index < len(simplified_part):
-            if simplified_part[index] in _SIGN and len(part) > 0:
+            if simplified_part[index] in SIGN and len(part) > 0:
                 if self._check_have_var(part):
                     power = self._get_power(part)
                     if power == 1:
@@ -83,7 +83,7 @@ class _EquationSolver:
                 else:
                     polynom_dict["c"] = "-" + part if sign == "-" else part
                 part = ""
-            if simplified_part[index] in _SIGN:
+            if simplified_part[index] in SIGN:
                 sign = simplified_part[index]
             else:
                 part = part + simplified_part[index]

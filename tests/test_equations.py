@@ -6,15 +6,13 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:30 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/15 15:42:10 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:20:31 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import pytest
 
-import math
-
-from expression_resolver import ExpressionResolver
+from src.expression_resolver import ExpressionResolver
 
 
 def test_equation_subject():

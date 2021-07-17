@@ -1,12 +1,11 @@
 import pytest
 
-from expression_resolver import ExpressionResolver
-from calculator import _Calculator
+from src.expression_resolver import ExpressionResolver
+from src.calculator import _Calculator
 
 
 def test_any_calc():
     resolver = ExpressionResolver(verbose=False)
-    calculator = _Calculator()
 
     with pytest.raises(NotImplementedError) as e:
         ret = resolver.solve(expression=" (5 + 2y)(2 - (2y * 3y))")

@@ -6,28 +6,28 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/16 14:05:31 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:02:09 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
 
 from globals_vars import (
-    _OPERATORS,
-    _OPERATORS_PRIORITY,
-    _SIGN,
-    _OPEN_PARENTHESES,
-    _CLOSING_PARENTHESES,
+    OPERATORS,
+    OPERATORS_PRIORITY,
+    SIGN,
+    OPEN_PARENTHESES,
+    CLOSING_PARENTHESES,
 )
 
-from utils import (
+from src.utils import (
     convert_to_tokens,
     parse_sign,
     convert_signed_number,
     add_implicit_cross_operator_for_vars,
 )
 
-from math_functions import is_number, my_power, my_round
+from src.math_functions import is_number, my_power, my_round
 
 
 class _Calculator:
@@ -63,7 +63,7 @@ class _Calculator:
     def _power_a_var(self, first_var: str, second_var: str):
 
         sign = ""
-        if first_var[0] in _SIGN:
+        if first_var[0] in SIGN:
             sign = first_var[0]
         first_var_power = str(self._get_power(first_var))
 
@@ -141,12 +141,12 @@ class _Calculator:
                 # regex that match any sign or none, followed by any number or none
                 # followed by the var name followed by the power of the var
                 pattern = "[{sign}]*[.\d]*[\*]*{var_name}\^{second_var_power}".format(
-                    var_name=self.var_name, second_var_power=second_var_power, sign=_SIGN
+                    var_name=self.var_name, second_var_power=second_var_power, sign=SIGN
                 )
             else:
                 # Same for simple X, the var name shouln't be followed by a power operator
                 pattern = "[{sign}]*[.\d]*[\*]*{var_name}(?!\^)".format(
-                    var_name=self.var_name, sign=_SIGN
+                    var_name=self.var_name, sign=SIGN
                 )
             split = re.split(pattern=pattern, string=first_var)
             if len(split) > 1:
@@ -290,7 +290,7 @@ class _Calculator:
                     or self._check_have_var(str(last_two_in_stack[1]))
                 ):
                     # - or + operator, adding to c
-                    if elem in _SIGN:
+                    if elem in SIGN:
                         if not self._check_have_var(str(last_two_in_stack[0])):
                             if elem == "-":
                                 c = my_round(c + float(last_two_in_stack[0]))
@@ -383,22 +383,22 @@ class _Calculator:
         res = []
         stack = []
         for token in tokens:
-            if token in _OPERATORS or token in _SIGN:
+            if token in OPERATORS or token in SIGN:
                 # This loop will unpill elem from stack to res if operators on the pile have bigger priority.
                 while (
                     stack
-                    and not self.stack_last_element(stack) in _OPEN_PARENTHESES
-                    and _OPERATORS_PRIORITY[self.stack_last_element(stack)]
-                    >= _OPERATORS_PRIORITY[token]
+                    and not self.stack_last_element(stack) in OPEN_PARENTHESES
+                    and OPERATORS_PRIORITY[self.stack_last_element(stack)]
+                    >= OPERATORS_PRIORITY[token]
                 ):
                     res.append(stack.pop())
                 stack.append(token)
-            elif token in _OPEN_PARENTHESES:
+            elif token in OPEN_PARENTHESES:
                 stack.append(token)
-            elif token in _CLOSING_PARENTHESES:
-                while not self.stack_last_element(stack) in _OPEN_PARENTHESES:
+            elif token in CLOSING_PARENTHESES:
+                while not self.stack_last_element(stack) in OPEN_PARENTHESES:
                     res.append(stack.pop())
-                if self.stack_last_element(stack) in _OPEN_PARENTHESES:
+                if self.stack_last_element(stack) in OPEN_PARENTHESES:
                     stack.pop()
             else:
                 if not is_number(token):

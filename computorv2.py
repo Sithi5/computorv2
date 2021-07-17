@@ -6,16 +6,16 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 11:41:35 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:14:08 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import argparse
 import tkinter as tk
 
-from expression_resolver import ExpressionResolver
+from src.expression_resolver import ExpressionResolver
 from GUI.app import Application
-from variables_file import clear_variables_file, list_variables_file
+from src.variables.variables_file import clear_variables_file, list_variables_file
 
 
 def resolve_input(resolver: ExpressionResolver, expression: str):

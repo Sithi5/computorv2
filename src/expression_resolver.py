@@ -6,33 +6,35 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 16:07:03 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:15:20 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
 
-from equation_solver import _EquationSolver
-from calculator import _Calculator
-from variables_assignments import _VariablesAssignments
+from src.equation_solver import _EquationSolver
+from src.calculator import _Calculator
+from src.variables.variables_assignments import _VariablesAssignments
 from globals_vars import (
-    _OPERATORS,
-    _SIGN,
-    _COMMA,
-    _OPEN_PARENTHESES,
-    _CLOSING_PARENTHESES,
-    _MATRICE_CLOSING_PARENTHESES,
-    _MATRICE_OPEN_PARENTHESES,
+    OPERATORS,
+    SIGN,
+    COMMA,
+    OPEN_PARENTHESES,
+    CLOSING_PARENTHESES,
+    MATRICE_CLOSING_PARENTHESES,
+    MATRICE_OPEN_PARENTHESES,
+    MATRICE_LINE_SEPARATOR,
+    MATRICE_COLUMN_SEPARATOR,
 )
-
-from utils import (
+from src.types.types_utils import convert_expression_to_type_list
+from src.utils import (
     convert_to_tokens,
     parse_sign,
     convert_signed_number,
     add_implicit_cross_operator_for_vars,
     convert_expression_to_upper,
 )
-from variables_file import (
+from src.variables.variables_file import (
     open_and_deserialize_variables_list,
 )
 
@@ -50,7 +52,7 @@ class ExpressionResolver:
         self._variables_list = open_and_deserialize_variables_list()
 
     def _check_args(self):
-        for comma in _COMMA:
+        for comma in COMMA:
             # Check if there is more than one comma in numbers
             check_error_multiple_comma_in_one_number = re.search(
                 pattern=rf"\d+[{comma}]\d+[{comma}]", string=self.expression
@@ -74,19 +76,23 @@ class ExpressionResolver:
             "\="
             + "\?"
             + "\\"
-            + "\\".join(_OPERATORS)
+            + "\\".join(OPERATORS)
             + "\\"
-            + "\\".join(_SIGN)
+            + "\\".join(SIGN)
             + "\\"
-            + "\\".join(_OPEN_PARENTHESES)
+            + "\\".join(OPEN_PARENTHESES)
             + "\\"
-            + "\\".join(_CLOSING_PARENTHESES)
+            + "\\".join(CLOSING_PARENTHESES)
             + "\\"
-            + "\\".join(_COMMA)
+            + "\\".join(COMMA)
             + "\\"
-            + "\\".join(_MATRICE_OPEN_PARENTHESES)
+            + "\\".join(MATRICE_OPEN_PARENTHESES)
             + "\\"
-            + "\\".join(_MATRICE_CLOSING_PARENTHESES)
+            + "\\".join(MATRICE_CLOSING_PARENTHESES)
+            + "\\"
+            + "\\".join(MATRICE_LINE_SEPARATOR)
+            + "\\"
+            + "\\".join(MATRICE_COLUMN_SEPARATOR)
         )
         check_allowed_char = re.search(
             pattern=rf"[^\d\w{allowed_char_list}]", string=self.expression
@@ -109,9 +115,9 @@ class ExpressionResolver:
             # Check multiple operators before alphanum. Check parenthesis count.
             # Checking also that a sign isn't followed by an operator
             if (
-                c in _OPERATORS
+                c in OPERATORS
                 and last_operator
-                and (last_operator in _OPERATORS or last_operator in _SIGN)
+                and (last_operator in OPERATORS or last_operator in SIGN)
             ):
                 raise SyntaxError(
                     "Operators must be followed by a value or a variable, not another operator."
@@ -134,17 +140,17 @@ class ExpressionResolver:
                     raise SyntaxError(
                         "Equality operator '=' shouln't be follow by another equality operator."
                     )
-            elif c in _OPERATORS or c in _SIGN:
+            elif c in OPERATORS or c in SIGN:
                 last_operator = c
             elif c.isalnum():
                 last_operator = None
-            elif c in _OPEN_PARENTHESES:
+            elif c in OPEN_PARENTHESES:
                 parentheses_count += 1
-            elif c in _MATRICE_OPEN_PARENTHESES:
+            elif c in MATRICE_OPEN_PARENTHESES:
                 matrice_parentheses_count += 1
-            elif c in _CLOSING_PARENTHESES:
+            elif c in CLOSING_PARENTHESES:
                 parentheses_count -= 1
-            elif c in _MATRICE_CLOSING_PARENTHESES:
+            elif c in MATRICE_CLOSING_PARENTHESES:
                 matrice_parentheses_count -= 1
 
             if parentheses_count < 0:
@@ -153,9 +159,9 @@ class ExpressionResolver:
                 raise SyntaxError("Closing matrice parenthesis with no opened one.")
             last_char = c
         if (
-            self.expression[-1] in _OPERATORS
-            or self.expression[-1] in _SIGN
-            or (last_operator and last_operator in _OPERATORS)
+            self.expression[-1] in OPERATORS
+            or self.expression[-1] in SIGN
+            or (last_operator and last_operator in OPERATORS)
         ):
             raise SyntaxError("Operators or sign must be followed by a value or a variable.")
         if parentheses_count != 0:
@@ -169,7 +175,7 @@ class ExpressionResolver:
         multiplicator operator.
         """
         # Checking open parenthesis
-        for open_parenthese in _OPEN_PARENTHESES:
+        for open_parenthese in OPEN_PARENTHESES:
             splitted_expression = self.expression.split(open_parenthese)
             index = 1
             while index < len(splitted_expression):
@@ -178,14 +184,14 @@ class ExpressionResolver:
                     # Getting previous part to check sign
                     if (
                         splitted_expression[index - 1][-1].isdecimal() is True
-                        or splitted_expression[index - 1][-1] in _CLOSING_PARENTHESES
+                        or splitted_expression[index - 1][-1] in CLOSING_PARENTHESES
                     ):
                         splitted_expression[index - 1] = splitted_expression[index - 1] + "*"
                 index += 1
             self.expression = open_parenthese.join(splitted_expression)
 
         # Checking closing parenthesis
-        for closing_parenthese in _CLOSING_PARENTHESES:
+        for closing_parenthese in CLOSING_PARENTHESES:
             splitted_expression = self.expression.split(closing_parenthese)
             index = 0
             while index < len(splitted_expression) - 1:
@@ -234,61 +240,9 @@ class ExpressionResolver:
         # Checking args here before converting to token
         self._check_args()
 
-        regex_var = f"\{_COMMA}"
-        regex_functions = re.compile(rf"[A-Z]+\([\d{regex_var}A-Z]+\)")
-        regex_variables = re.compile(r"[A-Z]+")
-        regex_var = f"\{_COMMA}"
-        regex_real = re.compile(rf"(\d+{regex_var}*\d+(?!{regex_var}))|(\d+(?!{regex_var}))")
-        regex_var = (
-            "\="
-            + "\?"
-            + "\\"
-            + "\\".join(_OPERATORS)
-            + "\\"
-            + "\\".join(_SIGN)
-            + "\\"
-            + "\\".join(_OPEN_PARENTHESES)
-            + "\\"
-            + "\\".join(_CLOSING_PARENTHESES)
-        )
-        regex_operators = re.compile(rf"[{regex_var}]")
-        while self.expression != "":
-            match_size = 0
-            # Find functions
-            matched_function = regex_functions.match(string=self.expression)
-            matched_variable = regex_variables.match(string=self.expression)
-            matched_operator = regex_operators.match(string=self.expression)
-            matched_real = regex_real.match(string=self.expression)
+        # Convert to type_list
+        self.type_listed_expression = convert_expression_to_type_list(expression=self.expression)
 
-            if matched_function:
-                match_size = len(matched_function.group(0))
-                print(
-                    "matched_function = ",
-                    matched_function.group(0),
-                )
-            # Find variables
-            elif matched_variable:
-                print(
-                    "matched_variable = ",
-                    matched_variable.group(0),
-                )
-                match_size = len(matched_variable.group(0))
-            elif matched_operator:
-                print(
-                    "matched_operator = ",
-                    matched_operator.group(0),
-                )
-                match_size = len(matched_operator.group(0))
-            elif matched_real:
-                print(
-                    "matched_real = ",
-                    matched_real.group(0),
-                )
-                match_size = len(matched_real.group(0))
-            else:
-                print("expression end loop is : ", self.expression)
-                break
-            self.expression = self.expression[match_size:]
         exit()
         # Transforming expression to tokens
         self._tokens = convert_to_tokens(self.expression)

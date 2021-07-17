@@ -1,5 +1,5 @@
 from tkinter import *
-from expression_resolver import ExpressionResolver
+from src.expression_resolver import ExpressionResolver
 
 # Creating frame for calculator
 def iCalc(source, side):
@@ -21,7 +21,7 @@ class Application(Frame):
         Frame.__init__(self)
         self.option_add("*Font", "arial 20 bold")
         self.pack(expand=YES, fill=BOTH)
-        self.master.title("Calculator") # type: ignore
+        self.master.title("Calculator")  # type: ignore
         display = StringVar()
         Entry(self, relief=RIDGE, textvariable=display, justify="right", bd=30, bg="#c94d00").pack(
             side=TOP, expand=YES, fill=BOTH
