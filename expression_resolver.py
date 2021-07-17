@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 12:23:48 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 15:35:36 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -212,33 +212,6 @@ class ExpressionResolver:
                         "A number is too big, no input number should reach float inf or -inf."
                     )
 
-    def _get_vars(self):
-        vars_list = re.findall(pattern=r"[A-Z]+", string=self.expression)
-        # Removing duplicate var
-        self._vars_set = list(set(vars_list))
-
-        # Prevent var in parenthesis
-        index = 0
-        parenthesis_counter = 0
-        is_open = False
-        first_open_index = 0
-        for var in self._vars_set:
-            while index < len(self.expression):
-                if self.expression[index] in _OPEN_PARENTHESES:
-                    if not is_open:
-                        is_open = True
-                        first_open_index = index
-                    parenthesis_counter += 1
-                elif self.expression[index] in _CLOSING_PARENTHESES:
-                    parenthesis_counter -= 1
-                if parenthesis_counter == 0 and is_open:
-                    is_open = False
-                    if var in self.expression[first_open_index : index + 1]:
-                        raise NotImplementedError(
-                            "Var cannot be inside a parenthesis for the moment."
-                        )
-                index += 1
-
     def _parse_expression(self):
         print("Expression before parsing : ", self.expression) if self._verbose is True else None
 
@@ -257,23 +230,26 @@ class ExpressionResolver:
         self.expression = parse_sign(self.expression)
         print("Parsing signs : ", self.expression) if self._verbose is True else None
 
-        self._get_vars()
-        print("vars = ", self._vars_set) if self._verbose is True else None
-
         self.expression = convert_signed_number(expression=self.expression, accept_var=True)
 
         print("Convert signed numbers : ", self.expression) if self._verbose is True else None
 
-        self._add_implicit_cross_operator_when_parenthesis()
-        self.expression = add_implicit_cross_operator_for_vars(self._vars_set, self.expression)
-
-        print(
-            "Convert implicit multiplication : ", self.expression
-        ) if self._verbose is True else None
-
         # Checking args here before converting to token
         self._check_args()
 
+        # Find functions
+        regex = re.compile(rf"[A-Z]+\([\d{_COMMA}A-Z]+\)")
+        match = regex.findall(pattern=regex, string=self.expression)
+        print("findall functions = ", match)
+        match = regex.split(pattern=regex, string=self.expression)
+        print("split functions = ", match)
+        # Find variables
+        regex = re.compile(r"[A-Z]+")
+        match = regex.findall(pattern=regex, string=self.expression)
+        print("findall variables = ", match)
+        match = regex.split(pattern=regex, string=self.expression)
+        print("split variables = ", match)
+        exit()
         # Transforming expression to tokens
         self._tokens = convert_to_tokens(self.expression)
 
