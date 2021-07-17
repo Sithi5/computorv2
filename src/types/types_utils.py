@@ -50,7 +50,7 @@ def convert_expression_to_type_list(expression: str) -> list:
         # matching matrice should be first because it can be compound of more matrice/real/var etc.
         if matched_potential_matrice:
             match_size = len(matched_potential_matrice.group(0))
-            # type_list.append(Matrice())
+            type_list.append(Matrice(value=matched_potential_matrice.group(0)))
             print(
                 "matched_potential_matrice = ",
                 matched_potential_matrice.group(0),
@@ -83,14 +83,15 @@ def convert_expression_to_type_list(expression: str) -> list:
             )
             match_size = len(matched_complex.group(0))
         elif matched_real:
+            type_list.append(Real(value=matched_real.group(0)))
             print(
                 "matched_real = ",
                 matched_real.group(0),
             )
             match_size = len(matched_real.group(0))
         else:
-            print("expression end loop is : ", expression)
-            break
+            raise SyntaxError("Some numbers are not well formated : " + expression)
+
         expression = expression[match_size:]
     print("type_list = ", type_list)
     return type_list
