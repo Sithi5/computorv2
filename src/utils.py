@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 18:10:41 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 17:11:03 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:47:30 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ from globals_vars import (
     CLOSING_PARENTHESES,
 )
 
-from src.math_functions import is_number
+from src.math_functions import is_real
 
 
 def split_expression_parts_from_tokens(tokens: list):
@@ -53,9 +53,9 @@ def convert_to_tokens(expression: str) -> list:
     last_char = 0
     while current_char < len(expression):
         # Getting full number
-        if is_number(expression[current_char]):
+        if is_real(expression[current_char]):
             while current_char < len(expression) and (
-                is_number(expression[current_char]) or expression[current_char] in COMMA
+                is_real(expression[current_char]) or expression[current_char] in COMMA
             ):
                 current_char += 1
         # Getting full var name
@@ -98,7 +98,7 @@ def convert_signed_number(expression: str, accept_var: bool = False):
     # Checking for first sign
     if len(expression) > 1:
         if expression[0] in SIGN and (
-            is_number(expression[1])
+            is_real(expression[1])
             or expression[1] in OPEN_PARENTHESES
             or (expression[1].isalpha() and accept_var)
         ):
@@ -109,7 +109,7 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                     number = number + expression[i]
                     i += 1
             else:
-                while i < len(expression) and (is_number(expression[i]) or expression[i] in COMMA):
+                while i < len(expression) and (is_real(expression[i]) or expression[i] in COMMA):
                     number = number + expression[i]
                     i += 1
             if len(number) > 0:
@@ -134,7 +134,7 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                     number = ""
                     i = 0
                     while i < len(split[index]):
-                        if not is_number(split[index][i]) and not split[index][i] in COMMA:
+                        if not is_real(split[index][i]) and not split[index][i] in COMMA:
                             break
                         number = number + split[index][i]
                         i += 1

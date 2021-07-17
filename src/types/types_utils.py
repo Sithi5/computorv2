@@ -70,6 +70,7 @@ def convert_expression_to_type_list(expression: str) -> list:
             )
             match_size = len(matched_variable.group(0))
         elif matched_operator:
+            type_list.append(Operator(value=matched_operator.group(0)))
             print(
                 "matched_operator = ",
                 matched_operator.group(0),
@@ -77,6 +78,7 @@ def convert_expression_to_type_list(expression: str) -> list:
             match_size = len(matched_operator.group(0))
         # Match complex before numbers
         elif matched_complex:
+            type_list.append(Complex(value=matched_complex.group(0)))
             print(
                 "matched_complex = ",
                 matched_complex.group(0),

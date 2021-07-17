@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 17:02:09 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/17 17:47:20 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ from src.utils import (
     add_implicit_cross_operator_for_vars,
 )
 
-from src.math_functions import is_number, my_power, my_round
+from src.math_functions import is_real, my_power, my_round
 
 
 class _Calculator:
@@ -71,9 +71,9 @@ class _Calculator:
         first_var = convert_signed_number(first_var.split("^")[0], accept_var=True)
         second_var = convert_signed_number(second_var.split("^")[0], accept_var=True)
         second_var = self.solve(convert_to_tokens(second_var), internal=True)
-        if is_number(second_var) and float(second_var) != int(float(second_var)):
+        if is_real(second_var) and float(second_var) != int(float(second_var)):
             raise NotImplementedError("irrational numbers are not accepted as exponent.")
-        if is_number(second_var) and float(second_var) < 0:
+        if is_real(second_var) and float(second_var) < 0:
             raise NotImplementedError(f"Some part of the polynomial var have negative power.")
         if not self._check_have_var(first_var):
             raise NotImplementedError("Cannot power a number by a var for the moment.")
@@ -275,7 +275,7 @@ class _Calculator:
         var_is_present = True if self.var_name else False
 
         for elem in npi_list:
-            if is_number(elem) or (var_is_present and elem in self.var_name):
+            if is_real(elem) or (var_is_present and elem in self.var_name):
                 stack.append(elem)
             else:
                 last_two_in_stack = stack[-2:]
@@ -401,7 +401,7 @@ class _Calculator:
                 if self.stack_last_element(stack) in OPEN_PARENTHESES:
                     stack.pop()
             else:
-                if not is_number(token):
+                if not is_real(token):
                     # Checking if it's alpha, then adding it as a var
                     if (accept_var is True and not token.isalpha()) or accept_var is False:
                         raise SyntaxError(f"Some numbers are not well formated : {token}")

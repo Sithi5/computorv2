@@ -95,7 +95,7 @@ def my_round(number: float, precision: int = 6) -> float:
     return float(format(number, f".{precision}f"))
 
 
-def is_number(n: str) -> bool:
+def is_real(n: str) -> bool:
     try:
         float(n)
         return True
