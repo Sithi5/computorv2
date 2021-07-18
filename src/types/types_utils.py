@@ -2,42 +2,21 @@ import re
 
 from src.types.types import *
 
-from globals_vars import (
-    OPERATORS,
-    SIGN,
-    COMMA,
-    OPEN_PARENTHESES,
-    CLOSING_PARENTHESES,
-    MATRICE_CLOSING_PARENTHESES,
-    MATRICE_OPEN_PARENTHESES,
+from src.regex import (
+    regex_potential_matrice,
+    regex_functions,
+    regex_function_name,
+    regex_function_argument,
+    regex_variables,
+    regex_operators,
+    regex_complex,
+    regex_real,
 )
 
 
 def convert_expression_to_type_list(expression: str) -> list:
     type_list: list = []
-    regex_potential_matrice = re.compile(
-        rf"\{MATRICE_OPEN_PARENTHESES}.*{MATRICE_CLOSING_PARENTHESES}]"
-    )
-    regex_var = f"\{COMMA}"
-    regex_functions = re.compile(rf"[A-Z]+\([\d{regex_var}A-Z]+\)")
-    regex_variables = re.compile(r"[A-Z]+")
-    regex_var = f"\{COMMA}"
-    regex_complex = re.compile(rf"(\d+{regex_var}*\d+i)|(\d+i)")
-    regex_var = f"\{COMMA}"
-    regex_real = re.compile(rf"(\d+{regex_var}*\d+(?!{regex_var}))|(\d+(?!{regex_var}))")
-    regex_var = (
-        "\="
-        + "\?"
-        + "\\"
-        + "\\".join(OPERATORS)
-        + "\\"
-        + "\\".join(SIGN)
-        + "\\"
-        + "\\".join(OPEN_PARENTHESES)
-        + "\\"
-        + "\\".join(CLOSING_PARENTHESES)
-    )
-    regex_operators = re.compile(rf"[{regex_var}]")
+
     while expression != "":
         match_size = 0
         matched_potential_matrice = regex_potential_matrice.match(string=expression)
@@ -51,31 +30,25 @@ def convert_expression_to_type_list(expression: str) -> list:
         if matched_potential_matrice:
             match_size = len(matched_potential_matrice.group(0))
             type_list.append(Matrice(value=matched_potential_matrice.group(0)))
-            print(
-                "matched_potential_matrice = ",
-                matched_potential_matrice.group(0),
-            )
         # Match functions before var because can have a var inside
         elif matched_function:
-            match_size = len(matched_function.group(0))
-            print(
-                "matched_function = ",
-                matched_function.group(0),
-            )
+            # Take first alphapart
+            match_function_name = regex_function_name.match(matched_function.group(0))
+            search_function_argument = regex_function_argument.search(matched_function.group(0))
+            if match_function_name and search_function_argument:
+                function_name = match_function_name.group(0)
+                function_argument = search_function_argument.group(0)
+                type_list.append(Function(name=function_name, argument=function_argument))
+                match_size = len(matched_function.group(0))
+            else:
+                raise SyntaxError("Some numbers are not well formated : " + expression)
         # Find variables
         elif matched_variable:
-            # TODO something todo here
-            print(
-                "matched_variable = ",
-                matched_variable.group(0),
-            )
+            variable_name = matched_variable.group(0)
+            type_list.append(Variable(name=variable_name, value=None))
             match_size = len(matched_variable.group(0))
         elif matched_operator:
             type_list.append(Operator(value=matched_operator.group(0)))
-            print(
-                "matched_operator = ",
-                matched_operator.group(0),
-            )
             match_size = len(matched_operator.group(0))
         # Match complex before numbers
         elif matched_complex:

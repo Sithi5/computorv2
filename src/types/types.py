@@ -74,21 +74,48 @@ class Matrice(BaseType):
 
 
 class Function(BaseType):
-    """
-    Function type, the input value should be in the format : 'NameOfTheFunction'.upper() + '(' + 'Value/Variable' + ')'
-    """
-
-    def __init__(self, value: str = ""):
-        # TODO think about how to handle a function for assignation
-        regex_functions = re.compile(rf"[A-Z]+\([\d\{COMMA}A-Z]+\)")
-        if regex_functions.fullmatch(string=value):
-            self.value = value
+    def __init__(self, name: str, argument: str, right_expression: str = ""):
+        if name.isalpha():
+            self.name = name
+            self.argument = argument
+            self.right_expression = right_expression
         else:
             raise SyntaxError(
                 "An error occured when trying to create "
                 + self.__class__.__name__
-                + " object with the value : "
-                + value
+                + " object with the name : "
+                + name
+                + " and the argument : "
+                + argument
+            )
+
+    def __str__(self) -> str:
+        return self.name + "(" + self.argument + ")"
+
+    def __repr__(self) -> str:
+        if len(self.right_expression) > 0:
+            return (
+                self.__class__.__name__
+                + "("
+                + self.name
+                + "("
+                + self.argument
+                + ")"
+                + "="
+                + self.right_expression
+                + ")"
+            )
+        else:
+            return (
+                self.__class__.__name__
+                + "("
+                + self.name
+                + "("
+                + self.argument
+                + ")"
+                + "="
+                + "Not defined"
+                + ")"
             )
 
 
@@ -96,7 +123,7 @@ class Operator(BaseType):
     def __init__(self, value: str):
         if (
             len(value) == 1
-            and value in "=" + OPERATORS + SIGN + OPEN_PARENTHESES + CLOSING_PARENTHESES
+            and value in "=?" + OPERATORS + SIGN + OPEN_PARENTHESES + CLOSING_PARENTHESES
         ):
             self.value = value
         else:
@@ -106,3 +133,29 @@ class Operator(BaseType):
                 + " object with the value : "
                 + value
             )
+
+class Variable:
+    _lock: bool = False
+
+    def __init__(self, name: str, value: BaseType = None):
+        if name.isalpha:
+            self.name = name
+            self.value = value
+        else:
+            raise SyntaxError(
+                "An error occured when trying to create "
+                + self.__class__.__name__
+                + " object with the name : "
+                + name
+                + " and the value : "
+                + str(value)
+            )
+
+    def __str__(self) -> str:
+        return self.name
+
+    def __repr__(self) -> str:
+        if self.value is not None:
+            return self.__class__.__name__ + "(" + self.name + " = " + self.value.__repr__() + ")"
+        else:
+            return self.__class__.__name__ + "(" + self.name + " = " + "Not defined" + ")"

@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 17:15:20 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/18 12:30:30 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,15 +23,13 @@ from globals_vars import (
     CLOSING_PARENTHESES,
     MATRICE_CLOSING_PARENTHESES,
     MATRICE_OPEN_PARENTHESES,
-    MATRICE_LINE_SEPARATOR,
-    MATRICE_COLUMN_SEPARATOR,
 )
+from src.regex import regex_check_forbidden_char
 from src.types.types_utils import convert_expression_to_type_list
 from src.utils import (
     convert_to_tokens,
     parse_sign,
     convert_signed_number,
-    add_implicit_cross_operator_for_vars,
     convert_expression_to_upper,
 )
 from src.variables.variables_file import (
@@ -72,35 +70,11 @@ class ExpressionResolver:
                 raise SyntaxError("Some numbers are not well formated (Comma error).")
 
         # Check allowed char
-        allowed_char_list = (
-            "\="
-            + "\?"
-            + "\\"
-            + "\\".join(OPERATORS)
-            + "\\"
-            + "\\".join(SIGN)
-            + "\\"
-            + "\\".join(OPEN_PARENTHESES)
-            + "\\"
-            + "\\".join(CLOSING_PARENTHESES)
-            + "\\"
-            + "\\".join(COMMA)
-            + "\\"
-            + "\\".join(MATRICE_OPEN_PARENTHESES)
-            + "\\"
-            + "\\".join(MATRICE_CLOSING_PARENTHESES)
-            + "\\"
-            + "\\".join(MATRICE_LINE_SEPARATOR)
-            + "\\"
-            + "\\".join(MATRICE_COLUMN_SEPARATOR)
-        )
-        check_allowed_char = re.search(
-            pattern=rf"[^\d\w{allowed_char_list}]", string=self.expression
-        )
-        if check_allowed_char:
+        match_forbidden_char = regex_check_forbidden_char.search(string=self.expression)
+        if match_forbidden_char:
             raise SyntaxError(
                 "This is not an expression or some of the characters are not reconized : '"
-                + check_allowed_char[0]
+                + match_forbidden_char[0]
                 + "'"
             )
 

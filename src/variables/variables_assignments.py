@@ -4,7 +4,7 @@ from src.utils import split_expression_parts_from_tokens
 from src.variables.variables_file import (
     serialize_and_save_variables_list,
 )
-from src.variables.variables import Variable
+from src.types.types import Variable
 
 
 class _VariablesAssignments:
