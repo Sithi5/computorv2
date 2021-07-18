@@ -1,4 +1,5 @@
 from os import path
+from src.assignment.assigned_file import serialize_and_save_assigned_list
 
 from src.types.types import *
 
@@ -13,12 +14,14 @@ class Assignments:
         self._assigned_list = assigned_list
 
     def _assign_function(self):
-        new_function = self._type_listed_expression[0]
-        print("_assign_function")
+        self.new_assignment = self._type_listed_expression[0]
+        self.new_assignment.right_expression = self._type_listed_expression[2:]
 
     def _assign_variable(self):
-        new_variable = self._type_listed_expression[0]
-        print("_assign_variable")
+        self.new_assignment = self._type_listed_expression[0]
+        self.new_assignment.value = self._calculator.solve(
+            type_listed_expression=self._type_listed_expression[2:]
+        )
 
     def solve(
         self,
@@ -52,3 +55,9 @@ class Assignments:
                     "Problem with assignment : trying to assign to a wrong type : "
                     + self._type_listed_expression[0].type,
                 )
+            # Check for other assignment with same name and remove it.
+            for elem in self._assigned_list:
+                if elem.name == self.new_assignment.name:
+                    self._assigned_list.remove(elem)
+            self._assigned_list.append(self.new_assignment)
+            serialize_and_save_assigned_list(assigned_list=self._assigned_list)
