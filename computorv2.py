@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 17:14:08 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/18 17:36:38 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ import tkinter as tk
 
 from src.expression_resolver import ExpressionResolver
 from GUI.app import Application
-from src.variables.variables_file import clear_variables_file, list_variables_file
+from src.assignment.assigned_file import clear_assigned_file, list_assigned_file
 
 
 def resolve_input(resolver: ExpressionResolver, expression: str):
@@ -102,10 +102,10 @@ def shell_expression_resolver(resolver: ExpressionResolver):
         elif expression.upper() == "HELP":
             print_shell_help()
         elif expression.upper() == "CLEAR":
-            clear_variables_file()
-            print("All variables have been cleared.")
+            clear_assigned_file()
+            print("All assigned var have been cleared.")
         elif expression.upper() == "LIST":
-            list_variables_file()
+            list_assigned_file()
         else:
             resolve_input(resolver=resolver, expression=expression)
 

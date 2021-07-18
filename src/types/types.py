@@ -19,6 +19,10 @@ class BaseType:
     """Default class for Type. Should be used as an abstract class."""
 
     value: str = ""
+    type: str
+
+    def __init__(self):
+        self.type = self.__class__.__name__
 
     def __str__(self) -> str:
         return self.value
@@ -33,6 +37,7 @@ class Real(BaseType):
     """
 
     def __init__(self, value: str):
+        super().__init__()
         if is_real(value):
             self.value = value
         else:
@@ -54,6 +59,7 @@ class Complex(BaseType):
     """
 
     def __init__(self, value: str):
+        super().__init__()
         if len(value) == 1 and value[0] == "i" or (value[-1] == "i" and is_real(value[:-1])):
             self.value = value
         else:
@@ -75,6 +81,7 @@ class Matrice(BaseType):
 
 class Function(BaseType):
     def __init__(self, name: str, argument: str, right_expression: str = ""):
+        super().__init__()
         if name.isalpha():
             self.name = name
             self.argument = argument
@@ -121,6 +128,7 @@ class Function(BaseType):
 
 class Operator(BaseType):
     def __init__(self, value: str):
+        super().__init__()
         if (
             len(value) == 1
             and value in "=?" + OPERATORS + SIGN + OPEN_PARENTHESES + CLOSING_PARENTHESES
@@ -139,6 +147,7 @@ class Variable:
     _lock: bool = False
 
     def __init__(self, name: str, value: BaseType = None):
+        super().__init__()
         if name.isalpha:
             self.name = name
             self.value = value
