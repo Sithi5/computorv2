@@ -41,11 +41,12 @@ def test_types_creation():
     )
 
     # Test functions
-    Function("FN(X)")
-    Function("FN(15.2)")
-    Function("TESTNIMP(15.2)")
+    Function(name="FN", argument="X")
+    Function(name="FN", argument="15.2")
+    Function(name="TESTNIMP", argument="15.2")
     with pytest.raises(SyntaxError) as e:
-        Function("TEST5NIMP(15.2)")
+        Function(name="TEST5NIMP", argument="15.2")
     assert (
-        str(e.value) == "An error occured when trying to create Function object with the value : TEST5NIMP(15.2)"
+        str(e.value)
+        == "An error occured when trying to create Function object with the name : TEST5NIMP and the argument : 15.2"
     )

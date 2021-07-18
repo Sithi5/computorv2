@@ -6,15 +6,15 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/18 12:30:30 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/18 13:08:57 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
+from src.types.types import Operator
 
-from src.equation_solver import _EquationSolver
-from src.calculator import _Calculator
-from src.variables.variables_assignments import _VariablesAssignments
+from src.assignment.assignments import Assignments
+from src.calculator import Calculator
 from globals_vars import (
     OPERATORS,
     SIGN,
@@ -32,8 +32,8 @@ from src.utils import (
     convert_signed_number,
     convert_expression_to_upper,
 )
-from src.variables.variables_file import (
-    open_and_deserialize_variables_list,
+from src.assignment.assigned_file import (
+    open_and_deserialize_assigned_list,
 )
 
 
@@ -47,7 +47,7 @@ class ExpressionResolver:
         self._verbose = verbose
         self._output_graph = output_graph
         self._force_calculator_verbose = force_calculator_verbose
-        self._variables_list = open_and_deserialize_variables_list()
+        self._assigned_list = open_and_deserialize_assigned_list()
 
     def _check_args(self):
         for comma in COMMA:
@@ -211,50 +211,29 @@ class ExpressionResolver:
 
         print("Convert signed numbers : ", self.expression) if self._verbose is True else None
 
-        # Checking args here before converting to token
+        # Checking args here before converting to type list
         self._check_args()
 
         # Convert to type_list
         self.type_listed_expression = convert_expression_to_type_list(expression=self.expression)
 
-        exit()
-        # Transforming expression to tokens
-        self._tokens = convert_to_tokens(self.expression)
-
-        print("Convert to token : ", self._tokens) if self._verbose is True else None
-        self._removing_trailing_zero_and_converting_numbers_to_float()
-        print(
-            "Removing extra zero and converting numbers to float: ", self._tokens
-        ) if self._verbose is True else None
-
     def _set_solver(self):
         """
         Setting the right class to solve the expression
         """
-        # Computorv2 part, variable/function/matrice assignation or variable/function/matrice resolving.
-        if re.search(pattern=r"^[a-zA-Z]+=.+", string=self.expression):
-            print("assigning variable.")
-            self._solver = _VariablesAssignments(
-                calculator=_Calculator(), variables_list=self._variables_list
-            )
-        elif re.search(pattern=r".*[a-zA-Z]+.*=.*[?]", string=self.expression):
-            # variable resolving.
-            print("resolving expression with stored variable.")
-            pass
+        calculator = Calculator()
+        if (
+            "=" not in self.expression
+            or isinstance(self.type_listed_expression[-1], Operator)
+            and self.type_listed_expression[-1].value == "?"
+        ):
+            print("Resolving instance !")
         else:
-            self.expression = self.expression[:-2]
-            # No variable/function/matrice assignation or variable/function/matrice resolving, check if it is an equation.
-            equal_operator = [elem for elem in self._tokens if elem == "="]
-            if len(equal_operator) == 0:
-                self._solver = _Calculator()
-            elif len(equal_operator) == 1:
-                self._solver = _EquationSolver(
-                    calculator=_Calculator(), output_graph=self._output_graph
-                )
-            else:
-                raise NotImplementedError(
-                    "More than one comparison is not supported for the moment."
-                )
+            print("Assignment !")
+            self._solver = Assignments(
+                calculator=calculator,
+                assigned_list=self._assigned_list,
+            )
 
     def solve(self, expression: str):
         """
@@ -265,7 +244,7 @@ class ExpressionResolver:
         self._parse_expression()
         self._set_solver()
         result = self._solver.solve(
-            tokens=self._tokens,
+            type_listed_expression=self.type_listed_expression,
             verbose=self._verbose,
             force_calculator_verbose=self._force_calculator_verbose,
         )

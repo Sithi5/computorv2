@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 17:47:20 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/18 12:57:46 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ from src.utils import (
 from src.math_functions import is_real, my_power, my_round
 
 
-class _Calculator:
+class Calculator:
     def stack_last_element(self, elem: list) -> str:
         try:
             return elem[-1][0]

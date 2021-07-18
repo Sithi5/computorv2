@@ -1,5 +1,3 @@
-import re
-
 from src.types.types import *
 
 from src.regex import (
@@ -66,7 +64,7 @@ def convert_expression_to_type_list(expression: str) -> list:
             )
             match_size = len(matched_real.group(0))
         else:
-            raise SyntaxError("Some numbers are not well formated : " + expression)
+            raise SyntaxError("Expression is not well formated : " + expression)
 
         expression = expression[match_size:]
     print("type_list = ", type_list)

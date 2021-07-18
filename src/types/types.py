@@ -134,6 +134,7 @@ class Operator(BaseType):
                 + value
             )
 
+
 class Variable:
     _lock: bool = False
 
