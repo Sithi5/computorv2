@@ -6,12 +6,12 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/23 14:06:03 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 00:30:49 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
-from src.types.types import Operator
+from src.types.types import BaseType, Operator
 
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
@@ -142,51 +142,37 @@ class ExpressionResolver:
         if matrice_parentheses_count != 0:
             raise SyntaxError("Problem with matrice parenthesis.")
 
-    def _add_implicit_cross_operator_when_parenthesis(self):
-        """
-        Checking for numbers before open or after closing parenthesis without sign and add a
-        multiplicator operator.
-        """
-        # Checking open parenthesis
-        for open_parenthese in OPEN_PARENTHESES:
-            splitted_expression = self.expression.split(open_parenthese)
-            index = 1
-            while index < len(splitted_expression):
-                # Checking if previous part is not empty
-                if len(splitted_expression[index - 1]) > 0:
-                    # Getting previous part to check sign
-                    if (
-                        splitted_expression[index - 1][-1].isdecimal() is True
-                        or splitted_expression[index - 1][-1] in CLOSING_PARENTHESES
-                    ):
-                        splitted_expression[index - 1] = splitted_expression[index - 1] + "*"
-                index += 1
-            self.expression = open_parenthese.join(splitted_expression)
-
-        # Checking closing parenthesis
-        for closing_parenthese in CLOSING_PARENTHESES:
-            splitted_expression = self.expression.split(closing_parenthese)
-            index = 0
-            while index < len(splitted_expression) - 1:
-                # Getting previous part to check sign
-                if (
-                    splitted_expression[index + 1]
-                    and splitted_expression[index + 1][0].isdecimal() is True
-                ):
-                    splitted_expression[index + 1] = "*" + splitted_expression[index + 1]
-                index += 1
-            self.expression = closing_parenthese.join(splitted_expression)
-
-    def _removing_trailing_zero_and_converting_numbers_to_float(self):
-        for index, token in enumerate(self._tokens):
-            if token.isdecimal():
-                self._tokens[index] = str(float(token))
-                if "e" in self._tokens[index]:
-                    self._tokens[index] = f"{float(token):.6f}"
-                elif "inf" in self._tokens[index]:
-                    raise ValueError(
-                        "A number is too big, no input number should reach float inf or -inf."
-                    )
+    def _check_type_listed_expression(self):
+        """This method check for eventual malformatted type_listed_expression or
+        missing operators, and add implicit cross operators before and after parenthesis."""
+        last_elem = None
+        checked_type_listed_expression: list = []
+        for elem in self.type_listed_expression:
+            if last_elem is None:
+                checked_type_listed_expression.append(elem)
+            elif (
+                (
+                    isinstance(elem, Operator)
+                    and elem.value in OPEN_PARENTHESES
+                    and not isinstance(last_elem, Operator)
+                )
+                or (
+                    isinstance(last_elem, Operator)
+                    and last_elem.value in CLOSING_PARENTHESES
+                    and not isinstance(elem, Operator)
+                )
+                or (not isinstance(last_elem, Operator) and not isinstance(elem, Operator))
+            ):
+                # Add implicit cross operator here
+                checked_type_listed_expression.append(Operator(value="*"))
+                checked_type_listed_expression.append(elem)
+            elif isinstance(last_elem, Operator) and isinstance(elem, Operator):
+                emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
+                raise SyntaxError(str(emsg))
+            else:
+                checked_type_listed_expression.append(elem)
+            last_elem = elem
+        self.type_listed_expression = checked_type_listed_expression
 
     def _parse_expression(self):
         print("Expression before parsing : ", self.expression) if self.verbose is True else None
@@ -215,6 +201,8 @@ class ExpressionResolver:
 
         # Convert to type_list
         self.type_listed_expression = convert_expression_to_type_list(expression=self.expression)
+        self._check_type_listed_expression()
+        print("\nType_listed_expression at end of parsing : ", self.type_listed_expression)if self.verbose is True else None
 
     def _set_solver(self):
         """

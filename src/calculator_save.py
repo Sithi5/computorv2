@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    calculator.py                                      :+:      :+:    :+:    #
+#    calculator_save.py                                 :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/23 11:49:23 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/23 22:45:09 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -421,9 +421,6 @@ class Calculator:
             print("vars_set = ", vars_set)
             raise SyntaxError("Calculator does not accept more than 1 var.")
         self.var_name = "".join(vars_set)
-
-    def _remove_extra_zero(self, expression: str):
-        pass
 
     def solve(
         self,

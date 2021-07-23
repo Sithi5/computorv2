@@ -10,6 +10,13 @@ from src.regex import (
     regex_complex,
     regex_real,
 )
+from globals_vars import (
+    OPERATORS,
+    OPERATORS_PRIORITY,
+    SIGN,
+    OPEN_PARENTHESES,
+    CLOSING_PARENTHESES,
+)
 
 
 def convert_expression_to_type_list(expression: str) -> list:
@@ -69,3 +76,79 @@ def convert_expression_to_type_list(expression: str) -> list:
         expression = expression[match_size:]
     print("type_list = ", type_list)
     return type_list
+
+
+def convert_variables_and_functions_to_base_type(type_listed_expression: list, assigned_list: list):
+    """Convert all variables and functions from a type listed expression to their respective value.
+    Raise a ValueError error if it is not resolvable."""
+
+    def _get_variable_value(variable: Variable) -> BaseType:
+        for elem in assigned_list:
+            if variable.name == elem.name:
+                return elem.value
+        raise ValueError("Couldn't resolve the variable : ", variable.name)
+
+    def _return_function_right_part(function: Function) -> BaseType:
+        for elem in assigned_list:
+            if function.name == elem.name:
+                # TODO to change
+                return Real("5")
+        raise ValueError("Couldn't resolve the function : ", function.name)
+
+    for index, elem in enumerate(type_listed_expression):
+        if isinstance(elem, Variable):
+            type_listed_expression[index] = _get_variable_value(variable=elem)
+        elif isinstance(elem, Function):
+            type_listed_expression[index] = _return_function_right_part(function=elem)
+
+
+def sort_type_listed_expression_to_rpi(type_listed_expression: list):
+    """This function will sort the type_listed expression to the RPI system."""
+
+    res: list = []
+    stack: list = []
+    for elem in type_listed_expression:
+        print("elem = ", elem)
+        if not isinstance(elem, Operator):
+            res.append(elem)
+        elif elem.value in OPEN_PARENTHESES:
+            stack.append(elem)
+        elif elem.value in CLOSING_PARENTHESES:
+            print("closing parentheses")
+            try:
+                unstack = stack.pop()
+                print("unstack = ", unstack)
+                while unstack.value not in OPEN_PARENTHESES:
+                    res.append(unstack)
+                    unstack = stack.pop()
+                    print("unstack = ", unstack)
+            except IndexError:
+                raise IndexError("Bad parenthesis.")
+        elif elem.value in OPERATORS + SIGN:
+            try:
+                unstack = stack[-1]
+                print("elem value = ", elem.value)
+                print("unstack value = ", unstack.value)
+                while (
+                    unstack.value not in OPEN_PARENTHESES
+                    and OPERATORS_PRIORITY[unstack.value] >= OPERATORS_PRIORITY[elem.value]
+                ):
+                    res.append(stack.pop())
+                    unstack = stack[-1]
+                    print("unstack value = ", unstack.value)
+            except IndexError:
+                pass
+            finally:
+                stack.append(elem)
+        print("stack at end = ", stack)
+
+    return res + stack[::-1]
+
+
+def print_type_listed_expression_in_str(type_listed_expression: list):
+    str_expression = ""
+    for elem in type_listed_expression:
+        if str_expression != "":
+            str_expression += " "
+        str_expression += str(elem)
+    print(str_expression)

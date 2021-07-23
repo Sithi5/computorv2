@@ -12,6 +12,10 @@
 
 
 from src.types.types import *
+from src.types.types_utils import (
+    sort_type_listed_expression_to_rpi,
+    print_type_listed_expression_in_str,
+)
 
 
 class Calculator:
@@ -27,5 +31,9 @@ class Calculator:
         print(
             "Resolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
+        self._type_listed_expression = sort_type_listed_expression_to_rpi(
+            type_listed_expression=self._type_listed_expression
+        )
+        print_type_listed_expression_in_str(type_listed_expression=self._type_listed_expression)
         result = Real(str(10))
         return result

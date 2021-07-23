@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/23 18:02:12 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 00:26:47 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -168,6 +168,12 @@ def main(argv=None):
         action="store_true",
     )
     parser.add_argument(
+        "-d",
+        "--debug",
+        help="Remove exception catching.",
+        action="store_true",
+    )
+    parser.add_argument(
         "--output_graph",
         help="In case there is a possible graph to create, it will output it in a new file.",
         action="store_true",
@@ -186,7 +192,7 @@ def main(argv=None):
         print("""Starting inline shell expression resolver : """)
         shell_expression_resolver(resolver=resolver)
     else:
-        resolve_input(resolver=resolver, expression=args.expression)
+        resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)
 
 
 if __name__ == "__main__":

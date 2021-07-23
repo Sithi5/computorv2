@@ -3,7 +3,7 @@ from src.calculator import Calculator
 from src.assignment.assigned_file import serialize_and_save_assigned_list
 
 from src.types.types import *
-from src.type_listed_utils import convert_variables_and_functions_to_base_type
+from src.types.types_utils import convert_variables_and_functions_to_base_type
 
 
 class Assignments:

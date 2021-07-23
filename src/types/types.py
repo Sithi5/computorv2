@@ -31,23 +31,7 @@ class BaseType:
         return self.value
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + "(" + self.value + ")"
-
-
-class UnknowType(BaseType):
-    """Type for unresolved expression, the value should be a type_listed_expression."""
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value: list):
-        self._value = value
-
-    def __init__(self, name: str):
-        super().__init__()
-        self.name = name
+        return self.__class__.__name__ + "('" + self.value + "')"
 
 
 class Real(BaseType):
@@ -144,6 +128,12 @@ class Operator:
                 + value
             )
 
+    def __str__(self) -> str:
+        return self.value
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "('" + self.value + "')"
+
 
 class Function:
     _lock: bool = False
@@ -164,7 +154,7 @@ class Function:
             )
 
     def __str__(self) -> str:
-        return self.name + "(" + self.argument + ")"
+        return self.name + "('" + self.argument + "')"
 
     def __repr__(self) -> str:
         if len(self.right_expression) > 0:
