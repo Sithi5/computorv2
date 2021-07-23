@@ -9,14 +9,17 @@
 #    Updated: 2021/07/07 16:38:01 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
+from src.types.types import Variable
 import pytest
 
+from src.calculator import Calculator
+from src.types import *
 from src.expression_resolver import ExpressionResolver
+
+resolver = ExpressionResolver(verbose=False)
 
 
 def test_computorv2_error():
-    resolver = ExpressionResolver(verbose=False)
 
     with pytest.raises(SyntaxError) as e:
         resolver.solve(expression="x == 2")
@@ -30,7 +33,6 @@ def test_computorv2_error():
 
 
 def test_computorv2_parsing():
-    resolver = ExpressionResolver(verbose=False)
 
     # # Test operator '?' at the end only
     # with pytest.raises(SyntaxError) as e:
@@ -67,7 +69,6 @@ def test_computorv2_parsing():
 
 
 def test_computorv2_assignment():
-    resolver = ExpressionResolver(verbose=False)
 
     # Test sign before var
     resolver.solve(expression="+X = 10")
@@ -77,3 +78,9 @@ def test_computorv2_assignment():
 
     # Test more complicated assignment
     resolver.solve(expression="X = X")
+
+
+def test_resolve_variable():
+    assigned_list = list(Variable(name="X"))
+    calculator = Calculator(assigned_list=assigned_list)
+    ret = calculator._resolve_variable(Variable(name="X"))

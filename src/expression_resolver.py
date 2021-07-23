@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/23 11:55:40 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/23 14:06:03 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ import re
 from src.types.types import Operator
 
 from src.assignment.assignments import Assignments
-from src.calculator2 import Calculator2
+from src.calculator import Calculator
 from globals_vars import (
     OPERATORS,
     SIGN,
@@ -220,13 +220,14 @@ class ExpressionResolver:
         """
         Setting the right class to solve the expression
         """
-        calculator = Calculator2()
+        calculator = Calculator(assigned_list=self._assigned_list)
         if (
             "=" not in self.expression
             or isinstance(self.type_listed_expression[-1], Operator)
             and self.type_listed_expression[-1].value == "?"
         ):
             print("Resolving instance !")
+            self._solver = calculator
         else:
             print("Assignment !")
             self._solver = Assignments(

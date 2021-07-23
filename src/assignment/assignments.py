@@ -1,4 +1,5 @@
 from os import path
+from src.calculator import Calculator
 from src.assignment.assigned_file import serialize_and_save_assigned_list
 
 from src.types.types import *
@@ -9,7 +10,7 @@ class Assignments:
     Class for assigning a var/function
     """
 
-    def __init__(self, calculator, assigned_list):
+    def __init__(self, calculator: Calculator, assigned_list: list):
         self._calculator = calculator
         self._assigned_list = assigned_list
         self._force_calculator_verbose = False

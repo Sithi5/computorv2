@@ -18,7 +18,6 @@ from src.math_functions import is_real
 class BaseType:
     """Default class for Type. Should be used as an abstract class."""
 
-    _value: str = ""
     type: str
 
     @property
@@ -29,10 +28,28 @@ class BaseType:
         self.type = self.__class__.__name__
 
     def __str__(self) -> str:
-        return self._value
+        return self.value
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "(" + self.value + ")"
+
+
+class UnknowType(BaseType):
+    """
+    Type for unresolved expression, the value should be a type_listed_expression.
+    """
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value: list):
+        self._value = value
+
+    def __init__(self, name: str):
+        super().__init__()
+        self.name = name
 
 
 class Real(BaseType):
@@ -108,7 +125,33 @@ class Matrice(BaseType):
         self.value = value
 
 
+class Operator:
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value: str):
+        self._value = value
+
+    def __init__(self, value: str):
+        if (
+            len(value) == 1
+            and value in "=?" + OPERATORS + SIGN + OPEN_PARENTHESES + CLOSING_PARENTHESES
+        ):
+            self.value = value
+        else:
+            raise SyntaxError(
+                "An error occured when trying to create "
+                + self.__class__.__name__
+                + " object with the value : "
+                + value
+            )
+
+
 class Function(BaseType):
+    _lock: bool = False
+
     def __init__(self, name: str, argument: str, right_expression: str = ""):
         super().__init__()
         if name.isalpha():
@@ -155,34 +198,10 @@ class Function(BaseType):
             )
 
 
-class Operator:
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value: str):
-        self._value = value
-
-    def __init__(self, value: str):
-        if (
-            len(value) == 1
-            and value in "=?" + OPERATORS + SIGN + OPEN_PARENTHESES + CLOSING_PARENTHESES
-        ):
-            self.value = value
-        else:
-            raise SyntaxError(
-                "An error occured when trying to create "
-                + self.__class__.__name__
-                + " object with the value : "
-                + value
-            )
-
-
 class Variable:
     _lock: bool = False
 
-    def __init__(self, name: str, value: BaseType = None):
+    def __init__(self, name: str, value: list = None):
         super().__init__()
         if name.isalpha:
             self.name = name

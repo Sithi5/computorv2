@@ -20,7 +20,7 @@ regex_functions = re.compile(rf"[A-Z]+\([\d{regex_comma}iA-Z]+\)")
 regex_variables = re.compile(r"[A-Z]+")
 regex_function_name = re.compile(r"[A-Z]+")
 regex_function_argument = re.compile(rf"(?<=\()[A-Z\di{regex_comma}]+(?=\))")
-regex_complex = re.compile(rf"(\d+{regex_comma}*\d+i)|(\d+i)")
+regex_complex = re.compile(rf"(\d+{regex_comma}*\d+i)|(\d*i)")
 regex_real = re.compile(rf"(\d+{regex_comma}*\d+(?!{regex_comma}))|(\d+(?!{regex_comma}))")
 regex_var = (
     "\="
