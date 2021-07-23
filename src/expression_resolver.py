@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 00:30:49 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 00:34:36 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -202,7 +202,9 @@ class ExpressionResolver:
         # Convert to type_list
         self.type_listed_expression = convert_expression_to_type_list(expression=self.expression)
         self._check_type_listed_expression()
-        print("\nType_listed_expression at end of parsing : ", self.type_listed_expression)if self.verbose is True else None
+        print(
+            "Type_listed_expression at end of parsing : ", self.type_listed_expression
+        ) if self.verbose is True else None
 
     def _set_solver(self):
         """

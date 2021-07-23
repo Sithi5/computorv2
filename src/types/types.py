@@ -74,7 +74,7 @@ class Complex(BaseType):
     @value.setter
     def value(self, value: str):
         if len(value) == 1 and value[0] == "i" or (value[-1] == "i" and is_real(value[:-1])):
-            self.value = value
+            self._value = value
         else:
             raise SyntaxError(
                 "An error occured when trying to create "

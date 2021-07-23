@@ -58,23 +58,14 @@ def convert_expression_to_type_list(expression: str) -> list:
         # Match complex before numbers
         elif matched_complex:
             type_list.append(Complex(value=matched_complex.group(0)))
-            print(
-                "matched_complex = ",
-                matched_complex.group(0),
-            )
             match_size = len(matched_complex.group(0))
         elif matched_real:
             type_list.append(Real(value=matched_real.group(0)))
-            print(
-                "matched_real = ",
-                matched_real.group(0),
-            )
             match_size = len(matched_real.group(0))
         else:
             raise SyntaxError("Expression is not well formated : " + expression)
 
         expression = expression[match_size:]
-    print("type_list = ", type_list)
     return type_list
 
 
@@ -108,39 +99,31 @@ def sort_type_listed_expression_to_rpi(type_listed_expression: list):
     res: list = []
     stack: list = []
     for elem in type_listed_expression:
-        print("elem = ", elem)
         if not isinstance(elem, Operator):
             res.append(elem)
         elif elem.value in OPEN_PARENTHESES:
             stack.append(elem)
         elif elem.value in CLOSING_PARENTHESES:
-            print("closing parentheses")
             try:
                 unstack = stack.pop()
-                print("unstack = ", unstack)
                 while unstack.value not in OPEN_PARENTHESES:
                     res.append(unstack)
                     unstack = stack.pop()
-                    print("unstack = ", unstack)
             except IndexError:
                 raise IndexError("Bad parenthesis.")
         elif elem.value in OPERATORS + SIGN:
             try:
                 unstack = stack[-1]
-                print("elem value = ", elem.value)
-                print("unstack value = ", unstack.value)
                 while (
                     unstack.value not in OPEN_PARENTHESES
                     and OPERATORS_PRIORITY[unstack.value] >= OPERATORS_PRIORITY[elem.value]
                 ):
                     res.append(stack.pop())
                     unstack = stack[-1]
-                    print("unstack value = ", unstack.value)
             except IndexError:
                 pass
             finally:
                 stack.append(elem)
-        print("stack at end = ", stack)
 
     return res + stack[::-1]
 
