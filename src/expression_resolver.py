@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/18 18:29:12 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/23 11:55:40 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,6 @@ from globals_vars import (
 from src.regex import regex_check_forbidden_char
 from src.types.types_utils import convert_expression_to_type_list
 from src.utils import (
-    convert_to_tokens,
     parse_sign,
     convert_signed_number,
     convert_expression_to_upper,
@@ -44,9 +43,9 @@ class ExpressionResolver:
         force_calculator_verbose: bool = False,
         output_graph: bool = False,
     ):
-        self._verbose = verbose
+        self.verbose = verbose
         self._output_graph = output_graph
-        self._force_calculator_verbose = force_calculator_verbose
+        self.force_calculator_verbose = force_calculator_verbose
         self._assigned_list = open_and_deserialize_assigned_list()
 
     def _check_args(self):
@@ -190,7 +189,7 @@ class ExpressionResolver:
                     )
 
     def _parse_expression(self):
-        print("Expression before parsing : ", self.expression) if self._verbose is True else None
+        print("Expression before parsing : ", self.expression) if self.verbose is True else None
 
         # Removing all spaces
         self.expression = self.expression.replace(" ", "")
@@ -201,15 +200,15 @@ class ExpressionResolver:
 
         print(
             "Removing all space from the expression : ", self.expression
-        ) if self._verbose is True else None
+        ) if self.verbose is True else None
 
         # To put before convert_signed_number because it is creating parenthesis
         self.expression = parse_sign(self.expression)
-        print("Parsing signs : ", self.expression) if self._verbose is True else None
+        print("Parsing signs : ", self.expression) if self.verbose is True else None
 
         self.expression = convert_signed_number(expression=self.expression, accept_var=True)
 
-        print("Convert signed numbers : ", self.expression) if self._verbose is True else None
+        print("Convert signed numbers : ", self.expression) if self.verbose is True else None
 
         # Checking args here before converting to type list
         self._check_args()
@@ -239,14 +238,14 @@ class ExpressionResolver:
         """
         Use the solver of the class set by set_solver to solve the expression.
         """
-        print("\nEXPRESSION RESOLVER\n") if self._verbose is True else None
+        print("\nEXPRESSION RESOLVER\n") if self.verbose is True else None
         self.expression = expression
         self._parse_expression()
         self._set_solver()
         result = self._solver.solve(
             type_listed_expression=self.type_listed_expression,
-            verbose=self._verbose,
-            force_calculator_verbose=self._force_calculator_verbose,
+            verbose=self.verbose,
+            force_calculator_verbose=self.force_calculator_verbose,
         )
-        print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self._verbose is True else None
+        print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self.verbose is True else None
         return result

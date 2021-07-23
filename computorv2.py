@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/18 17:36:38 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/23 12:01:10 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,6 +56,8 @@ def print_shell_help():
     - CLEAR : Clear saved variables/matrices/functions
     - EXIT : Quit program
     - QUIT : Quit program
+    - V/VERBOSE : Add/remove verbose
+    - VV/VVERBOSE : Add/remove full verbose
 
 
     Resolve an expression:
@@ -78,9 +80,9 @@ def print_shell_help():
     'MatriceName' '=' 'expression'
 
 
-    Resolve a variable/matrice:
+    Resolve a variable:
 
-    'VariableName'/'MatriceName' '=' '?'
+    'VariableName' '=' '?'
 
 
     Resolve a function:
@@ -106,6 +108,21 @@ def shell_expression_resolver(resolver: ExpressionResolver):
             print("All assigned var have been cleared.")
         elif expression.upper() == "LIST":
             list_assigned_file()
+        elif expression.upper() == "V" or expression.upper() == "VERBOSE":
+            resolver.verbose = True if resolver.verbose is False else False
+            resolver.force_calculator_verbose = False
+            print("Verbose option : ", resolver.verbose)
+            print("force_calculator_verbose option : ", resolver.force_calculator_verbose)
+        elif expression.upper() == "VV" or expression.upper() == "VVERBOSE":
+            if resolver.verbose is False or resolver.force_calculator_verbose is False:
+                resolver.verbose = True
+                resolver.force_calculator_verbose = True
+            else:
+                resolver.verbose = False
+                resolver.force_calculator_verbose = False
+
+            print("Verbose option : ", resolver.verbose)
+            print("force_calculator_verbose option : ", resolver.force_calculator_verbose)
         else:
             resolve_input(resolver=resolver, expression=expression)
 
