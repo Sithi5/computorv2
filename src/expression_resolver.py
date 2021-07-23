@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 00:34:36 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 00:45:25 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -230,13 +230,16 @@ class ExpressionResolver:
         Use the solver of the class set by set_solver to solve the expression.
         """
         print("\nEXPRESSION RESOLVER\n") if self.verbose is True else None
-        self.expression = expression
-        self._parse_expression()
-        self._set_solver()
-        result = self._solver.solve(
-            type_listed_expression=self.type_listed_expression,
-            verbose=self.verbose,
-            force_calculator_verbose=self.force_calculator_verbose,
-        )
-        print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self.verbose is True else None
-        return result
+        if expression == "":
+            return "Nothing to solve."
+        else:
+            self.expression = expression
+            self._parse_expression()
+            self._set_solver()
+            result = self._solver.solve(
+                type_listed_expression=self.type_listed_expression,
+                verbose=self.verbose,
+                force_calculator_verbose=self.force_calculator_verbose,
+            )
+            print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self.verbose is True else None
+            return result

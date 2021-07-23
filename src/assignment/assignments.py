@@ -57,6 +57,11 @@ class Assignments:
                 self._assign_function()
             elif isinstance(self._type_listed_expression[0], Variable):
                 self._assign_variable()
+            elif (
+                isinstance(self._type_listed_expression[0], Complex)
+                and self._type_listed_expression[0].value == "i"
+            ):
+                raise SyntaxError("Problem with assignment : Variable cannot be named 'i' or 'I'")
             else:
                 raise SyntaxError(
                     "Problem with assignment : trying to assign to a wrong type : "
