@@ -35,9 +35,7 @@ class BaseType:
 
 
 class UnknowType(BaseType):
-    """
-    Type for unresolved expression, the value should be a type_listed_expression.
-    """
+    """Type for unresolved expression, the value should be a type_listed_expression."""
 
     @property
     def value(self):
@@ -53,9 +51,7 @@ class UnknowType(BaseType):
 
 
 class Real(BaseType):
-    """
-    Real type, the input value should be a real number.
-    """
+    """Real type, the input value should be a real number."""
 
     @property
     def value(self):
@@ -149,11 +145,10 @@ class Operator:
             )
 
 
-class Function(BaseType):
+class Function:
     _lock: bool = False
 
     def __init__(self, name: str, argument: str, right_expression: str = ""):
-        super().__init__()
         if name.isalpha():
             self.name = name
             self.argument = argument

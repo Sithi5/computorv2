@@ -3,6 +3,7 @@ from src.calculator import Calculator
 from src.assignment.assigned_file import serialize_and_save_assigned_list
 
 from src.types.types import *
+from src.type_listed_utils import convert_variables_and_functions_to_base_type
 
 
 class Assignments:
@@ -22,7 +23,10 @@ class Assignments:
     def _assign_variable(self):
         self._new_assignment = self._type_listed_expression[0]
         self._new_assignment.value = self._calculator.solve(
-            type_listed_expression=self._type_listed_expression[2:],
+            type_listed_expression=convert_variables_and_functions_to_base_type(
+                type_listed_expression=self._type_listed_expression[2:],
+                assigned_list=self._assigned_list,
+            ),
             verbose=self._force_calculator_verbose,
         )
 

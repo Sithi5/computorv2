@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/23 12:01:10 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/23 18:02:12 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,26 +18,35 @@ from GUI.app import Application
 from src.assignment.assigned_file import clear_assigned_file, list_assigned_file
 
 
-def resolve_input(resolver: ExpressionResolver, expression: str):
-    # try:
-    result = resolver.solve(expression)
-    if isinstance(result, list):
-        print("The ", len(result), " solutions are :")
-        for res in result:
-            print(res)
+def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = False):
+    if debug is False:
+        try:
+            result = resolver.solve(expression)
+            if isinstance(result, list):
+                print("The ", len(result), " solutions are :")
+                for res in result:
+                    print(res)
+            else:
+                print("result = ", result)
+            print("remettre error handling")
+
+        except SyntaxError as e:
+            print("The expression syntax is not accepted : ", e)
+        except ValueError as e:
+            print("One of the value in the expression is not accepted : ", e)
+        except NotImplementedError as e:
+            print("One of the methods needed is not implemented yet : ", e)
+        except Exception as e:
+            print("An exception appened : ", e)
     else:
-        print("result = ", result)
-    print("remettre error handling")
-
-
-# except SyntaxError as e:
-#     print("The expression syntax is not accepted : ", e)
-# except ValueError as e:
-#     print("One of the value in the expression is not accepted : ", e)
-# except NotImplementedError as e:
-#     print("One of the methods needed is not implemented yet : ", e)
-# except Exception as e:
-#     print("An exception appened : ", e)
+        result = resolver.solve(expression)
+        if isinstance(result, list):
+            print("The ", len(result), " solutions are :")
+            for res in result:
+                print(res)
+        else:
+            print("result = ", result)
+        print("remettre error handling")
 
 
 def main_gui(resolver: ExpressionResolver):
@@ -58,6 +67,7 @@ def print_shell_help():
     - QUIT : Quit program
     - V/VERBOSE : Add/remove verbose
     - VV/VVERBOSE : Add/remove full verbose
+    - D/DEBUG : Remove exception catching
 
 
     Resolve an expression:
@@ -96,6 +106,7 @@ def print_shell_help():
 
 def shell_expression_resolver(resolver: ExpressionResolver):
     print_shell_help()
+    debug = False
     while 1:
         expression = input("> ")
         if expression.upper() == "EXIT" or expression.upper() == "QUIT":
@@ -123,8 +134,11 @@ def shell_expression_resolver(resolver: ExpressionResolver):
 
             print("Verbose option : ", resolver.verbose)
             print("force_calculator_verbose option : ", resolver.force_calculator_verbose)
+        elif expression.upper() == "D" or expression.upper() == "DEBUG":
+            debug = True if debug is False else False
+            print("Debug option : ", debug)
         else:
-            resolve_input(resolver=resolver, expression=expression)
+            resolve_input(resolver=resolver, expression=expression, debug=debug)
 
 
 def main(argv=None):
