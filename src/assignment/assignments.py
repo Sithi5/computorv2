@@ -12,15 +12,17 @@ class Assignments:
     def __init__(self, calculator, assigned_list):
         self._calculator = calculator
         self._assigned_list = assigned_list
+        self._force_calculator_verbose = False
 
     def _assign_function(self):
-        self.new_assignment = self._type_listed_expression[0]
-        self.new_assignment.right_expression = self._type_listed_expression[2:]
+        self._new_assignment = self._type_listed_expression[0]
+        self._new_assignment.right_expression = self._type_listed_expression[2:]
 
     def _assign_variable(self):
-        self.new_assignment = self._type_listed_expression[0]
-        self.new_assignment.value = self._calculator.solve(
-            type_listed_expression=self._type_listed_expression[2:]
+        self._new_assignment = self._type_listed_expression[0]
+        self._new_assignment.value = self._calculator.solve(
+            type_listed_expression=self._type_listed_expression[2:],
+            verbose=self._force_calculator_verbose,
         )
 
     def solve(
@@ -57,7 +59,8 @@ class Assignments:
                 )
             # Check for other assignment with same name and remove it.
             for elem in self._assigned_list:
-                if elem.name == self.new_assignment.name:
+                if elem.name == self._new_assignment.name:
                     self._assigned_list.remove(elem)
-            self._assigned_list.append(self.new_assignment)
+            self._assigned_list.append(self._new_assignment)
             serialize_and_save_assigned_list(assigned_list=self._assigned_list)
+            return self._new_assignment.value

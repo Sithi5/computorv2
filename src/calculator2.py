@@ -19,10 +19,13 @@ class Calculator2:
         self,
         type_listed_expression: list,
         verbose: bool = False,
-        force_calculator_verbose: bool = False,
     ) -> BaseType:
         """
         Resolving calcul from type_listed_expression and return a type.
         """
+        self._verbose = verbose
+        print(
+            "Resolving following type_listed_expression : ", type_listed_expression
+        ) if self._verbose is True else None
         result = Real(str(10))
         return result

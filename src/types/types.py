@@ -18,14 +18,18 @@ from src.math_functions import is_real
 class BaseType:
     """Default class for Type. Should be used as an abstract class."""
 
-    value: str = ""
+    _value: str = ""
     type: str
+
+    @property
+    def value(self):
+        return self._value
 
     def __init__(self):
         self.type = self.__class__.__name__
 
     def __str__(self) -> str:
-        return self.value
+        return self._value
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "(" + self.value + ")"
@@ -36,10 +40,14 @@ class Real(BaseType):
     Real type, the input value should be a real number.
     """
 
-    def __init__(self, value: str):
-        super().__init__()
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value: str):
         if is_real(value):
-            self.value = value
+            self._value = value
         else:
             raise SyntaxError(
                 "An error occured when trying to create "
@@ -47,6 +55,10 @@ class Real(BaseType):
                 + " object with the value : "
                 + value
             )
+
+    def __init__(self, value: str):
+        super().__init__()
+        self.value = value
 
 
 class Complex(BaseType):
@@ -58,8 +70,12 @@ class Complex(BaseType):
     -   i
     """
 
-    def __init__(self, value: str):
-        super().__init__()
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value: str):
         if len(value) == 1 and value[0] == "i" or (value[-1] == "i" and is_real(value[:-1])):
             self.value = value
         else:
@@ -70,10 +86,22 @@ class Complex(BaseType):
                 + value
             )
 
+    def __init__(self, value: str):
+        super().__init__()
+        self.value = value
+
 
 class Matrice(BaseType):
     _n: int
     _m: int
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value: str):
+        self._value = value
 
     def __init__(self, value: str):
         super().__init__()
@@ -127,9 +155,16 @@ class Function(BaseType):
             )
 
 
-class Operator(BaseType):
+class Operator:
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value: str):
+        self._value = value
+
     def __init__(self, value: str):
-        super().__init__()
         if (
             len(value) == 1
             and value in "=?" + OPERATORS + SIGN + OPEN_PARENTHESES + CLOSING_PARENTHESES

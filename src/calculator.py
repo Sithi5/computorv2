@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/18 18:24:24 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/23 11:49:23 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -429,7 +429,6 @@ class Calculator:
         self,
         tokens: list,
         verbose: bool = False,
-        force_calculator_verbose: bool = False,
         internal: bool = False,
     ) -> str:
         """
