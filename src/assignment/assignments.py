@@ -6,7 +6,7 @@ from src.types.types import *
 
 class Assignments:
     """
-    Class for assigning a var/matrice/function
+    Class for assigning a var/function
     """
 
     def __init__(self, calculator, assigned_list):

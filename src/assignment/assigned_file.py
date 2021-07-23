@@ -31,4 +31,4 @@ def list_assigned_file():
         print("no stored data yet.")
     else:
         for elem in assigned_list:
-            print(str(elem))
+            print(elem.__repr__())
