@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 16:04:06 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 16:07:07 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,14 +60,14 @@ def print_shell_help():
         """
     Available commands:
 
-    - HELP : Get available commands
-    - LIST : List all saved variables
-    - CLEAR : Clear saved variables/matrices/functions
-    - EXIT : Quit program
-    - QUIT : Quit program
-    - V/VERBOSE : Add/remove verbose
-    - VV/VVERBOSE : Add/remove full verbose
-    - D/DEBUG : Remove exception catching
+    - help : Get available commands
+    - list : List all saved variables
+    - clear : Clear saved variables/matrices/functions
+    - exit : Quit program
+    - quit : Quit program
+    - v/verbose : Add/remove verbose
+    - vv/vverbose : Add/remove full verbose
+    - d/debug : Remove exception catching
 
 
     Resolve an expression:
