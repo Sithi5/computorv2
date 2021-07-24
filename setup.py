@@ -17,7 +17,8 @@ setup(
     author="Malo Boucé",
     author_email="ma.sithis@gmail.com",
     url="https://github.com/Sithi5/computorv2",
-    packages=["src", "gui", "test"],
+    py_modules=["computorv2"],
+    packages=["src", "gui", "tests"],
     install_requires=requirements,
     extras_require=extra_requirements,
 )
