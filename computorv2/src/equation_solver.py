@@ -6,17 +6,17 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:27 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/17 17:02:35 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 15:58:55 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
 
-from globals_vars import (
+from computorv2.globals_vars import (
     SIGN,
 )
 
-from src.utils import (
+from computorv2.src.utils import (
     convert_to_tokens,
     convert_signed_number,
     parse_sign,
@@ -25,7 +25,7 @@ from src.utils import (
     split_expression_parts_from_tokens,
 )
 
-from src.math_functions import my_power, my_round, my_sqrt
+from computorv2.src.math_functions import my_power, my_round, my_sqrt
 
 
 class _EquationSolver:

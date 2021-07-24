@@ -6,13 +6,13 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/23 22:45:09 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 15:58:43 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
 
-from globals_vars import (
+from computorv2.globals_vars import (
     OPERATORS,
     OPERATORS_PRIORITY,
     SIGN,
@@ -20,14 +20,14 @@ from globals_vars import (
     CLOSING_PARENTHESES,
 )
 
-from src.utils import (
+from computorv2.src.utils import (
     convert_to_tokens,
     parse_sign,
     convert_signed_number,
     add_implicit_cross_operator_for_vars,
 )
 
-from src.math_functions import is_real, my_power, my_round
+from computorv2.src.math_functions import is_real, my_power, my_round
 
 
 class Calculator:

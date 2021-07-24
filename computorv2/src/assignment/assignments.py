@@ -1,9 +1,9 @@
 from os import path
-from src.calculator import Calculator
-from src.assignment.assigned_file import serialize_and_save_assigned_list
+from computorv2.src.calculator import Calculator
+from computorv2.src.assignment.assigned_file import serialize_and_save_assigned_list
 
-from src.types.types import *
-from src.types.types_utils import convert_variables_and_functions_to_base_type
+from computorv2.src.types.types import *
+from computorv2.src.types.types_utils import convert_variables_and_functions_to_base_type
 
 
 class Assignments:

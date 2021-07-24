@@ -1,5 +1,5 @@
 from tkinter import *
-from src.expression_resolver import ExpressionResolver
+from computorv2.src.expression_resolver import ExpressionResolver
 
 # Creating frame for calculator
 def iCalc(source, side):

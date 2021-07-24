@@ -11,8 +11,8 @@
 # **************************************************************************** #
 
 
-from src.types.types import *
-from src.types.types_utils import (
+from computorv2.src.types.types import *
+from computorv2.src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     print_type_listed_expression_in_str,
 )

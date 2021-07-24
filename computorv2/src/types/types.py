@@ -1,18 +1,13 @@
 import re
 
-from globals_vars import (
+from computorv2.globals_vars import (
     OPERATORS,
     SIGN,
-    COMMA,
     OPEN_PARENTHESES,
     CLOSING_PARENTHESES,
-    MATRICE_CLOSING_PARENTHESES,
-    MATRICE_OPEN_PARENTHESES,
-    MATRICE_COLUMN_SEPARATOR,
-    MATRICE_LINE_SEPARATOR,
 )
 
-from src.math_functions import is_real
+from computorv2.src.math_functions import is_real
 
 
 class BaseType:

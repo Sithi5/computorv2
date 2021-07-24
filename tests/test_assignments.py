@@ -1,7 +1,7 @@
 import pytest
 
-from src.expression_resolver import ExpressionResolver
-from src.assignment.assigned_file import clear_assigned_file, open_and_deserialize_assigned_list
+from computorv2.src.expression_resolver import ExpressionResolver
+from computorv2.src.assignment.assigned_file import clear_assigned_file, open_and_deserialize_assigned_list
 
 resolver = ExpressionResolver()
 

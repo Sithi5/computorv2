@@ -1,6 +1,6 @@
 import re
 
-from globals_vars import (
+from computorv2.globals_vars import (
     OPERATORS,
     SIGN,
     COMMA,

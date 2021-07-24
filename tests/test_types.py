@@ -1,6 +1,6 @@
 import pytest
 
-from src.types.types import *
+from computorv2.src.types.types import *
 
 
 def test_types_creation():

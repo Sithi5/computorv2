@@ -1,6 +1,6 @@
-from src.types.types import *
+from computorv2.src.types.types import *
 
-from src.regex import (
+from computorv2.src.regex import (
     regex_potential_matrice,
     regex_functions,
     regex_function_name,
@@ -10,7 +10,7 @@ from src.regex import (
     regex_complex,
     regex_real,
 )
-from globals_vars import (
+from computorv2.globals_vars import (
     OPERATORS,
     OPERATORS_PRIORITY,
     SIGN,

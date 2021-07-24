@@ -1,7 +1,7 @@
 import pytest
 
-from src.expression_resolver import ExpressionResolver
-from src.calculator import Calculator
+from computorv2.src.expression_resolver import ExpressionResolver
+from computorv2.src.calculator import Calculator
 
 
 def test_any_calc():

@@ -1,7 +1,7 @@
 import pytest
 
-from src.math_functions import my_power, my_sqrt, my_round
-from src.utils import convert_expression_to_upper
+from computorv2.src.math_functions import my_power, my_sqrt, my_round
+from computorv2.src.utils import convert_expression_to_upper
 
 
 def test_convert_expression_to_upper():
