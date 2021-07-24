@@ -11,10 +11,10 @@
 # **************************************************************************** #
 import pytest
 
-from computorv2.src.types.types import Variable
-from computorv2.src.calculator import Calculator
-from computorv2.src.types import *
-from computorv2.src.expression_resolver import ExpressionResolver
+from src.types.types import Variable
+from src.calculator import Calculator
+from src.types import *
+from src.expression_resolver import ExpressionResolver
 
 resolver = ExpressionResolver(verbose=False)
 

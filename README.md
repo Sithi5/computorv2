@@ -1,6 +1,6 @@
-# ComputorV2 [(subject)](https://cdn.intra.42.fr/pdf/pdf/5667/computorv2.en.pdf)
+# ComputorV2 [(subject)](https://cdn.intra.42.fr/pdf/pdf/5667/en.pdf)
 
-![computorv2.png](computorv2.png)
+![png](png)
 
 A calculator interpreter than can operate on real, complex numbers, and 2D matrix data types, store variables, define and evaluate functions, and solve quadratic equations in Python.
 

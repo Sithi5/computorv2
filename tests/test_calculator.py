@@ -1,7 +1,7 @@
 import pytest
 
-from computorv2.src.expression_resolver import ExpressionResolver
-from computorv2.src.math_functions import my_round
+from src.expression_resolver import ExpressionResolver
+from src.math_functions import my_round
 
 
 def test_calculator():

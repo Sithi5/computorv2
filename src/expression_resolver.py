@@ -6,16 +6,16 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 15:59:05 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 16:41:33 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
-from computorv2.src.types.types import BaseType, Operator
+from src.types.types import BaseType, Operator
 
-from computorv2.src.assignment.assignments import Assignments
-from computorv2.src.calculator import Calculator
-from computorv2.globals_vars import (
+from src.assignment.assignments import Assignments
+from src.calculator import Calculator
+from globals_vars import (
     OPERATORS,
     SIGN,
     COMMA,
@@ -24,14 +24,14 @@ from computorv2.globals_vars import (
     MATRICE_CLOSING_PARENTHESES,
     MATRICE_OPEN_PARENTHESES,
 )
-from computorv2.src.regex import regex_check_forbidden_char
-from computorv2.src.types.types_utils import convert_expression_to_type_list
-from computorv2.src.utils import (
+from src.regex import regex_check_forbidden_char
+from src.types.types_utils import convert_expression_to_type_list
+from src.utils import (
     parse_sign,
     convert_signed_number,
     convert_expression_to_upper,
 )
-from computorv2.src.assignment.assigned_file import (
+from src.assignment.assigned_file import (
     open_and_deserialize_assigned_list,
 )
 

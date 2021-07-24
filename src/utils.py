@@ -6,11 +6,11 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 18:10:41 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 15:59:14 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 16:41:34 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-from computorv2.globals_vars import (
+from globals_vars import (
     OPERATORS,
     SIGN,
     COMMA,
@@ -18,7 +18,7 @@ from computorv2.globals_vars import (
     CLOSING_PARENTHESES,
 )
 
-from computorv2.src.math_functions import is_real
+from src.math_functions import is_real
 
 
 def split_expression_parts_from_tokens(tokens: list):

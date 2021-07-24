@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    computor.py                                        :+:      :+:    :+:    #
+#    computorv2.py                                      :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 16:29:31 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/24 16:41:31 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,9 @@ import argparse
 import tkinter as tk
 
 
-from computorv2.src.expression_resolver import ExpressionResolver
-from computorv2.gui.app import Application
-from computorv2.src.assignment.assigned_file import clear_assigned_file, list_assigned_file
+from src.expression_resolver import ExpressionResolver
+from gui.app import Application
+from src.assignment.assigned_file import clear_assigned_file, list_assigned_file
 
 
 def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = False):
