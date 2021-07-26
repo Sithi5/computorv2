@@ -13,7 +13,7 @@ extra_requirements = {
 
 setup(
     name="computorv2",
-    version="1.0.0",
+    version="0.0.1",
     description="A calculator interpreter.",
     long_description=long_description,
     author="Malo Boucé",
@@ -26,4 +26,7 @@ setup(
     entry_points={
         "console_scripts": ["computorv2 = computorv2:main"],
     },
+    classifiers=[
+        "Development Status :: 1 - Planning",
+    ],
 )
