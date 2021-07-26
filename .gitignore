@@ -1,6 +1,9 @@
 # Variables save file
 variables.ser
 
+# Zettler
+.ztr*
+
 # png file from mathplot
 
 *.png

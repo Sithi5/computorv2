@@ -1,6 +1,6 @@
 import re
 
-from globals_vars import (
+from src.globals_vars import (
     OPERATORS,
     SIGN,
     OPEN_PARENTHESES,

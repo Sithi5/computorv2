@@ -10,7 +10,7 @@ from src.regex import (
     regex_complex,
     regex_real,
 )
-from globals_vars import (
+from src.globals_vars import (
     OPERATORS,
     OPERATORS_PRIORITY,
     SIGN,

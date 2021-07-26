@@ -1,6 +1,6 @@
 import pickle
 
-from globals_vars import ASSIGNED_FILE_NAME
+from src.globals_vars import ASSIGNED_FILE_NAME
 
 
 def open_and_deserialize_assigned_list() -> list:

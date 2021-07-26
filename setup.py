@@ -1,6 +1,9 @@
 from setuptools import setup
 
-requirements = ["plot"]
+with open("README.md", "r") as f:
+    long_description = f.read()
+
+requirements = ["plot==0.6.5"]
 
 test_requirements = [
     "pytest==5.4.3",
@@ -12,8 +15,9 @@ extra_requirements = {
 
 setup(
     name="computorv2",
-    version="0.0.1",
-    description="A calculator interpreter than can operate on real, complex numbers, and 2D matrix data types, store variables, define and evaluate functions, and solve quadratic equation.",
+    version="1.0.0",
+    description="A calculator interpreter.",
+    long_description=long_description,
     author="Malo Boucé",
     author_email="ma.sithis@gmail.com",
     url="https://github.com/Sithi5/computorv2",

@@ -6,11 +6,11 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/03 18:10:41 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 16:41:34 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/25 12:48:58 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-from globals_vars import (
+from src.globals_vars import (
     OPERATORS,
     SIGN,
     COMMA,

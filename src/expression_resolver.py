@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/24 16:41:33 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/25 12:41:59 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ from src.types.types import BaseType, Operator
 
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
-from globals_vars import (
+from src.globals_vars import (
     OPERATORS,
     SIGN,
     COMMA,
