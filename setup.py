@@ -5,9 +5,7 @@ with open("README.md", "r") as f:
 
 requirements = ["plot==0.6.5"]
 
-test_requirements = [
-    "pytest==5.4.3",
-]
+test_requirements = ["pytest==5.4.3", "black==21.7b0"]
 
 extra_requirements = {
     "dev": test_requirements,
@@ -25,4 +23,7 @@ setup(
     packages=["src", "gui", "tests"],
     install_requires=requirements,
     extras_require=extra_requirements,
+    entry_points={
+        "console_scripts": ["computorv2 = computorv2:main"],
+    },
 )

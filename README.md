@@ -16,7 +16,7 @@ Create a virtual environment and activate it
 
 Install the pre-requirement
 ```bash
-(venv) > pip install -U -r requirements.txt
+(venv) > pip install -U -r pre-requirements.txt
 ```
 
 Execute `setup.py` for a build in dev mode

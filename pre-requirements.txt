@@ -1,3 +1,4 @@
 # Needed when running the setup.py
 pip>=20.3
 setuptools>=49.2.0
+wheel>=0.36.2
