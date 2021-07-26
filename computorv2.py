@@ -6,10 +6,11 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/25 12:48:09 by mabouce          ###   ########.fr        #
+#    Updated: 2021/07/26 22:02:06 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+import ctypes
 import argparse
 import tkinter as tk
 
@@ -17,6 +18,9 @@ import tkinter as tk
 from src.expression_resolver import ExpressionResolver
 from gui.app import Application
 from src.assignment.assigned_file import clear_assigned_file, list_assigned_file
+
+# Hide console window for exe.
+ctypes.user32.ShowWindow(ctypes.kernel32.GetConsoleWindow(), 0)
 
 
 def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = False):
@@ -186,6 +190,7 @@ def main(argv=None):
         force_calculator_verbose=args.force_calculator_verbose,
         output_graph=args.output_graph,
     )
+    args.gui = True
     if args.gui:
         print("Launch in GUI mode.")
         main_gui(resolver=resolver)
@@ -194,6 +199,7 @@ def main(argv=None):
         shell_expression_resolver(resolver=resolver)
     else:
         resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)
+    input("Press something to quit")
 
 
 if __name__ == "__main__":
