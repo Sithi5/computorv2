@@ -1,6 +1,7 @@
 from tkinter import *
 from src.expression_resolver import ExpressionResolver
 
+
 # Creating frame for calculator
 def iCalc(source, side):
     storeObj = Frame(source, borderwidth=4, bd=4, bg="#c94d00")
@@ -62,3 +63,18 @@ class Application(Frame):
             display.set(self._resolver.solve(display.get()))
         except:
             display.set("ERROR")
+
+
+def main(argv=None):
+    resolver = ExpressionResolver(
+        verbose=False,
+        force_calculator_verbose=False,
+        output_graph=False,
+    )
+    root = Tk()
+    app = Application(master=root, resolver=resolver)
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
