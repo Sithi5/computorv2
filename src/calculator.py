@@ -37,6 +37,11 @@ class Calculator:
         """
         This method take two real type in input and an operator and return a real by resolving trivial calculation
         """
+
+        print("Real calculator :")
+        print(elem_one)
+        print(operator)
+        print(elem_two)
         if operator.value == "+":
             return Real(str(my_round(float(elem_one.value) + float(elem_two.value))))
         elif operator.value == "-":
@@ -76,7 +81,10 @@ class Calculator:
         """
         This method take real/complex in input and an operator and return an imaginary by resolving calculation
         """
-
+        print("Complex calculator :")
+        print(elem_one)
+        print(operator)
+        print(elem_two)
         # Convert real into complex.
         if isinstance(elem_one, Real):
             elem_one = Complex(real_value=elem_one.value, imaginary_value=str(float(0.0)))
