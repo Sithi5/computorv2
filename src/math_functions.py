@@ -1,3 +1,6 @@
+import logging
+
+
 def my_power(number: float, power: int) -> float:
     if power != int(power):
         raise ValueError("irrational numbers are not accepted as exponent.")
@@ -81,7 +84,8 @@ def my_round(number: float, precision: int = 6) -> float:
     """
 
     if number == float("-infinity") or number == float("infinity"):
-        raise ValueError("Couln't round infinity.")
+        logging.debug("Couln't round infinity.")
+        return number
 
     # Checking for Nan
     if number != number:
