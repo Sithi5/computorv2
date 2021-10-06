@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/10/06 15:31:57 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 15:34:10 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -142,9 +142,11 @@ class ExpressionResolver:
         if matrice_parentheses_count != 0:
             raise SyntaxError("Problem with matrice parenthesis.")
 
-    def _check_type_listed_expression(self):
-        """This method check for eventual malformatted type_listed_expression or
-        missing operators, and add implicit cross operators before and after parenthesis."""
+    def _check_type_listed_expression_and_add_implicit_cross_operators(self):
+        """
+        This method check for eventual malformatted type_listed_expression or
+        missing operators, and add implicit cross operators before and after parenthesis.
+        """
         last_elem = None
         checked_type_listed_expression: list = []
         for elem in self.type_listed_expression:
@@ -206,7 +208,7 @@ class ExpressionResolver:
 
         # Convert to type list
         self.type_listed_expression = convert_expression_to_type_list(expression=self.expression)
-        self._check_type_listed_expression()
+        self._check_type_listed_expression_and_add_implicit_cross_operators()
         print(
             "Type_listed_expression at end of parsing : ", self.type_listed_expression
         ) if self.verbose is True else None
