@@ -23,6 +23,9 @@ class Calculator:
         self._assigned_list = assigned_list
 
     def _real_calculator(self, real_one: Real, real_two: Real, operator: Operator) -> Real:
+        """
+        This method take two real type in input and an operator and return a real by resolving trivial calculation
+        """
         if operator.value == "+":
             return Real(str(my_round(float(real_one.value) + float(real_two.value))))
         elif operator.value == "-":
@@ -57,6 +60,9 @@ class Calculator:
             )
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
+        """
+        This method resolve a type_listed_expression and return the result with the correct type.
+        """
         stack = []
         result: BaseType
 
@@ -94,16 +100,18 @@ class Calculator:
         """
         self._verbose = verbose
         self._type_listed_expression = type_listed_expression
+
         print(
             "Resolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
+
         self._type_listed_expression = sort_type_listed_expression_to_rpi(
             type_listed_expression=self._type_listed_expression
         )
-        if self._verbose is True:
-            print(
-                "\nExpression in RPI: ",
-                type_listed_expression_in_str(type_listed_expression=self._type_listed_expression),
-            )
+        print(
+            "\nExpression in RPI: ",
+            type_listed_expression_in_str(type_listed_expression=self._type_listed_expression),
+        ) if self._verbose is True else None
+
         result = self._resolve_rpi_type_listed_expression()
         return result
