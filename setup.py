@@ -5,10 +5,12 @@ with open("README.md", "r") as f:
 
 requirements = ["plot==0.6.5"]
 
-test_requirements = ["pytest==5.4.3", "black==21.7b0"]
+test_requirements = ["pytest==5.4.3"]
+
+dev_requirements = ["black==21.9b0"] + test_requirements
 
 extra_requirements = {
-    "dev": test_requirements,
+    "dev": dev_requirements,
 }
 
 setup(
@@ -28,5 +30,7 @@ setup(
     },
     classifiers=[
         "Development Status :: 1 - Planning",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
     ],
 )
