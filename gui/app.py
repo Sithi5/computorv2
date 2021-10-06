@@ -27,36 +27,48 @@ class Application(Frame):
         Entry(self, relief=RIDGE, textvariable=display, justify="right", bd=30, bg="#c94d00").pack(
             side=TOP, expand=YES, fill=BOTH
         )
+
         for clearButton in ["C"]:
             erase = iCalc(self, TOP)
-            for ichar in clearButton:
-                button(erase, LEFT, ichar, lambda storeObj=display, q=ichar: storeObj.set(""))
+            for char in clearButton:
+                button(erase, LEFT, char, lambda storeObj=display, q=char: storeObj.set(""))
 
-        for numButton in ("X()^%", "789/", "456*", "123-", "0.+"):
+        # Add fn(x) and = and ? buttons
+        special_button = iCalc(self, TOP)
+        button(
+            special_button,
+            LEFT,
+            "f(x)",
+            lambda storeObj=display, q="f(x)": storeObj.set(storeObj.get() + q),
+        )
+        button(
+            special_button,
+            LEFT,
+            "=",
+            lambda storeObj=display, q="=": storeObj.set(storeObj.get() + q),
+        )
+        button(
+            special_button,
+            LEFT,
+            "?",
+            lambda storeObj=display, q="?": storeObj.set(storeObj.get() + q),
+        )
+        for numButton in ("iX()^%", "789/", "456*", "123-", "0.+"):
             FunctionNum = iCalc(self, TOP)
-            for iEquals in numButton:
+            for char in numButton:
                 button(
                     FunctionNum,
                     LEFT,
-                    iEquals,
-                    lambda storeObj=display, q=iEquals: storeObj.set(storeObj.get() + q),
+                    char,
+                    lambda storeObj=display, q=char: storeObj.set(storeObj.get() + q),
                 )
 
         EqualButton = iCalc(self, TOP)
-        for iEquals in "=":
-            if iEquals == "=":
-                btniEquals = button(EqualButton, LEFT, iEquals)
-                btniEquals.bind(
-                    "<ButtonRelease-1>", lambda e, s=self, storeObj=display: s.calc(storeObj), "+"
-                )
-
-            else:
-                btniEquals = button(
-                    EqualButton,
-                    LEFT,
-                    iEquals,
-                    lambda storeObj=display, s=" %s " % iEquals: storeObj.set(storeObj.get() + s),
-                )
+        result_string = "Compute"
+        btniEquals = button(EqualButton, LEFT, result_string)
+        btniEquals.bind(
+            "<ButtonRelease-1>", lambda e, s=self, storeObj=display: s.calc(storeObj), "+"
+        )
 
     def calc(self, display):
         try:
