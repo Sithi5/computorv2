@@ -22,7 +22,7 @@ from src.globals_vars import (
 def convert_expression_to_type_list(expression: str) -> list:
     type_list: list = []
 
-    while expression != "":
+    while expression:
         match_size = 0
         matched_potential_matrice = regex_potential_matrice.match(string=expression)
         matched_function = regex_functions.match(string=expression)

@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/10/06 14:22:31 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 14:47:39 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -199,7 +199,7 @@ class ExpressionResolver:
         # Checking args here before converting to type list
         self._check_args()
 
-        # Convert to type_list
+        # Convert to type list
         self.type_listed_expression = convert_expression_to_type_list(expression=self.expression)
         self._check_type_listed_expression()
         print(
