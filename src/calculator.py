@@ -38,10 +38,11 @@ class Calculator:
         This method take two real type in input and an operator and return a real by resolving trivial calculation
         """
 
-        print("Real calculator :")
-        print(elem_one)
-        print(operator)
-        print(elem_two)
+        print("Real calculator :") if self._verbose is True else None
+        print(
+            str(elem_one) + " " + str(operator) + " " + str(elem_two)
+        ) if self._verbose is True else None
+
         if operator.value == "+":
             return Real(str(my_round(float(elem_one.value) + float(elem_two.value))))
         elif operator.value == "-":
@@ -81,10 +82,11 @@ class Calculator:
         """
         This method take real/complex in input and an operator and return an imaginary by resolving calculation
         """
-        print("Complex calculator :")
-        print(elem_one)
-        print(operator)
-        print(elem_two)
+        print("Complex calculator :") if self._verbose is True else None
+        print(
+            str(elem_one) + " " + str(operator) + " " + str(elem_two)
+        ) if self._verbose is True else None
+
         # Convert real into complex.
         if isinstance(elem_one, Real):
             elem_one = Complex(real_value=elem_one.value, imaginary_value=str(float(0.0)))
@@ -167,6 +169,10 @@ class Calculator:
             return Complex(
                 real_value=real_value,
                 imaginary_value=imaginary_value,
+            )
+        else:
+            raise NotImplementedError(
+                "Operator '" + operator.value + "' not implemented yet for complex.",
             )
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
