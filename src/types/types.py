@@ -1,5 +1,3 @@
-import re
-
 from src.globals_vars import (
     OPERATORS,
     SIGN,
@@ -26,7 +24,7 @@ class BaseType:
         return self.value
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + "('" + self.value + "')"
+        return self.__class__.__name__ + "('" + str(self) + "')"
 
 
 class Real(BaseType):
@@ -53,14 +51,8 @@ class Real(BaseType):
         self.value = value
 
 
-class Complex(BaseType):
-    """
-    Real type, the input value should be a complex number.
-    Example:
-    -   15i
-    -   15.254i
-    -   i
-    """
+class Imaginary(BaseType):
+    """Real type, the input value should be a real number."""
 
     @property
     def value(self):
@@ -68,8 +60,8 @@ class Complex(BaseType):
 
     @value.setter
     def value(self, value: str):
-        if len(value) == 1 and value[0] == "i" or (value[-1] == "i" and is_real(value[:-1])):
-            self._value = value
+        if value[-1] == "i" or float(value) == 0.00:
+            self._value = value.replace("i", "")
         else:
             raise SyntaxError(
                 "An error occured when trying to create "
@@ -81,6 +73,46 @@ class Complex(BaseType):
     def __init__(self, value: str):
         super().__init__()
         self.value = value
+
+
+class Complex(BaseType):
+    """
+    Complex type, take two input values:
+    Example:
+    -   Real + 15i
+    """
+
+    @property
+    def real(self):
+        return self._real
+
+    @real.setter
+    def real(self, real: Real):
+        self._real = real
+
+    @property
+    def imaginary(self):
+        return self._imaginary
+
+    @imaginary.setter
+    def imaginary(self, imaginary: Imaginary):
+        self._imaginary = imaginary
+
+    def __init__(self, real_value: str, imaginary_value: str):
+        super().__init__()
+        self.real = Real(value=real_value)
+        self.imaginary = Imaginary(value=imaginary_value)
+
+    def __str__(self) -> str:
+        if float(self.real.value) == 0.0:
+            return self.imaginary.value + "i"
+        elif float(self.imaginary.value) == 0.0:
+            return self.real.value
+        else:
+            return self.real.value + " + " + self.imaginary.value + "i"
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "('" + str(self) + "')"
 
 
 class Matrice(BaseType):
@@ -127,7 +159,7 @@ class Operator:
         return self.value
 
     def __repr__(self) -> str:
-        return self.__class__.__name__ + "('" + self.value + "')"
+        return self.__class__.__name__ + "('" + str(self) + "')"
 
 
 class Function:

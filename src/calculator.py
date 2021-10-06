@@ -1,63 +1,97 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    calculator.py                                      :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/12/01 20:27:15 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/18 18:24:24 by mabouce          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+from typing import Union
 
 from src.types.types import *
 from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
 )
-from src.math_functions import is_real, my_power, my_round
+from src.math_functions import my_power, my_round
+
+
+def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
+    """
+    This method take two type in input and return true if the result of the calcul between those two type will be in complex.
+    """
+    if isinstance(elem_one, Real) and isinstance(elem_two, Complex):
+        return True
+    elif isinstance(elem_one, Complex) and isinstance(elem_two, Real):
+        return True
+    elif isinstance(elem_one, Complex) and isinstance(elem_two, Complex):
+        return True
+    else:
+        return False
+
+
+def calc_is_in_real(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
+    """
+    This method take two type in input and return true if the result of the calcul between those two type will be in Real.
+    """
+    return isinstance(elem_one, Real) and isinstance(elem_two, Real)
 
 
 class Calculator:
     def __init__(self, assigned_list: list):
         self._assigned_list = assigned_list
 
-    def _real_calculator(self, real_one: Real, real_two: Real, operator: Operator) -> Real:
+    def _real_calculator(self, elem_one: Real, elem_two: Real, operator: Operator) -> Real:
         """
         This method take two real type in input and an operator and return a real by resolving trivial calculation
         """
         if operator.value == "+":
-            return Real(str(my_round(float(real_one.value) + float(real_two.value))))
+            return Real(str(my_round(float(elem_one.value) + float(elem_two.value))))
         elif operator.value == "-":
-            return Real(str(my_round(float(real_one.value) - float(real_two.value))))
+            return Real(str(my_round(float(elem_one.value) - float(elem_two.value))))
         elif operator.value == "%":
-            if float(real_two.value) == 0.0:
+            if float(elem_two.value) == 0.0:
                 raise ValueError(
                     "The expression lead to a modulo zero : ",
-                    float(real_one.value),
+                    float(elem_one.value),
                     " " + operator.value + " ",
-                    float(real_two.value),
+                    float(elem_two.value),
                 )
-            return Real(str(my_round(float(real_one.value) % float(real_two.value))))
+            return Real(str(my_round(float(elem_one.value) % float(elem_two.value))))
 
         elif operator.value == "/":
-            if float(real_two.value) == 0.0:
+            if float(elem_two.value) == 0.0:
                 raise ValueError(
                     "The expression lead to a division by zero : ",
-                    float(real_one.value),
+                    float(elem_one.value),
                     " " + operator.value + " ",
-                    float(real_two.value),
+                    float(elem_two.value),
                 )
-            return Real(str(my_round(float(real_one.value) / float(real_two.value))))
+            return Real(str(my_round(float(elem_one.value) / float(elem_two.value))))
         elif operator.value == "*":
-            return Real(str(my_round(float(real_one.value) * float(real_two.value))))
+            return Real(str(my_round(float(elem_one.value) * float(elem_two.value))))
         elif operator.value == "^":
-            return Real(str(my_round(my_power(float(real_one.value), int(float(real_two.value))))))
+            return Real(str(my_round(my_power(float(elem_one.value), int(float(elem_two.value))))))
         else:
             raise ValueError(
                 "The expression operator is unknown : ",
                 operator.value,
             )
+
+    def _complex_calculator(
+        self, elem_one: Union[Real, Complex], elem_two: Union[Real, Complex], operator: Operator
+    ) -> Complex:
+        """
+        This method take real/complex in input and an operator and return an imaginary by resolving calculation
+        """
+
+        # Convert real into complex.
+        if isinstance(elem_one, Real):
+            elem_one = Complex(real_value=elem_one.value, imaginary_value=str(float(0.0)))
+        if isinstance(elem_two, Real):
+            elem_two = Complex(real_value=elem_two.value, imaginary_value=str(float(0.0)))
+
+        if operator.value == "+":
+            return Complex(
+                real_value=str(my_round(float(elem_one.real.value) + float(elem_two.real.value))),
+                imaginary_value=str(float(0.0)),
+            )
+        print("printing elems")
+        print(elem_one)
+        print(operator)
+        print(elem_two)
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
         """
@@ -77,14 +111,15 @@ class Calculator:
                 last_two_in_stack = stack[-2:]
                 del stack[-2:]
                 # Real calc
-                if isinstance(last_two_in_stack[0], Real) and isinstance(
-                    last_two_in_stack[1], Real
-                ):
+                if calc_is_in_real(elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]):
                     result = self._real_calculator(
-                        real_one=last_two_in_stack[0], real_two=last_two_in_stack[1], operator=elem
+                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
                     )
-                else:
-                    result = Real(str(10))
+                # Complex calc
+                if calc_is_in_complex(elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]):
+                    result = self._complex_calculator(
+                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                    )
                 stack.append(result)
 
         if len(stack) > 1:
@@ -113,5 +148,5 @@ class Calculator:
             type_listed_expression_in_str(type_listed_expression=self._type_listed_expression),
         ) if self._verbose is True else None
 
-        result = self._resolve_rpi_type_listed_expression()
+        result: BaseType = self._resolve_rpi_type_listed_expression()
         return result

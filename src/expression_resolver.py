@@ -6,12 +6,12 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/10/06 15:34:10 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 17:06:29 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
-from src.types.types import Operator
+from src.types.types import BaseType, Operator
 
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
@@ -171,8 +171,8 @@ class ExpressionResolver:
             elif (
                 isinstance(last_elem, Operator)
                 and last_elem.value not in CLOSING_PARENTHESES
-                and elem.value not in OPEN_PARENTHESES
                 and isinstance(elem, Operator)
+                and elem.value not in OPEN_PARENTHESES
             ):
                 emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
                 raise SyntaxError(str(emsg))
@@ -243,7 +243,7 @@ class ExpressionResolver:
             self.expression = expression
             self._parse_expression()
             self._set_solver()
-            result = self._solver.solve(
+            result: BaseType = self._solver.solve(
                 type_listed_expression=self.type_listed_expression,
                 verbose=self.verbose,
                 force_calculator_verbose=self.force_calculator_verbose,

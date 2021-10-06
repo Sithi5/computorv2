@@ -57,7 +57,9 @@ def convert_expression_to_type_list(expression: str) -> list:
             match_size = len(matched_operator.group(0))
         # Match complex before numbers
         elif matched_complex:
-            type_list.append(Complex(value=matched_complex.group(0)))
+            type_list.append(
+                Complex(real_value=str(float(0.0)), imaginary_value=matched_complex.group(0))
+            )
             match_size = len(matched_complex.group(0))
         elif matched_real:
             type_list.append(Real(value=matched_real.group(0)))
