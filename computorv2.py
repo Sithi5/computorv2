@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    computorv2.py                                      :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/10/06 14:46:49 by mabouce          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 import argparse
 import tkinter as tk
 import logging
@@ -31,13 +19,17 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
             else:
                 print("result = ", result)
         except SyntaxError as e:
-            logging.error("The expression syntax is not accepted : ", e)
+            logging.error("The expression syntax is not accepted : ")
+            logging.error(e)
         except ValueError as e:
-            logging.error("One of the value in the expression is not accepted : ", e)
+            logging.error("One of the value in the expression is not accepted : ")
+            logging.error(e)
         except NotImplementedError as e:
-            logging.error("One of the methods needed is not implemented yet : ", e)
+            logging.error("One of the methods needed is not implemented yet : ")
+            logging.error(e)
         except Exception as e:
-            logging.critical("An exception appened : ", e)
+            logging.critical("An exception appened : ")
+            logging.error(e)
     else:
         logging.basicConfig(level=logging.DEBUG)
         result = resolver.solve(expression)
