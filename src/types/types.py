@@ -106,10 +106,6 @@ class Complex(BaseType):
     def __init__(self, real_value: str, imaginary_value: str):
         super().__init__()
         self.real = Real(value=real_value)
-        print()
-        print()
-        print()
-        print(imaginary_value)
         self.imaginary = Imaginary(value=imaginary_value)
 
     def __str__(self) -> str:
