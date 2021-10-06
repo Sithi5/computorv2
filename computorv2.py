@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/10/06 14:37:12 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 14:46:49 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,8 +63,7 @@ def print_shell_help():
     - help : Get available commands
     - list : List all saved variables
     - clear : Clear saved variables/matrices/functions
-    - exit : Quit program
-    - quit : Quit program
+    - exit/quit/q : Quit program
     - v/verbose : Add/remove verbose
     - vv/vverbose : Add/remove full verbose
     - d/debug : Remove exception catching
@@ -109,7 +108,11 @@ def shell_expression_resolver(resolver: ExpressionResolver):
     debug = False
     while 1:
         expression = input("> ")
-        if expression.upper() == "EXIT" or expression.upper() == "QUIT":
+        if (
+            expression.upper() == "EXIT"
+            or expression.upper() == "QUIT"
+            or expression.upper() == "Q"
+        ):
             print("Exit ", __file__[0:-3], " shell.")
             break
         elif expression.upper() == "HELP":
