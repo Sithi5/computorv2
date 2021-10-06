@@ -83,15 +83,25 @@ class Calculator:
         if isinstance(elem_two, Real):
             elem_two = Complex(real_value=elem_two.value, imaginary_value=str(float(0.0)))
 
-        if operator.value == "+":
-            return Complex(
-                real_value=str(my_round(float(elem_one.real.value) + float(elem_two.real.value))),
-                imaginary_value=str(float(0.0)),
-            )
         print("printing elems")
         print(elem_one)
         print(operator)
         print(elem_two)
+
+        if operator.value == "+":
+            return Complex(
+                real_value=str(my_round(float(elem_one.real.value) + float(elem_two.real.value))),
+                imaginary_value=str(
+                    my_round(float(elem_one.imaginary.value) + float(elem_two.imaginary.value))
+                ),
+            )
+        elif operator.value == "-":
+            return Complex(
+                real_value=str(my_round(float(elem_one.real.value) - float(elem_two.real.value))),
+                imaginary_value=str(
+                    my_round(float(elem_one.imaginary.value) - float(elem_two.imaginary.value))
+                ),
+            )
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
         """
