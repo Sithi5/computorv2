@@ -6,12 +6,13 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 20:27:45 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/25 12:48:09 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 14:37:12 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import argparse
 import tkinter as tk
+import logging
 
 
 from src.expression_resolver import ExpressionResolver
@@ -29,17 +30,16 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
                     print(res)
             else:
                 print("result = ", result)
-            print("remettre error handling")
-
         except SyntaxError as e:
-            print("The expression syntax is not accepted : ", e)
+            logging.error("The expression syntax is not accepted : ", e)
         except ValueError as e:
-            print("One of the value in the expression is not accepted : ", e)
+            logging.error("One of the value in the expression is not accepted : ", e)
         except NotImplementedError as e:
-            print("One of the methods needed is not implemented yet : ", e)
+            logging.error("One of the methods needed is not implemented yet : ", e)
         except Exception as e:
-            print("An exception appened : ", e)
+            logging.critical("An exception appened : ", e)
     else:
+        logging.basicConfig(level=logging.DEBUG)
         result = resolver.solve(expression)
         if isinstance(result, list):
             print("The ", len(result), " solutions are :")
@@ -47,7 +47,6 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
                 print(res)
         else:
             print("result = ", result)
-        print("remettre error handling")
 
 
 def main_gui(resolver: ExpressionResolver):
@@ -186,11 +185,12 @@ def main(argv=None):
         force_calculator_verbose=args.force_calculator_verbose,
         output_graph=args.output_graph,
     )
+    logging.basicConfig(level=logging.DEBUG) if args.debug is True else None
     if args.gui:
-        print("Launch in GUI mode.")
+        logging.debug("Launch in GUI mode.")
         main_gui(resolver=resolver)
     elif str(args.expression).lower() == "shell":
-        print("""Starting inline shell expression resolver : """)
+        logging.debug("""Starting inline shell expression resolver : """)
         shell_expression_resolver(resolver=resolver)
     else:
         resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)

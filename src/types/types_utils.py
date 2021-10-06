@@ -128,10 +128,10 @@ def sort_type_listed_expression_to_rpi(type_listed_expression: list):
     return res + stack[::-1]
 
 
-def print_type_listed_expression_in_str(type_listed_expression: list):
+def type_listed_expression_in_str(type_listed_expression: list) -> str:
     str_expression = ""
     for elem in type_listed_expression:
         if str_expression != "":
             str_expression += " "
         str_expression += str(elem)
-    print(str_expression)
+    return str_expression

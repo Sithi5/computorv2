@@ -6,12 +6,12 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/07/25 12:41:59 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 14:22:31 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 import re
-from src.types.types import BaseType, Operator
+from src.types.types import Operator
 
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
@@ -216,10 +216,10 @@ class ExpressionResolver:
             or isinstance(self.type_listed_expression[-1], Operator)
             and self.type_listed_expression[-1].value == "?"
         ):
-            print("Resolving instance !")
+            print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
             self._solver = calculator
         else:
-            print("Assignment !")
+            print("\nVARIABLE ASSIGNMENT\n") if self.verbose is True else None
             self._solver = Assignments(
                 calculator=calculator,
                 assigned_list=self._assigned_list,
