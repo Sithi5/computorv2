@@ -129,6 +129,29 @@ class Calculator:
                 real_value=real_value,
                 imaginary_value=imaginary_value,
             )
+        elif operator.value == "/":
+            conjugate_value = Complex(
+                real_value=elem_two.real.value,
+                imaginary_value=str(float(elem_two.imaginary.value) * -1.0),
+            )
+            print("The conjugate value = ", conjugate_value)
+            dividend: Complex = self._complex_calculator(
+                elem_one=elem_one, elem_two=conjugate_value, operator=Operator(value="*")
+            )
+            divider: Complex = self._complex_calculator(
+                elem_one=elem_two, elem_two=conjugate_value, operator=Operator(value="*")
+            )
+            print("dividend = ", dividend)
+            print("divider = ", divider)
+
+            if float(divider.imaginary.value) != 0.0:
+                raise Exception("Unexpected error when trying to resolve a division in complex.")
+            real_value = str(float(dividend.real.value) / float(divider.real.value))
+            imaginary_value = str(float(dividend.imaginary.value) / float(divider.real.value))
+            return Complex(
+                real_value=real_value,
+                imaginary_value=imaginary_value,
+            )
         elif operator.value == "^":
             if float(elem_two.imaginary.value) != 0.0:
                 raise NotImplementedError(
