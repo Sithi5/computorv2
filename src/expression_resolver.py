@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/10/06 15:30:11 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 15:31:57 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -169,6 +169,7 @@ class ExpressionResolver:
             elif (
                 isinstance(last_elem, Operator)
                 and last_elem.value not in CLOSING_PARENTHESES
+                and elem.value not in OPEN_PARENTHESES
                 and isinstance(elem, Operator)
             ):
                 emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
