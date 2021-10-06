@@ -6,7 +6,7 @@
 #    By: mabouce <ma.sithis@gmail.com>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/12/01 21:41:09 by mabouce           #+#    #+#              #
-#    Updated: 2021/10/06 14:47:39 by mabouce          ###   ########.fr        #
+#    Updated: 2021/10/06 15:30:11 by mabouce          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -166,7 +166,11 @@ class ExpressionResolver:
                 # Add implicit cross operator here
                 checked_type_listed_expression.append(Operator(value="*"))
                 checked_type_listed_expression.append(elem)
-            elif isinstance(last_elem, Operator) and isinstance(elem, Operator):
+            elif (
+                isinstance(last_elem, Operator)
+                and last_elem.value not in CLOSING_PARENTHESES
+                and isinstance(elem, Operator)
+            ):
                 emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
                 raise SyntaxError(str(emsg))
             else:
