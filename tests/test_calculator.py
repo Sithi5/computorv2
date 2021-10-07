@@ -4,7 +4,7 @@ from src.expression_resolver import ExpressionResolver
 from src.math_functions import my_round
 
 
-def test_calculator():
+def test_calculator_parsing():
     resolver = ExpressionResolver(verbose=False)
 
     # Simple test
@@ -96,3 +96,37 @@ def test_calculator():
     # Test sign before first number
     ret = resolver.solve(expression="-42-2")
     assert ret.value == "-44.0"
+
+
+def test_calculator_complex():
+    resolver = ExpressionResolver(verbose=False)
+
+    # Simple test
+    ret = resolver.solve(expression="5 * 5i")
+    assert str(ret) == "25.0i"
+
+    # Add complex
+    ret = resolver.solve(expression="(123847.2193812 - 5i) + 2i")
+    assert str(ret) == "123847.219381 + -3.0i"
+    ret = resolver.solve(expression="(99 - 5i) - (1 +2i)")
+    assert str(ret) == "98.0 + -7.0i"
+
+    # Dividing complex
+    ret = resolver.solve(expression="(5i) / 2")
+    assert str(ret) == "2.5i"
+    ret = resolver.solve(expression="(5i) / (5 + 255i)")
+    assert str(ret) == "0.01960030745580323 + 0.0003843197540353574i"
+
+    # Mod complex
+    ret = resolver.solve(expression="(5i) % 2")
+    assert str(ret) == "1.0i"
+    ret = resolver.solve(expression="(123+ 5i) % 54")
+    assert str(ret) == "15.0 + 5.0i"
+
+    # Power complex
+    ret = resolver.solve(expression="(5i) ^ 2")
+    assert str(ret) == "-5.0"
+    ret = resolver.solve(expression="(5i) ^ 0")
+    assert str(ret) == "1.0"
+    ret = resolver.solve(expression="(5 + 5i) ^ 2")
+    assert str(ret) == "-5.0"
