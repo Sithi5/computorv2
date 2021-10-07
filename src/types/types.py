@@ -60,14 +60,20 @@ class Imaginary(BaseType):
 
     @value.setter
     def value(self, value: str):
-        if value != "":
-            if value[-1] == "i":
-                self._value = value.replace("i", "")
-                if self._value == "":
-                    self._value = "1.0"
+
+        try:
+            if value != "":
+                if value[-1] == "i":
+                    value = value.replace("i", "")
+                    if value == "":
+                        value = "1.0"
+                if is_real(value):
+                    self._value = value
+                else:
+                    raise SyntaxError()
             else:
-                self._value = value
-        else:
+                raise SyntaxError()
+        except SyntaxError:
             raise SyntaxError(
                 "An error occured when trying to create "
                 + self.__class__.__name__
@@ -105,8 +111,16 @@ class Complex(BaseType):
 
     def __init__(self, real_value: str, imaginary_value: str):
         super().__init__()
-        self.real = Real(value=real_value)
-        self.imaginary = Imaginary(value=imaginary_value)
+        try:
+            self.real = Real(value=real_value)
+            self.imaginary = Imaginary(value=imaginary_value)
+        except SyntaxError as e:
+            raise SyntaxError(
+                "An error occured when trying to create "
+                + self.__class__.__name__
+                + " object: "
+                + e.msg
+            )
 
     def __str__(self) -> str:
         if float(self.imaginary.value) == 0.0 and float(self.real.value) == 0.0:

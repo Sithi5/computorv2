@@ -31,7 +31,7 @@ def convert_expression_to_type_list(expression: str) -> list:
         matched_complex = regex_complex.match(string=expression)
         matched_real = regex_real.match(string=expression)
 
-        # matching matrice should be first because it can be compound of more matrice/real/var etc.
+        # Matching matrice should be first because it can be compound of more matrice/real/var etc.
         if matched_potential_matrice:
             match_size = len(matched_potential_matrice.group(0))
             type_list.append(Matrice(value=matched_potential_matrice.group(0)))

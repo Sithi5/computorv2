@@ -22,22 +22,25 @@ def test_types_creation():
     assert (
         str(e.value) == "An error occured when trying to create Real object with the value : [35]"
     )
+
     # Test complex
 
-    Complex("i")
-    Complex("150i")
-    Complex("150.23423i")
+    Complex(real_value="10", imaginary_value="i")
+    Complex(real_value="10", imaginary_value="i")
+    Complex(real_value="10", imaginary_value="i")
     with pytest.raises(SyntaxError) as e:
-        Complex("[35]")
+        complex = Complex(real_value="3", imaginary_value="[35]")
     assert (
         str(e.value)
-        == "An error occured when trying to create Complex object with the value : [35]"
+        == "An error occured when trying to create Complex object: An error occured when trying to create Imaginary object with the value : [35]"
     )
     with pytest.raises(SyntaxError) as e:
-        Complex("35")
+        complex = Complex(real_value="3.12309i", imaginary_value="35")
     assert (
-        str(e.value) == "An error occured when trying to create Complex object with the value : 35"
+        str(e.value)
+        == "An error occured when trying to create Complex object: An error occured when trying to create Real object with the value : 3.12309i"
     )
+    Complex(real_value="35", imaginary_value="35")
 
     # Test functions
     Function(name="FN", argument="X")
