@@ -164,6 +164,12 @@ class ExpressionResolver:
                     and not isinstance(elem, Operator)
                 )
                 or (not isinstance(last_elem, Operator) and not isinstance(elem, Operator))
+                or (
+                    isinstance(last_elem, Operator)
+                    and isinstance(elem, Operator)
+                    and last_elem.value in CLOSING_PARENTHESES
+                    and elem.value in OPEN_PARENTHESES
+                )
             ):
                 # Add implicit cross operator here
                 checked_type_listed_expression.append(Operator(value="*"))
