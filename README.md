@@ -60,3 +60,4 @@ pytest .\tests
 ## Resources
 * [https://mathworld.wolfram.com/ComplexDivision.html](https://mathworld.wolfram.com/ComplexDivision.html)
 * [https://www.mathsisfun.com/numbers/complex-numbers.html](https://www.mathsisfun.com/numbers/complex-numbers.html)
+* [https://www.expii.com/t/exponential-form-of-a-complex-number-9210](https://www.expii.com/t/exponential-form-of-a-complex-number-9210)
