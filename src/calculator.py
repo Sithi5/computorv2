@@ -1,3 +1,5 @@
+from math import cos, sin
+
 from typing import Union
 
 from src.types.types import *
@@ -5,7 +7,7 @@ from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
 )
-from src.math_functions import my_power, my_round, my_sqrt
+from src.math_functions import my_atan, my_power, my_round, my_sqrt
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
@@ -185,7 +187,14 @@ class Calculator:
                 raise NotImplementedError(
                     "Complex exponent is not implemented yet.",
                 )
-
+            # r = |z| = √(a^2+b^2)
+            a = float(elem_one.real.value)
+            b = float(elem_one.imaginary.value)
+            r: float = my_sqrt(my_power(number=a, power=2) + my_power(number=b, power=2))
+            if a > 0:
+                theta = my_atan(b / a)
+            math.cos("")
+            exit()
         else:
             raise NotImplementedError(
                 "Operator '" + operator.value + "' not implemented yet for complex.",

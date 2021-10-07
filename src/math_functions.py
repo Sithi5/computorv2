@@ -119,3 +119,17 @@ def my_atan(X: float):
         B = my_sqrt(A * B)
         N += 1
     return X / (my_sqrt(1.0 + (X * X)) * A)
+
+
+def my_cos(X: float):
+    """
+    Return the approximate cosinus.
+    """
+    R = X * X
+    S = 42.0
+    N = 10
+    while N >= 1:
+        S = 4.0 * N - 2.0 + (-R) / S
+        N -= 1
+    S = S * S
+    return (S - R) / (S + R)
