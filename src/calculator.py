@@ -5,7 +5,7 @@ from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
 )
-from src.math_functions import my_power, my_round
+from src.math_functions import my_power, my_round, my_sqrt
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
@@ -51,9 +51,9 @@ class Calculator:
             if float(elem_two.value) == 0.0:
                 raise ValueError(
                     "The expression lead to a modulo zero : ",
-                    float(elem_one.value),
+                    str(elem_one),
                     " " + operator.value + " ",
-                    float(elem_two.value),
+                    str(elem_two),
                 )
             return Real(str(my_round(float(elem_one.value) % float(elem_two.value))))
 
@@ -61,9 +61,9 @@ class Calculator:
             if float(elem_two.value) == 0.0:
                 raise ValueError(
                     "The expression lead to a division by zero : ",
-                    float(elem_one.value),
+                    str(elem_one),
                     " " + operator.value + " ",
-                    float(elem_two.value),
+                    str(elem_two),
                 )
             return Real(str(my_round(float(elem_one.value) / float(elem_two.value))))
         elif operator.value == "*":
@@ -130,20 +130,23 @@ class Calculator:
                 imaginary_value=imaginary_value,
             )
         elif operator.value == "/":
+            if float(elem_two.real.value) == 0.0 and float(elem_two.imaginary.value) == 0.0:
+                raise ValueError(
+                    "The expression lead to a division zero : ",
+                    str(elem_one),
+                    " " + operator.value + " ",
+                    str(elem_two),
+                )
             conjugate_value = Complex(
                 real_value=elem_two.real.value,
                 imaginary_value=str(float(elem_two.imaginary.value) * -1.0),
             )
-            print("The conjugate value = ", conjugate_value)
             dividend: Complex = self._complex_calculator(
                 elem_one=elem_one, elem_two=conjugate_value, operator=Operator(value="*")
             )
             divider: Complex = self._complex_calculator(
                 elem_one=elem_two, elem_two=conjugate_value, operator=Operator(value="*")
             )
-            print("dividend = ", dividend)
-            print("divider = ", divider)
-
             if float(divider.imaginary.value) != 0.0:
                 raise Exception("Unexpected error when trying to resolve a division in complex.")
             real_value = str(float(dividend.real.value) / float(divider.real.value))
@@ -152,8 +155,33 @@ class Calculator:
                 real_value=real_value,
                 imaginary_value=imaginary_value,
             )
+        elif operator.value == "%":
+            if float(elem_two.imaginary.value) != 0.0 and float(elem_two.real.value) != 0.0:
+                raise ValueError(
+                    "Can only modulo by an imaginary number or by a real number. Not by a complex. Undefined behavior."
+                )
+            if float(elem_two.real.value) == 0.0 and float(elem_two.imaginary.value) == 0.0:
+                raise ValueError(
+                    "The expression lead to a modulo zero : ",
+                    str(elem_one),
+                    " " + operator.value + " ",
+                    str(elem_two),
+                )
+            if float(elem_two.imaginary.value) != 0.0:
+                # Modulo by an imaginary number.
+                raise ValueError("Can only modulo by a real number. Not by a complex.")
+            else:
+                # Modulo by a real number.
+                # Doing modulo of both real and imaginary separately : (a + bi) / c = a / c + bi / c
+                real_value = str(float(elem_one.real.value) % float(elem_two.real.value))
+                imaginary_value = str(float(elem_one.imaginary.value) % float(elem_two.real.value))
+            return Complex(
+                real_value=real_value,
+                imaginary_value=imaginary_value,
+            )
         elif operator.value == "^":
             if float(elem_two.imaginary.value) != 0.0:
+                # Could be implemented using Euler's Formula
                 raise NotImplementedError(
                     "Complex exponent is not implemented yet.",
                 )
@@ -167,6 +195,7 @@ class Calculator:
                     "Complex exponent with negative value is not implemented yet.",
                 )
             if float(elem_one.real.value) != 0.0:
+                # Polar form of complex could help resolving this.
                 raise NotImplementedError(
                     "Calculate exponent for Complex with a real part is not implemented yet..",
                 )
