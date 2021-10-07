@@ -1,5 +1,3 @@
-from math_functions import my_round
-
 from src.globals_vars import (
     OPERATORS,
     SIGN,
@@ -7,7 +5,7 @@ from src.globals_vars import (
     CLOSING_PARENTHESES,
 )
 
-from src.math_functions import is_real
+from src.math_functions import is_real, my_round
 
 
 class BaseType:
@@ -52,6 +50,9 @@ class Real(BaseType):
         super().__init__()
         self.value = value
 
+    def __str__(self) -> str:
+        return str(my_round(float(self.value)))
+
 
 class Imaginary(BaseType):
     """Real type, the input value should be a real number."""
@@ -85,6 +86,9 @@ class Imaginary(BaseType):
     def __init__(self, value: str):
         super().__init__()
         self.value = value
+
+    def __str__(self) -> str:
+        return str(my_round(float(self.value)))
 
 
 class Complex(BaseType):
@@ -127,11 +131,11 @@ class Complex(BaseType):
         if float(self.imaginary.value) == 0.0 and float(self.real.value) == 0.0:
             return str(0.0)
         elif float(self.real.value) == 0.0:
-            return self.imaginary.value + "i"
+            return str(self.imaginary) + "i"
         elif float(self.imaginary.value) == 0.0:
-            return self.real.value
+            return str(self.real)
         else:
-            return self.real.value + " + " + self.imaginary.value + "i"
+            return str(self.real) + " + " + str(self.imaginary) + "i"
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "('" + str(self) + "')"

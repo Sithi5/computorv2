@@ -1,7 +1,6 @@
 from tkinter import *
 
 from src.expression_resolver import ExpressionResolver
-from src.types.types import Complex
 
 
 # Creating frame for calculator
@@ -75,10 +74,7 @@ class Application(Frame):
     def calc(self, display):
         try:
             result = self._resolver.solve(display.get())
-            if isinstance(result, Complex):
-                display = str(result.real.value) + " + " + str(result.imaginary.value)
-            else:
-                display = str(result)
+            display = str(result)
             display.set()
         except:
             display.set("ERROR")
