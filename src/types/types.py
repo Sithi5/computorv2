@@ -1,3 +1,5 @@
+from math_functions import my_round
+
 from src.globals_vars import (
     OPERATORS,
     SIGN,
@@ -60,7 +62,6 @@ class Imaginary(BaseType):
 
     @value.setter
     def value(self, value: str):
-
         try:
             if value != "":
                 if value[-1] == "i":

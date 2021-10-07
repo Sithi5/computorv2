@@ -185,43 +185,7 @@ class Calculator:
                 raise NotImplementedError(
                     "Complex exponent is not implemented yet.",
                 )
-            exponent_real_number = float(elem_two.real.value)
-            if exponent_real_number % 1 != 0:
-                raise NotImplementedError(
-                    "Complex exponent decimal numbers are not implemented yet.",
-                )
-            if exponent_real_number < 0:
-                raise NotImplementedError(
-                    "Complex exponent with negative value is not implemented yet.",
-                )
-            if float(elem_one.real.value) != 0.0:
-                # Polar form of complex could help resolving this.
-                raise NotImplementedError(
-                    "Calculate exponent for Complex with a real part is not implemented yet..",
-                )
-            real_value = str(float(0.0))
-            if exponent_real_number > 0 and exponent_real_number % 4 == 0:
-                exponent_real_number = 4.0
-            elif exponent_real_number > 0:
-                exponent_real_number = exponent_real_number % 4
 
-            if exponent_real_number == 0:
-                real_value = str(float(elem_one.imaginary.value))
-                imaginary_value = str(float(0.0))
-            if exponent_real_number == 1:
-                imaginary_value = str(float(elem_one.imaginary.value))
-            elif exponent_real_number == 2:
-                real_value = str(float(elem_one.imaginary.value) * -1.0)
-                imaginary_value = str(float(0.0))
-            elif exponent_real_number == 3:
-                imaginary_value = str(float(elem_one.imaginary.value) * -1.0)
-            elif exponent_real_number == 4:
-                imaginary_value = str(float(0.0))
-                real_value = str(float(1.0))
-            return Complex(
-                real_value=real_value,
-                imaginary_value=imaginary_value,
-            )
         else:
             raise NotImplementedError(
                 "Operator '" + operator.value + "' not implemented yet for complex.",

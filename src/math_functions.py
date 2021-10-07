@@ -1,6 +1,5 @@
 import logging
 
-
 def my_power(number: float, power: int) -> float:
     if power != int(power):
         raise ValueError("irrational numbers are not accepted as exponent.")
@@ -52,7 +51,7 @@ def my_abs(number: float) -> float:
     return number
 
 
-def my_sqrt(number: int):
+def my_sqrt(number: float):
     infinity_float = float("infinity")
     negative_infinity_float = float("-infinity")
 
@@ -63,10 +62,10 @@ def my_sqrt(number: int):
     if number == negative_infinity_float or number == infinity_float:
         return number
 
-    if number < 0:
+    if number < 0.0:
         raise ValueError("input should be a positive number.")
 
-    result = float(number)
+    result = number
     precision = my_power(10, -15)
     index = 0
     while my_abs(number - result * result) > precision:
