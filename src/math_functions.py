@@ -1,5 +1,6 @@
 import logging
 
+
 def my_power(number: float, power: int) -> float:
     if power != int(power):
         raise ValueError("irrational numbers are not accepted as exponent.")
@@ -74,7 +75,7 @@ def my_sqrt(number: float):
         if last_result == result:
             break
         index += 1
-    return my_round(result, precision=15)
+    return my_round(result, precision=20)
 
 
 def my_round(number: float, precision: int = 6) -> float:
@@ -104,3 +105,17 @@ def is_real(n: str) -> bool:
         return True
     except ValueError:
         return False
+
+
+def my_atan(X: float):
+    """
+    Return the arc tangente in rad.
+    """
+    A: float = 1.0 / my_sqrt(1.0 + (X * X))
+    B = 1.0
+    N = 1
+    while N <= 11:
+        A = (A + B) / 2.0
+        B = my_sqrt(A * B)
+        N += 1
+    return X / (my_sqrt(1.0 + (X * X)) * A)
