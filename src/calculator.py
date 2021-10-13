@@ -91,6 +91,7 @@ class Calculator:
         """
         This method take real/complex in input and an operator and return an imaginary by resolving calculation
         """
+
         print("Complex calculator :") if self._verbose is True else None
         print(
             str(elem_one) + " " + str(operator) + " " + str(elem_two)
@@ -205,34 +206,37 @@ class Calculator:
             # Particular case.
             if natural_exponent == 0.0:
                 return Complex(
-                    real_value=str(0.0),
+                    real_value=str(1.0),
                     imaginary_value=str(0.0),
                 )
-            if real_value == 0.0:
-                # Simple multiplication loop method.
-                if natural_exponent > 0.0:
-                    result = elem_one
-                    i = 1
-                    while i < natural_exponent:
-                        result = self._complex_calculator(
-                            elem_one=result, elem_two=elem_one, operator=Operator(value="*")
-                        )
-                        i += 1
-                if natural_exponent < 0.0:
-                    result = self._complex_calculator(
-                        elem_one=Complex(
-                            real_value="1.0",
-                            imaginary_value="0.0",
-                        ),
-                        elem_two=elem_one,
-                        operator=Operator(value="/"),
+            elif real_value == 0.0:
+                # Imaginary only.
+                powered_value = my_power(number=imaginary_value, power=natural_exponent)
+                # The resulted i will loop over 4 case:
+                # i ^ 1 = i
+                # i ^ 2 = -1
+                # i ^ 3 = -i
+                # i ^ 4 = 1
+                if natural_exponent % 4 == 0:
+                    result = Complex(
+                        real_value=str(powered_value),
+                        imaginary_value="0.0",
                     )
-                    i = -1
-                    while i > natural_exponent:
-                        result = self._complex_calculator(
-                            elem_one=result, elem_two=elem_one, operator=Operator(value="/")
-                        )
-                        i -= 1
+                elif natural_exponent % 4 == 1:
+                    result = Complex(
+                        real_value="0.0",
+                        imaginary_value=str(powered_value),
+                    )
+                elif natural_exponent % 4 == 2:
+                    result = Complex(
+                        real_value=str(float(powered_value * -1.0)),
+                        imaginary_value="0.0",
+                    )
+                elif natural_exponent % 4 == 3:
+                    result = Complex(
+                        real_value="0.0",
+                        imaginary_value=str(float(powered_value * -1.0)),
+                    )
                 return result
             else:
                 # Putting complex number to exponential form Z = rexp^{i a}
