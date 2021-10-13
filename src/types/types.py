@@ -5,7 +5,7 @@ from src.globals_vars import (
     CLOSING_PARENTHESES,
 )
 
-from src.math_functions import is_real, my_round
+from src.math_functions import is_real, my_round, my_abs
 
 
 class BaseType:
@@ -135,7 +135,10 @@ class Complex(BaseType):
         elif float(self.imaginary.value) == 0.0:
             return str(self.real)
         else:
-            return str(self.real) + " + " + str(self.imaginary) + "i"
+            if float(self.imaginary.value) > 0.0:
+                return str(self.real) + " + " + str(self.imaginary) + "i"
+            else:
+                return str(self.real) + " - " + str(my_abs(float(self.imaginary.value))) + "i"
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "('" + str(self) + "')"
