@@ -107,6 +107,32 @@ def is_real(n: str) -> bool:
         return False
 
 
+def is_real(n: str) -> bool:
+    """
+    Return true if number ∈ ℝ (Real numbers)
+    """
+    try:
+        float(n)
+        return True
+    except ValueError:
+        return False
+
+
+def is_natural(n: str) -> bool:
+    """
+    Return true if number ∈ ℕ (Natural numbers)
+    """
+    try:
+        f = float(n)
+        i = int(f)
+        if float(n) != f:
+            return False
+        else:
+            return True
+    except ValueError:
+        return False
+
+
 def my_atan(X: float):
     """
     Return the arc tangente in rad.
@@ -123,13 +149,26 @@ def my_atan(X: float):
 
 def my_cos(X: float):
     """
-    Return the approximate cosinus.
+    Return the approximate cosinus using Taylor series. This is only accurate near 0.
     """
     R = X * X
     S = 42.0
-    N = 10
-    while N >= 1:
-        S = 4.0 * N - 2.0 + (-R) / S
-        N -= 1
+    I = 10
+    while I >= 1:
+        S = 4.0 * I - 2.0 + (-R) / S
+        I -= 1
     S = S * S
     return (S - R) / (S + R)
+
+
+def my_sin(X: float):
+    """
+    Return the approximate sinus using Taylor series. This is only accurate near 0.
+    """
+    R = X * X
+    S = 42.0
+    I = 10
+    while I >= 1:
+        S = 4.0 * I - 2.0 + (-R) / S
+        I -= 1
+    return 2.0 * X * S / (R + S * S)
