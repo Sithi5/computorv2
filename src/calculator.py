@@ -1,4 +1,4 @@
-from math import cos, sin
+from math import cos, sin, atan
 
 from typing import Union
 
@@ -7,7 +7,7 @@ from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
 )
-from src.math_functions import my_atan, my_power, my_round, my_sqrt
+from src.math_functions import my_power, my_round, my_sqrt, is_natural
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
@@ -183,18 +183,70 @@ class Calculator:
             )
         elif operator.value == "^":
             if float(elem_two.imaginary.value) != 0.0:
-                # Could be implemented using Euler's Formula
                 raise NotImplementedError(
                     "Complex exponent is not implemented yet.",
                 )
-            # r = |z| = √(a^2+b^2)
-            a = float(elem_one.real.value)
-            b = float(elem_one.imaginary.value)
-            r: float = my_sqrt(my_power(number=a, power=2) + my_power(number=b, power=2))
-            if a > 0:
-                theta = my_atan(b / a)
-            math.cos("")
-            exit()
+            if not is_natural(elem_two.real.value):
+                raise NotImplementedError(
+                    "Only natural exponent are accepted.",
+                )
+
+            real_value = float(elem_one.real.value)
+            imaginary_value = float(elem_one.imaginary.value)
+            natural_exponent = float(elem_two.real.value)
+
+            # Particular case.
+            if natural_exponent == 0.0:
+                return Complex(
+                    real_value=str(0.0),
+                    imaginary_value=str(0.0),
+                )
+            if real_value == 0.0:
+                # Simple multiplication loop.
+                if natural_exponent > 0.0:
+                    result = elem_one
+                    i = 1
+                    while i < natural_exponent:
+                        result = self._complex_calculator(
+                            elem_one=result, elem_two=elem_one, operator=Operator(value="*")
+                        )
+                        i += 1
+                if natural_exponent < 0.0:
+                    result = self._complex_calculator(
+                        elem_one=Complex(
+                            real_value="1.0",
+                            imaginary_value="0.0",
+                        ),
+                        elem_two=elem_one,
+                        operator=Operator(value="/"),
+                    )
+                    i = -1
+                    while i > natural_exponent:
+                        result = self._complex_calculator(
+                            elem_one=result, elem_two=elem_one, operator=Operator(value="/")
+                        )
+                        i -= 1
+                return result
+            else:
+                # Putting complex number to exponential form Z = rexp^{i a}
+                # r is the module calculated following pytagore : c = sqrt(a^2 + b^2)
+                r: float = my_sqrt(
+                    my_power(number=real_value, power=2) + my_power(number=imaginary_value, power=2)
+                )
+                a = atan(imaginary_value / real_value)
+
+                e = Complex(
+                    real_value=str(cos(natural_exponent * a)),
+                    imaginary_value=str(sin(natural_exponent * a)),
+                )
+                r = Complex(
+                    real_value=str(my_power(number=r, power=natural_exponent)),
+                    imaginary_value="0.0",
+                )
+                result = self._complex_calculator(
+                    elem_one=r, elem_two=e, operator=Operator(value="*")
+                )
+                return result
         else:
             raise NotImplementedError(
                 "Operator '" + operator.value + "' not implemented yet for complex.",
