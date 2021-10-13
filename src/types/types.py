@@ -3,7 +3,13 @@ from src.globals_vars import (
     SIGN,
     OPEN_PARENTHESES,
     CLOSING_PARENTHESES,
+    MATRICE_OPEN_PARENTHESES,
+    MATRICE_LINE_SEPARATOR,
+    MATRICE_COLUMN_SEPARATOR,
+    MATRICE_CLOSING_PARENTHESES,
 )
+
+from src.regex import regex_matrice_column
 
 from src.math_utils import is_real, my_round, my_abs
 
@@ -154,7 +160,36 @@ class Matrice(BaseType):
 
     @value.setter
     def value(self, value: str):
-        self._value = value
+        try:
+            count_n = 0
+            count_m = 0
+            # [*.]
+            if value[0] != MATRICE_OPEN_PARENTHESES or value[-1] != MATRICE_CLOSING_PARENTHESES:
+                raise SyntaxError
+            # Remove first matrice parentheses
+            value = value[1:-1]
+            if len(value) > 2:
+                while value:
+                    match_size = 0
+                    matched_matrice_column = regex_matrice_column.match(string=value)
+                    if matched_matrice_column:
+                        # Remove matrice_column parentheses
+                        matrice_column = matched_matrice_column.group(0)[1:-1]
+                        match_size = len(matrice_column)
+                        # TODO here
+                        count_n += 1
+                        value = value[match_size:]
+                    else:
+                        raise SyntaxError
+
+            self._value = value
+        except SyntaxError:
+            raise SyntaxError(
+                "An error occured when trying to create "
+                + self.__class__.__name__
+                + " object with the value : "
+                + value
+            )
 
     def __init__(self, value: str):
         super().__init__()

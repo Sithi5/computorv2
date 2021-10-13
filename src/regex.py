@@ -15,6 +15,9 @@ from src.globals_vars import (
 regex_potential_matrice = re.compile(
     rf"\{MATRICE_OPEN_PARENTHESES}.*\{MATRICE_CLOSING_PARENTHESES}"
 )
+regex_matrice_column = re.compile(
+    rf"\{MATRICE_OPEN_PARENTHESES}(.*?)\{MATRICE_CLOSING_PARENTHESES}"
+)
 regex_comma = f"\{COMMA}"
 regex_functions = re.compile(rf"[A-Z]+\([\d{regex_comma}iA-Z]+\)")
 regex_variables = re.compile(r"[A-Z]+")
