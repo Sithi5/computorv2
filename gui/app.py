@@ -74,8 +74,7 @@ class Application(Frame):
     def calc(self, display):
         try:
             result = self._resolver.solve(display.get())
-            display = str(result)
-            display.set()
+            display.set(result)
         except:
             display.set("ERROR")
 
