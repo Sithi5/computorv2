@@ -1,6 +1,9 @@
 import logging
 
 
+PI: float = 3.14159265359
+
+
 def my_power(number: float, power: int) -> float:
     if power != int(power):
         raise ValueError("irrational numbers are not accepted as exponent.")

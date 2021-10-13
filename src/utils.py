@@ -18,7 +18,7 @@ from src.globals_vars import (
     CLOSING_PARENTHESES,
 )
 
-from src.math_functions import is_real
+from src.math_utils import is_real
 
 
 def split_expression_parts_from_tokens(tokens: list):

@@ -5,7 +5,7 @@ from src.globals_vars import (
     CLOSING_PARENTHESES,
 )
 
-from src.math_functions import is_real, my_round, my_abs
+from src.math_utils import is_real, my_round, my_abs
 
 
 class BaseType:
