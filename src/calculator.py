@@ -7,7 +7,7 @@ from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
 )
-from src.math_functions import my_power, my_round, my_sqrt, is_natural
+from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
@@ -29,6 +29,13 @@ def calc_is_in_real(elem_one: BaseType, elem_two: BaseType, operator: BaseType =
     This method take two type in input and return true if the result of the calcul between those two type will be in Real.
     """
     return isinstance(elem_one, Real) and isinstance(elem_two, Real)
+
+
+def calc_is_in_matrice(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
+    """
+    This method take two type in input and return true if the result of the calcul between those two type will be a matrice type.
+    """
+    return isinstance(elem_one, Matrice) or isinstance(elem_two, Matrice)
 
 
 class Calculator:
@@ -202,7 +209,7 @@ class Calculator:
                     imaginary_value=str(0.0),
                 )
             if real_value == 0.0:
-                # Simple multiplication loop.
+                # Simple multiplication loop method.
                 if natural_exponent > 0.0:
                     result = elem_one
                     i = 1
@@ -233,8 +240,13 @@ class Calculator:
                 r: float = my_sqrt(
                     my_power(number=real_value, power=2) + my_power(number=imaginary_value, power=2)
                 )
-                a = atan(imaginary_value / real_value)
-
+                if real_value > 0.0:
+                    a = atan(imaginary_value / real_value)
+                else:
+                    if imaginary_value >= 0.0:
+                        a = atan(imaginary_value / real_value) + PI
+                    else:
+                        a = atan(imaginary_value / real_value) - PI
                 e = Complex(
                     real_value=str(cos(natural_exponent * a)),
                     imaginary_value=str(sin(natural_exponent * a)),
@@ -251,6 +263,18 @@ class Calculator:
             raise NotImplementedError(
                 "Operator '" + operator.value + "' not implemented yet for complex.",
             )
+
+    def _matrice_calculator(
+        self, elem_one: Union[Real, Complex], elem_two: Union[Real, Complex], operator: Operator
+    ) -> Complex:
+        """
+        This method take matrice/real/complex in input and an operator and return a matrice by resolving calculation
+        """
+        print("Matrice calculator :") if self._verbose is True else None
+        print(
+            str(elem_one) + " " + str(operator) + " " + str(elem_two)
+        ) if self._verbose is True else None
+        return Matrice(value="[[0.0,0.0];[0.0,0.0]]")
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
         """
@@ -275,9 +299,22 @@ class Calculator:
                         elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
                     )
                 # Complex calc
-                if calc_is_in_complex(elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]):
+                elif calc_is_in_complex(
+                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
+                ):
                     result = self._complex_calculator(
                         elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                    )
+                # Matrice calc
+                elif calc_is_in_matrice(
+                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
+                ):
+                    result = self._matrice_calculator(
+                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                    )
+                else:
+                    raise Exception(
+                        "Unexpected error when trying to resolve npi. Maybe your input format is not accepted?"
                     )
                 stack.append(result)
 
