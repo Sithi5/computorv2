@@ -12,12 +12,7 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
     if debug is False:
         try:
             result = resolver.solve(expression)
-            if isinstance(result, list):
-                print("The ", len(result), " solutions are :")
-                for res in result:
-                    print(res)
-            else:
-                print("result = ", result)
+            print("result = ", result)
         except SyntaxError as e:
             logging.error("The expression syntax is not accepted : ")
             logging.error(e)
@@ -33,12 +28,7 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
     else:
         logging.basicConfig(level=logging.DEBUG)
         result = resolver.solve(expression)
-        if isinstance(result, list):
-            print("The ", len(result), " solutions are :")
-            for res in result:
-                print(res)
-        else:
-            print("result = ", result)
+        print("result = ", result)
 
 
 def main_gui(resolver: ExpressionResolver):
