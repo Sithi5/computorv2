@@ -1,6 +1,8 @@
 import re
 
 from src.globals_vars import (
+    EQUALS_SIGN,
+    QUESTIONS_SIGN,
     OPERATORS,
     SIGN,
     COMMA,
@@ -25,9 +27,13 @@ regex_function_name = re.compile(r"[A-Z]+")
 regex_function_argument = re.compile(rf"(?<=\()[A-Z\di{regex_comma}]+(?=\))")
 regex_complex = re.compile(rf"(i)")
 regex_real = re.compile(rf"(\d+{regex_comma}*\d+(?!{regex_comma}))|(\d+(?!{regex_comma}))")
-regex_var = (
-    "\="
-    + "\?"
+
+
+operators_string = (
+    "\\"
+    + "\\".join(EQUALS_SIGN)
+    + "\\"
+    + "\\".join(QUESTIONS_SIGN)
     + "\\"
     + "\\".join(OPERATORS)
     + "\\"
@@ -37,11 +43,13 @@ regex_var = (
     + "\\"
     + "\\".join(CLOSING_PARENTHESES)
 )
-regex_operators = re.compile(rf"[{regex_var}]")
+regex_operators = re.compile(rf"[{operators_string}]")
 
-allowed_char_list = (
-    "\="
-    + "\?"
+allowed_char_string = (
+    "\\"
+    + "\\".join(EQUALS_SIGN)
+    + "\\"
+    + "\\".join(QUESTIONS_SIGN)
     + "\\"
     + "\\".join(OPERATORS)
     + "\\"
@@ -61,4 +69,4 @@ allowed_char_list = (
     + "\\"
     + "\\".join(MATRICE_COLUMN_SEPARATOR)
 )
-regex_check_forbidden_char = re.compile(pattern=rf"[^\d\w{allowed_char_list}]")
+regex_check_forbidden_char = re.compile(pattern=rf"[^\d\w{allowed_char_string}]")

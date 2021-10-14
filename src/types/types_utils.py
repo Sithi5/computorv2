@@ -14,15 +14,75 @@ from src.globals_vars import (
     OPERATORS,
     OPERATORS_PRIORITY,
     SIGN,
+    EQUALS_SIGN,
     OPEN_PARENTHESES,
     CLOSING_PARENTHESES,
 )
 
 
-def convert_expression_to_type_list(expression: str) -> list:
+def check_type_listed_expression_and_add_implicit_cross_operators(
+    type_listed_expression: list,
+):
     """
+    This method check for eventual malformatted type_listed_expression or
+    missing operators, and add implicit cross operators before and after parenthesis.
+    """
+    last_elem = None
+    checked_type_listed_expression: list = []
+    for elem in type_listed_expression:
+        if last_elem is None:
+            checked_type_listed_expression.append(elem)
+        elif (
+            (
+                isinstance(elem, Operator)
+                and elem.value in OPEN_PARENTHESES
+                and not isinstance(last_elem, Operator)
+            )
+            or (
+                isinstance(last_elem, Operator)
+                and last_elem.value in CLOSING_PARENTHESES
+                and not isinstance(elem, Operator)
+            )
+            or (not isinstance(last_elem, Operator) and not isinstance(elem, Operator))
+            or (
+                isinstance(last_elem, Operator)
+                and isinstance(elem, Operator)
+                and last_elem.value in CLOSING_PARENTHESES
+                and elem.value in OPEN_PARENTHESES
+            )
+        ):
+            # Add implicit cross operator here
+            checked_type_listed_expression.append(Operator(value="*"))
+            checked_type_listed_expression.append(elem)
+        elif (
+            isinstance(last_elem, Operator)
+            and last_elem.value not in CLOSING_PARENTHESES
+            and isinstance(elem, Operator)
+            and elem.value not in OPEN_PARENTHESES
+        ):
+            emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
+            raise SyntaxError(str(emsg))
+        else:
+            checked_type_listed_expression.append(elem)
+        last_elem = elem
+    return checked_type_listed_expression
+
+
+def convert_expression_to_type_list(
+    expression: str,
+    no_potential_matrice: bool = False,
+    no_function: bool = False,
+    no_variable: bool = False,
+    no_equal_sign: bool = False,
+) -> list:
+    f"""
     Convert a string expression to a list using the different types object.
     A minimum of parsing is required before calling this function, accepting correct char, no space etc.
+    option:
+        -   no_potential_matrice: if it's set to true, raise a ValueError if a potential matrice is matched.
+        -   no_function: if it's set to true, raise a ValueError if a function is matched.
+        -   no_variable: if it's set to true, raise a ValueError if a variable is matched.
+        -   no_equal_sign: if it's set to true, raise a ValueError if an operator '{EQUALS_SIGN}' is matched.
     Return the type_listed expression.
     """
     type_list: list = []
@@ -38,10 +98,18 @@ def convert_expression_to_type_list(expression: str) -> list:
 
         # Matching matrice should be first because it can be compound of more matrice/real/var etc.
         if matched_potential_matrice:
+            if no_potential_matrice:
+                raise ValueError(
+                    "No potential matrice should be found in the expression. (no_potential_matrice set to true.)"
+                )
             match_size = len(matched_potential_matrice.group(0))
             type_list.append(Matrice(value=matched_potential_matrice.group(0)))
         # Match functions before var because can have a var inside
         elif matched_function:
+            if no_function:
+                raise ValueError(
+                    "No function should be found in the expression. (no_function set to true.)"
+                )
             # Take first alphapart
             match_function_name = regex_function_name.match(matched_function.group(0))
             search_function_argument = regex_function_argument.search(matched_function.group(0))
@@ -54,10 +122,18 @@ def convert_expression_to_type_list(expression: str) -> list:
                 raise SyntaxError("Some numbers are not well formated : " + expression)
         # Find variables
         elif matched_variable:
+            if no_variable:
+                raise ValueError(
+                    "No variable should be found in the expression. (no_variable set to true.)"
+                )
             variable_name = matched_variable.group(0)
             type_list.append(Variable(name=variable_name, value=None))
             match_size = len(matched_variable.group(0))
         elif matched_operator:
+            if matched_operator.group(0) == EQUALS_SIGN and no_equal_sign:
+                raise ValueError(
+                    "No variable should be found in the expression. (no_variable set to true.)"
+                )
             type_list.append(Operator(value=matched_operator.group(0)))
             match_size = len(matched_operator.group(0))
         # Match complex before numbers

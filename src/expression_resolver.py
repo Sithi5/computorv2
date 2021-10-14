@@ -25,7 +25,10 @@ from src.globals_vars import (
     MATRICE_OPEN_PARENTHESES,
 )
 from src.regex import regex_check_forbidden_char
-from src.types.types_utils import convert_expression_to_type_list
+from src.types.types_utils import (
+    convert_expression_to_type_list,
+    check_type_listed_expression_and_add_implicit_cross_operators,
+)
 from src.utils import (
     parse_sign,
     convert_signed_number,
@@ -142,51 +145,6 @@ class ExpressionResolver:
         if matrice_parentheses_count != 0:
             raise SyntaxError("Problem with matrice parenthesis.")
 
-    def _check_type_listed_expression_and_add_implicit_cross_operators(self):
-        """
-        This method check for eventual malformatted type_listed_expression or
-        missing operators, and add implicit cross operators before and after parenthesis.
-        """
-        last_elem = None
-        checked_type_listed_expression: list = []
-        for elem in self.type_listed_expression:
-            if last_elem is None:
-                checked_type_listed_expression.append(elem)
-            elif (
-                (
-                    isinstance(elem, Operator)
-                    and elem.value in OPEN_PARENTHESES
-                    and not isinstance(last_elem, Operator)
-                )
-                or (
-                    isinstance(last_elem, Operator)
-                    and last_elem.value in CLOSING_PARENTHESES
-                    and not isinstance(elem, Operator)
-                )
-                or (not isinstance(last_elem, Operator) and not isinstance(elem, Operator))
-                or (
-                    isinstance(last_elem, Operator)
-                    and isinstance(elem, Operator)
-                    and last_elem.value in CLOSING_PARENTHESES
-                    and elem.value in OPEN_PARENTHESES
-                )
-            ):
-                # Add implicit cross operator here
-                checked_type_listed_expression.append(Operator(value="*"))
-                checked_type_listed_expression.append(elem)
-            elif (
-                isinstance(last_elem, Operator)
-                and last_elem.value not in CLOSING_PARENTHESES
-                and isinstance(elem, Operator)
-                and elem.value not in OPEN_PARENTHESES
-            ):
-                emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
-                raise SyntaxError(str(emsg))
-            else:
-                checked_type_listed_expression.append(elem)
-            last_elem = elem
-        self.type_listed_expression = checked_type_listed_expression
-
     def _parse_expression(self):
         print("Expression before parsing : ", self.expression) if self.verbose is True else None
 
@@ -214,9 +172,16 @@ class ExpressionResolver:
 
         # Convert to type list
         self.type_listed_expression = convert_expression_to_type_list(expression=self.expression)
-        self._check_type_listed_expression_and_add_implicit_cross_operators()
+
         print(
-            "Type_listed_expression at end of parsing : ", self.type_listed_expression
+            "convert_expression_to_type_list : ", self.type_listed_expression
+        ) if self.verbose is True else None
+
+        self.type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(type_listed_expression=self.type_listed_expression)
+
+        print(
+            "check_type_listed_expression_and_add_implicit_cross_operators : ",
+            self.type_listed_expression,
         ) if self.verbose is True else None
 
     def _set_solver(self):

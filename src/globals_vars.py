@@ -1,4 +1,6 @@
 OPERATORS = "/*%^"
+EQUALS_SIGN = "="
+QUESTIONS_SIGN = "?"
 OPERATORS_PRIORITY = {"/": 2, "*": 2, "%": 2, "^": 3, "+": 1, "-": 1}
 SIGN = "+-"
 COMMA = "."
