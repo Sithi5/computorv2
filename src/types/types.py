@@ -9,9 +9,13 @@ from src.globals_vars import (
     MATRICE_CLOSING_PARENTHESES,
 )
 
-from src.regex import regex_matrice_column
-
+from src.regex import regex_matrice_column, regex_complex, regex_real
 from src.math_utils import is_real, my_round, my_abs
+
+# from src.types.types_utils import (
+#     convert_expression_to_type_list,
+#     check_type_listed_expression_and_add_implicit_cross_operators,
+# )
 
 
 class BaseType:
@@ -151,7 +155,9 @@ class Complex(BaseType):
 
 
 class Matrice(BaseType):
+    # Total columns.
     _n: int
+    # Total lines.
     _m: int
 
     @property
@@ -161,26 +167,45 @@ class Matrice(BaseType):
     @value.setter
     def value(self, value: str):
         try:
-            count_n = 0
-            count_m = 0
+            count_n: int = 0
+            count_m: int = 0
+            matrice_column: list = []
             # [*.]
             if value[0] != MATRICE_OPEN_PARENTHESES or value[-1] != MATRICE_CLOSING_PARENTHESES:
-                raise SyntaxError
+                raise SyntaxError()
             # Remove first matrice parentheses
             value = value[1:-1]
             if len(value) > 2:
                 while value:
-                    match_size = 0
                     matched_matrice_column = regex_matrice_column.match(string=value)
                     if matched_matrice_column:
+                        matrice_line: list = []
                         # Remove matrice_column parentheses
-                        matrice_column = matched_matrice_column.group(0)[1:-1]
-                        match_size = len(matrice_column)
-                        # TODO here
+                        matched_matrice_column = matched_matrice_column.group(0)[1:-1]
                         count_n += 1
-                        value = value[match_size:]
+                        value = value[len(matched_matrice_column) :]
+                        matched_lines = matched_matrice_column.split(MATRICE_LINE_SEPARATOR)
+                        if self._m == -1:
+                            # Set the total line.
+                            self._m = len(matched_lines)
+                        elif self._m != len(matched_lines):
+                            raise SyntaxError()
+                        for line in matched_lines:
+                            # line_result = (
+                            #     check_type_listed_expression_and_add_implicit_cross_operators(
+                            #         type_listed_expression=convert_expression_to_type_list(
+                            #             expression=line,
+                            #             no_matrice=True,
+                            #             no_variable=True,
+                            #             no_function=True,
+                            #         )
+                            #     )
+                            # )
+                            matrice_line.append()
+
+                        print(lines)
                     else:
-                        raise SyntaxError
+                        raise SyntaxError()
 
             self._value = value
         except SyntaxError:
@@ -193,6 +218,9 @@ class Matrice(BaseType):
 
     def __init__(self, value: str):
         super().__init__()
+        # Set to -1 before initializing the matrice value.
+        self._n = -1
+        self._m = -1
         self.value = value
 
 
