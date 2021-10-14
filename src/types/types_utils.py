@@ -6,7 +6,7 @@ from src.regex import (
     regex_function_name,
     regex_function_argument,
     regex_variables,
-    regex_operators,
+    regex_operators_parenthesis_equal_question,
     regex_complex,
     regex_real,
 )
@@ -92,7 +92,9 @@ def convert_expression_to_type_list(
         matched_potential_matrice = regex_potential_matrice.match(string=expression)
         matched_function = regex_functions.match(string=expression)
         matched_variable = regex_variables.match(string=expression)
-        matched_operator = regex_operators.match(string=expression)
+        matched_operators_parenthesis_equal_question = (
+            regex_operators_parenthesis_equal_question.match(string=expression)
+        )
         matched_complex = regex_complex.match(string=expression)
         matched_real = regex_real.match(string=expression)
 
@@ -103,7 +105,7 @@ def convert_expression_to_type_list(
                     "No potential matrice should be found in the expression. (no_potential_matrice set to true.)"
                 )
             match_size = len(matched_potential_matrice.group(0))
-            type_list.append(Matrice(value=matched_potential_matrice.group(0)))
+            type_list.append(Matrice(value=matched_potential_matrice.group(0), pending_calc=True))
         # Match functions before var because can have a var inside
         elif matched_function:
             if no_function:
@@ -129,13 +131,16 @@ def convert_expression_to_type_list(
             variable_name = matched_variable.group(0)
             type_list.append(Variable(name=variable_name, value=None))
             match_size = len(matched_variable.group(0))
-        elif matched_operator:
-            if matched_operator.group(0) == EQUALS_SIGN and no_equal_sign:
+        elif matched_operators_parenthesis_equal_question:
+            if (
+                matched_operators_parenthesis_equal_question.group(0) == EQUALS_SIGN
+                and no_equal_sign
+            ):
                 raise ValueError(
                     "No variable should be found in the expression. (no_variable set to true.)"
                 )
-            type_list.append(Operator(value=matched_operator.group(0)))
-            match_size = len(matched_operator.group(0))
+            type_list.append(Operator(value=matched_operators_parenthesis_equal_question.group(0)))
+            match_size = len(matched_operators_parenthesis_equal_question.group(0))
         # Match complex before numbers
         elif matched_complex:
             imaginary_value = matched_complex.group(0)

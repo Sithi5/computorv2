@@ -29,21 +29,24 @@ regex_complex = re.compile(rf"(i)")
 regex_real = re.compile(rf"(\d+{regex_comma}*\d+(?!{regex_comma}))|(\d+(?!{regex_comma}))")
 
 
-operators_string = (
+operators_string = "\\" + "\\".join(OPERATORS) + "\\" + "\\".join(SIGN)
+parenthesis_string = "\\" + "\\".join(OPEN_PARENTHESES) + "\\" + "\\".join(CLOSING_PARENTHESES)
+operators_parenthesis_string = operators_string + parenthesis_string
+operators_parenthesis_equal_question_string = (
     "\\"
     + "\\".join(EQUALS_SIGN)
     + "\\"
     + "\\".join(QUESTIONS_SIGN)
     + "\\"
-    + "\\".join(OPERATORS)
-    + "\\"
-    + "\\".join(SIGN)
-    + "\\"
-    + "\\".join(OPEN_PARENTHESES)
-    + "\\"
-    + "\\".join(CLOSING_PARENTHESES)
+    + operators_parenthesis_string
 )
-regex_operators = re.compile(rf"[{operators_string}]")
+regex_operators_parenthesis_equal_question = re.compile(
+    rf"[{operators_parenthesis_equal_question_string}]"
+)
+
+regex_operators_parenthesis = re.compile(
+    rf"[{operators_parenthesis_string}]"
+)
 
 allowed_char_string = (
     "\\"

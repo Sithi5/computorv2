@@ -9,7 +9,7 @@ from src.globals_vars import (
     MATRICE_CLOSING_PARENTHESES,
 )
 
-from src.regex import regex_matrice_column, regex_complex, regex_real
+from src.regex import regex_matrice_column, regex_complex, regex_real, regex_operators_parenthesis
 from src.math_utils import is_real, my_round, my_abs
 
 # from src.types.types_utils import (
@@ -141,7 +141,10 @@ class Complex(BaseType):
         if float(self.imaginary.value) == 0.0 and float(self.real.value) == 0.0:
             return str(0.0)
         elif float(self.real.value) == 0.0:
-            return str(self.imaginary) + "i"
+            if float(self.imaginary.value) == 1.0:
+                return "i"
+            else:
+                return str(self.imaginary) + "i"
         elif float(self.imaginary.value) == 0.0:
             return str(self.real)
         else:
@@ -149,9 +152,6 @@ class Complex(BaseType):
                 return str(self.real) + " + " + str(self.imaginary) + "i"
             else:
                 return str(self.real) + " - " + str(my_abs(float(self.imaginary.value))) + "i"
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "('" + str(self) + "')"
 
 
 class Matrice(BaseType):
@@ -175,39 +175,71 @@ class Matrice(BaseType):
                 raise SyntaxError()
             # Remove first matrice parentheses
             value = value[1:-1]
-            if len(value) > 2:
+            if len(value) > 0:
+
+                # While there is a column:
                 while value:
                     matched_matrice_column = regex_matrice_column.match(string=value)
                     if matched_matrice_column:
+
+                        value = value[len(matched_matrice_column.group(0)) :]
+                        count_n += 1
+
                         matrice_line: list = []
+
                         # Remove matrice_column parentheses
                         matched_matrice_column = matched_matrice_column.group(0)[1:-1]
-                        count_n += 1
-                        value = value[len(matched_matrice_column) :]
+
                         matched_lines = matched_matrice_column.split(MATRICE_LINE_SEPARATOR)
                         if self._m == -1:
                             # Set the total line.
                             self._m = len(matched_lines)
                         elif self._m != len(matched_lines):
+                            # Error line are not the same size.
                             raise SyntaxError()
-                        for line in matched_lines:
-                            # line_result = (
-                            #     check_type_listed_expression_and_add_implicit_cross_operators(
-                            #         type_listed_expression=convert_expression_to_type_list(
-                            #             expression=line,
-                            #             no_matrice=True,
-                            #             no_variable=True,
-                            #             no_function=True,
-                            #         )
-                            #     )
-                            # )
-                            matrice_line.append()
 
-                        print(lines)
+                        for line in matched_lines:
+
+                            type_list: list = []
+
+                            while line:
+                                # Convert inside line expression to type_listed (same way than convert_expression_to_type_list function).
+                                matched_complex = regex_complex.match(string=line)
+                                matched_real = regex_real.match(string=line)
+                                matched_operator = regex_operators_parenthesis.match(string=line)
+                                if matched_operator:
+                                    type_list.append(Operator(value=matched_operator.group(0)))
+                                    match_size = len(matched_operator.group(0))
+                                elif matched_complex:
+                                    imaginary_value = matched_complex.group(0)
+                                    type_list.append(
+                                        Complex(
+                                            real_value=str(float(0.0)),
+                                            imaginary_value=imaginary_value,
+                                        )
+                                    )
+                                    match_size = len(matched_complex.group(0))
+                                elif matched_real:
+                                    type_list.append(Real(value=matched_real.group(0)))
+                                    match_size = len(matched_real.group(0))
+                                else:
+                                    raise SyntaxError()
+                                line = line[match_size:]
+
+                            matrice_line.append(type_list.copy())
+
+                        matrice_column.append(matrice_line.copy())
+                    elif value[0] == MATRICE_COLUMN_SEPARATOR:
+                        value = value[1:]
+                        count_n += 1
                     else:
                         raise SyntaxError()
 
-            self._value = value
+                self._value = matrice_column
+            else:
+                # Cannot create empty matrice.
+                raise SyntaxError()
+
         except SyntaxError:
             raise SyntaxError(
                 "An error occured when trying to create "
@@ -216,12 +248,37 @@ class Matrice(BaseType):
                 + value
             )
 
-    def __init__(self, value: str):
+    def __init__(self, value: str, pending_calc: bool = False):
         super().__init__()
         # Set to -1 before initializing the matrice value.
         self._n = -1
         self._m = -1
         self.value = value
+        # pending_calc attribute is used to know if some calculation is unresolve inside the matrice.
+        self.pending_calc = pending_calc
+
+    def __str__(self) -> str:
+        ret: str = "["
+        first_column = True
+        for column in self.value:
+            if first_column:
+                first_column = False
+            else:
+                ret += " ; "
+            ret += "["
+            first_line = True
+            for line in column:
+                if first_line:
+                    first_line = False
+                else:
+                    ret += " , "
+                for elem in line:
+                    ret += str(elem)
+            ret += "]"
+        return ret + "]"
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "('" + str(self) + "')"
 
 
 class Operator:

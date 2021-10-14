@@ -6,6 +6,7 @@ from src.types.types import *
 from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
+    check_type_listed_expression_and_add_implicit_cross_operators,
 )
 from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
 
@@ -47,10 +48,18 @@ class Calculator:
         This method take two real type in input and an operator and return a real by resolving trivial calculation
         """
 
-        print("Real calculator :") if self._verbose is True else None
+        print("\nReal calculator :") if self._verbose is True else None
         print(
-            str(elem_one) + " " + str(operator) + " " + str(elem_two)
+            str(elem_one) + " " + str(operator) + " " + str(elem_two) + "\n"
         ) if self._verbose is True else None
+
+        if not isinstance(elem_one, Real) or not isinstance(elem_two, Real):
+            raise ValueError(
+                """
+                Wrong type in real calculator. Input type should be:
+                Real or Complex.
+                """
+            )
 
         if operator.value == "+":
             return Real(str(my_round(float(elem_one.value) + float(elem_two.value))))
@@ -92,9 +101,9 @@ class Calculator:
         This method take real/complex in input and an operator and return an imaginary by resolving calculation
         """
 
-        print("Complex calculator :") if self._verbose is True else None
+        print("\nComplex calculator :") if self._verbose is True else None
         print(
-            str(elem_one) + " " + str(operator) + " " + str(elem_two)
+            str(elem_one) + " " + str(operator) + " " + str(elem_two) + "\n"
         ) if self._verbose is True else None
 
         # Convert real into complex.
@@ -102,6 +111,14 @@ class Calculator:
             elem_one = Complex(real_value=elem_one.value, imaginary_value=str(float(0.0)))
         if isinstance(elem_two, Real):
             elem_two = Complex(real_value=elem_two.value, imaginary_value=str(float(0.0)))
+
+        if not isinstance(elem_one, Complex) or not isinstance(elem_two, Complex):
+            raise ValueError(
+                """
+                Wrong type in complex calculator. Input type should be:
+                Real or Complex.
+                """
+            )
 
         if operator.value == "+":
             real_value = str(my_round(float(elem_one.real.value) + float(elem_two.real.value)))
@@ -268,17 +285,75 @@ class Calculator:
                 "Operator '" + operator.value + "' not implemented yet for complex.",
             )
 
+    def _resolve_inside_matrice(self, matrice: Matrice) -> Matrice:
+        if isinstance(matrice, Matrice) and matrice.pending_calc:
+            print("\nResolve_inside_matrice :") if self._verbose is True else None
+            print(str(matrice) + "\n") if self._verbose is True else None
+            for column in matrice.value:
+                for line in column:
+                    line[0] = self.solve(
+                        type_listed_expression=check_type_listed_expression_and_add_implicit_cross_operators(
+                            type_listed_expression=line
+                        ),
+                        verbose=self._verbose,
+                    )
+            matrice.pending_calc = False
+        else:
+            return matrice
+
     def _matrice_calculator(
-        self, elem_one: Union[Real, Complex], elem_two: Union[Real, Complex], operator: Operator
-    ) -> Complex:
+        self,
+        elem_one: Union[Real, Complex, Matrice],
+        elem_two: Union[Real, Complex, Matrice],
+        operator: Operator,
+    ) -> Matrice:
         """
         This method take matrice/real/complex in input and an operator and return a matrice by resolving calculation
         """
-        print("Matrice calculator :") if self._verbose is True else None
+        print("\nMatrice calculator :") if self._verbose is True else None
         print(
-            str(elem_one) + " " + str(operator) + " " + str(elem_two)
+            str(elem_one) + " " + str(operator) + " " + str(elem_two) + "\n"
         ) if self._verbose is True else None
-        return Matrice(value="[[0.0,0.0];[0.0,0.0]]")
+
+        if not isinstance(elem_one, Matrice) and not isinstance(elem_two, Matrice):
+            raise ValueError(
+                """
+                Wrong type in matrice calculator. Input type should be:
+                At least one matrice type and Real/Complex.
+                """
+            )
+
+        # Check for unresolved matrice.
+        self._resolve_inside_matrice(matrice=elem_one)
+        self._resolve_inside_matrice(matrice=elem_two)
+
+        if (
+            isinstance(elem_one, Matrice)
+            and (isinstance(elem_two, Real) or isinstance(elem_two, Complex))
+        ) or (
+            isinstance(elem_two, Matrice)
+            and (isinstance(elem_one, Real) or isinstance(elem_one, Complex))
+        ):
+            # Calcul matrice by Complex/Real
+            if isinstance(elem_one, Matrice):
+                matrice: Matrice = elem_one
+                complex_or_real: Union[Real, Complex] = elem_two
+            else:
+                matrice: Matrice = elem_two
+                complex_or_real: Union[Real, Complex] = elem_one
+            for column in matrice.value:
+                for line in column:
+                    if isinstance(line[0], Complex) or isinstance(complex_or_real, Complex):
+                        line[0] = self._complex_calculator(
+                            elem_one=line[0], elem_two=complex_or_real, operator=operator
+                        )
+                    else:
+                        line[0] = self._real_calculator(
+                            elem_one=line[0], elem_two=complex_or_real, operator=operator
+                        )
+            return matrice
+        else:
+            return None
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
         """
@@ -313,6 +388,7 @@ class Calculator:
                 elif calc_is_in_matrice(
                     elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
                 ):
+
                     result = self._matrice_calculator(
                         elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
                     )
@@ -349,4 +425,8 @@ class Calculator:
         ) if self._verbose is True else None
 
         result: BaseType = self._resolve_rpi_type_listed_expression()
+
+        # Check for unresolved matrice.
+        result = self._resolve_inside_matrice(matrice=result)
+
         return result
