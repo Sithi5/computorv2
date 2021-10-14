@@ -287,19 +287,20 @@ class Calculator:
 
     def _resolve_inside_matrice(self, matrice: Matrice) -> Matrice:
         if isinstance(matrice, Matrice) and matrice.pending_calc:
+
             print("\nResolve_inside_matrice :") if self._verbose is True else None
             print(str(matrice) + "\n") if self._verbose is True else None
+
             for column in matrice.value:
                 for line in column:
-                    line[0] = self.solve(
+                    line = self.solve(
                         type_listed_expression=check_type_listed_expression_and_add_implicit_cross_operators(
                             type_listed_expression=line
                         ),
                         verbose=self._verbose,
                     )
             matrice.pending_calc = False
-        else:
-            return matrice
+        return matrice
 
     def _matrice_calculator(
         self,
