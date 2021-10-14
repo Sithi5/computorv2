@@ -16,7 +16,7 @@ def test_undefined():
     assert str(e.value) == "('The expression lead to a modulo zero : ', '5.0 + 2.0i', ' % ', '0.0')"
     with pytest.raises(ValueError) as e:
         resolver.solve(expression=" 5%0")
-    assert str(e.value) == "('The expression lead to a modulo zero : ', '5', ' % ', '0')"
+    assert str(e.value) == "('The expression lead to a modulo zero : ', '5.0', ' % ', '0.0')"
     with pytest.raises(ValueError) as e:
         resolver.solve(expression=" 5/0")
-    assert str(e.value) == "('The expression lead to a division by zero : ', '5', ' / ', '0')"
+    assert str(e.value) == "('The expression lead to a division by zero : ', '5.0', ' / ', '0.0')"

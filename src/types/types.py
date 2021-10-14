@@ -167,6 +167,7 @@ class Matrice(BaseType):
     @value.setter
     def value(self, value: str):
         try:
+            self._value = value
             count_n: int = 0
             count_m: int = 0
             matrice_column: list = []
@@ -245,7 +246,7 @@ class Matrice(BaseType):
                 "An error occured when trying to create "
                 + self.__class__.__name__
                 + " object with the value : "
-                + value
+                + self._value
             )
 
     def __init__(self, value: str, pending_calc: bool = False):

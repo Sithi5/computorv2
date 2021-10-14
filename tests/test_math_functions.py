@@ -1,6 +1,6 @@
 import pytest
 
-from src.math_functions import my_power, my_sqrt, my_round, my_atan, my_cos
+from src.math_utils import my_power, my_sqrt, my_round, my_atan, my_cos
 
 
 def test_my_power():
@@ -27,12 +27,12 @@ def test_my_sqrt():
     assert my_sqrt(number=4) == 2
     assert my_sqrt(number=16) == 4
     assert my_sqrt(number=16.545) == 4.067554547882548
-    assert my_sqrt(number=0.5454575) == 0.738550946110016
+    assert my_sqrt(number=0.5454575) == 0.7385509461100161
     assert my_sqrt(number=1758) == 41.92851058647326
     assert my_sqrt(number=99999999999999) == 9999999.99999995
     assert my_sqrt(number=99999999999999999) == 316227766.01683795
-    assert my_sqrt(number=0.00000025) == 0.0005
-    assert my_sqrt(number=0.00000033) == 0.000574456264654
+    assert my_sqrt(number=0.00000025) == 0.0005000000000000059
+    assert my_sqrt(number=0.00000033) == 0.0005744562646538029
 
 
 def test_my_atan():
