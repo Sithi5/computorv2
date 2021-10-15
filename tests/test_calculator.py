@@ -1,7 +1,11 @@
 import pytest
 
 from src.expression_resolver import ExpressionResolver
-from src.matrix_utils import square_matrix_factory
+
+from src.matrix_utils import (
+    return_2d_matrix_in_str,
+    identity_square_matrix_factory,
+)
 
 
 def test_calculator_complex():
@@ -122,6 +126,11 @@ def test_calculator_matrice():
         resolver.solve(expression="[[5,2];[1,9i]] ^ 1.5")
     assert str(e.value) == "A matrix should be powered by Natural numbers."
 
-
-def test_square_matrix_factory():
-    matrix = square_matrix_factory(size=15)
+    # Matrix powered by 0, should return an identity matrix
+    matrix = resolver.solve(expression="[[5,2];[1,9i]] ^ 0")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(
+        matrix=identity_square_matrix_factory(size=2)
+    )
+    assert return_2d_matrix_in_str(matrix=matrix) != return_2d_matrix_in_str(
+        matrix=identity_square_matrix_factory(size=4)
+    )
