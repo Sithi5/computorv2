@@ -1,6 +1,6 @@
 import pytest
 
-from src.math_utils import my_power, my_sqrt, my_round, my_atan, my_cos
+from src.math_utils import is_natural, my_power, my_sqrt, my_round, my_atan, my_cos
 
 
 def test_my_power():
@@ -88,3 +88,14 @@ def test_my_round():
     # Negative round
     assert my_round(-1.045754345454242, 6) == -1.045754
     assert my_round(-0.47513146390886934, 6) == -0.475131
+
+
+def test_is_natural():
+    assert is_natural(n="1") == True
+    assert is_natural(n="1.0") == True
+    assert is_natural(n="1.0") == True
+    assert is_natural(n="-1.0") == True
+    assert is_natural(n="-1.02") == False
+    assert is_natural(n="1.02") == False
+    assert is_natural(n="(1.02 + 6i)") == False
+    assert is_natural(n="(1 + 6i)") == False

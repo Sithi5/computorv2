@@ -128,7 +128,7 @@ def is_natural(n: str) -> bool:
     try:
         f = float(n)
         i = int(f)
-        if float(n) != f:
+        if f != float(i):
             return False
         else:
             return True
