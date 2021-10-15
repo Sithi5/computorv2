@@ -1,9 +1,9 @@
-from src.types.types import Matrix
+from src.types.types import Matrix, Real
 
 
 def square_matrix_factory(size: int) -> Matrix:
     if size < 1:
-        raise ValueError("Matrix should be of size one minimum.")
+        raise ValueError("Input size should be a strictly positive Natural number.")
     first_column = True
     matrice_value = "["
     for i in range(size):
@@ -27,10 +27,20 @@ def square_matrix_factory(size: int) -> Matrix:
 
 def identity_square_matrix_factory(size: int) -> Matrix:
     matrix = square_matrix_factory(size=size)
+    i = 0
+    for column in matrix.value:
+        j = 0
+        for line in column:
+            if j == i:
+                line.clear()
+                line.append(Real(value="1.0"))
+            j += 1
+        i += 1
+
     return matrix
 
 
-def print_matrix(matrix: Matrix):
+def return_2d_matrix_in_str(matrix: Matrix) -> str:
     matrix_value = ""
     first_column = True
 
@@ -48,6 +58,4 @@ def print_matrix(matrix: Matrix):
             matrix_value += "["
             matrix_value += str(line[0])
             matrix_value += "]"
-    print()
-    print(matrix_value)
-    print()
+    return "\n" + matrix_value + "\n"
