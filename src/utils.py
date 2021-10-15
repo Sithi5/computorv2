@@ -10,13 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-from src.globals_vars import (
-    OPERATORS,
-    SIGN,
-    COMMA,
-    OPEN_PARENTHESES,
-    CLOSING_PARENTHESES,
-)
+from src.globals_vars import *
 
 from src.math_utils import is_real
 
@@ -200,12 +194,20 @@ def parse_sign(expression: str):
     """
     Removing extra _sign
     """
-    while "--" in expression or "++" in expression or "-+" in expression or "+-" in expression:
+    while (
+        SUBSTRACTION_SIGN + SUBSTRACTION_SIGN in expression
+        or ADDITION_SIGN + ADDITION_SIGN in expression
+        or SUBSTRACTION_SIGN + ADDITION_SIGN in expression
+        or ADDITION_SIGN + SUBSTRACTION_SIGN in expression
+    ):
         expression = (
-            expression.replace("--", "+").replace("++", "+").replace("+-", "-").replace("-+", "-")
+            expression.replace(SUBSTRACTION_SIGN + SUBSTRACTION_SIGN, ADDITION_SIGN)
+            .replace(ADDITION_SIGN + ADDITION_SIGN, ADDITION_SIGN)
+            .replace(ADDITION_SIGN + SUBSTRACTION_SIGN, SUBSTRACTION_SIGN)
+            .replace(SUBSTRACTION_SIGN + ADDITION_SIGN, SUBSTRACTION_SIGN)
         )
     if len(expression) > 0:
-        if expression[0] == "+":
+        if expression[0] == ADDITION_SIGN:
             expression = expression[1:]
     return expression
 
@@ -219,7 +221,7 @@ def get_var_multiplier(var, var_name) -> float:
     var = var.replace("*", "")
 
     # This is because we can have X or -X
-    if var == "-":
+    if var == SUBSTRACTION_SIGN:
         var = -1
     elif len(var) < 1:
         var = 1

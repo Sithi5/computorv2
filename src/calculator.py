@@ -2,6 +2,7 @@ from math import cos, sin, atan
 
 from typing import Union
 
+from src.globals_vars import *
 from src.types.types import *
 from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
@@ -61,11 +62,11 @@ class Calculator:
                 """
             )
 
-        if operator.value == "+":
+        if operator.value == ADDITION_SIGN:
             return Real(str(my_round(float(elem_one.value) + float(elem_two.value))))
-        elif operator.value == "-":
+        elif operator.value == SUBSTRACTION_SIGN:
             return Real(str(my_round(float(elem_one.value) - float(elem_two.value))))
-        elif operator.value == "%":
+        elif operator.value == MODULO_SIGN:
             if float(elem_two.value) == 0.0:
                 raise ValueError(
                     "The expression lead to a modulo zero : ",
@@ -75,7 +76,7 @@ class Calculator:
                 )
             return Real(str(my_round(float(elem_one.value) % float(elem_two.value))))
 
-        elif operator.value == "/":
+        elif operator.value == DIVISION_SIGN:
             if float(elem_two.value) == 0.0:
                 raise ValueError(
                     "The expression lead to a division by zero : ",
@@ -84,9 +85,9 @@ class Calculator:
                     str(elem_two),
                 )
             return Real(str(my_round(float(elem_one.value) / float(elem_two.value))))
-        elif operator.value == "*":
+        elif operator.value == MULTIPLICATION_SIGN:
             return Real(str(my_round(float(elem_one.value) * float(elem_two.value))))
-        elif operator.value == "^":
+        elif operator.value == EXPONENT_SIGN:
             return Real(str(my_round(my_power(float(elem_one.value), int(float(elem_two.value))))))
         else:
             raise ValueError(
@@ -120,7 +121,7 @@ class Calculator:
                 """
             )
 
-        if operator.value == "+":
+        if operator.value == ADDITION_SIGN:
             real_value = str(my_round(float(elem_one.real.value) + float(elem_two.real.value)))
             imaginary_value = str(
                 my_round(float(elem_one.imaginary.value) + float(elem_two.imaginary.value))
@@ -129,7 +130,7 @@ class Calculator:
                 real_value=real_value,
                 imaginary_value=imaginary_value,
             )
-        elif operator.value == "-":
+        elif operator.value == SUBSTRACTION_SIGN:
             real_value = str(my_round(float(elem_one.real.value) - float(elem_two.real.value)))
             imaginary_value = str(
                 my_round(float(elem_one.imaginary.value) - float(elem_two.imaginary.value))
@@ -138,7 +139,7 @@ class Calculator:
                 real_value=real_value,
                 imaginary_value=imaginary_value,
             )
-        elif operator.value == "*":
+        elif operator.value == MULTIPLICATION_SIGN:
             # "Firsts, Outers, Inners, Lasts"
             real_value = str(
                 my_round(
@@ -156,7 +157,7 @@ class Calculator:
                 real_value=real_value,
                 imaginary_value=imaginary_value,
             )
-        elif operator.value == "/":
+        elif operator.value == DIVISION_SIGN:
             if float(elem_two.real.value) == 0.0 and float(elem_two.imaginary.value) == 0.0:
                 raise ValueError(
                     "The expression lead to a division zero : ",
@@ -182,7 +183,7 @@ class Calculator:
                 real_value=real_value,
                 imaginary_value=imaginary_value,
             )
-        elif operator.value == "%":
+        elif operator.value == MODULO_SIGN:
             if float(elem_two.imaginary.value) != 0.0 and float(elem_two.real.value) != 0.0:
                 raise ValueError(
                     "Can only modulo by an imaginary number or by a real number. Not by a complex. Undefined behavior."
@@ -206,7 +207,7 @@ class Calculator:
                 real_value=real_value,
                 imaginary_value=imaginary_value,
             )
-        elif operator.value == "^":
+        elif operator.value == EXPONENT_SIGN:
             if float(elem_two.imaginary.value) != 0.0:
                 raise NotImplementedError(
                     "Complex exponent is not implemented yet.",
@@ -324,7 +325,7 @@ class Calculator:
                 """
             )
 
-        # Check for unresolved matrice.
+        # Check for unresolved matrice and resolve it.
         self._resolve_inside_matrice(matrice=elem_one)
         self._resolve_inside_matrice(matrice=elem_two)
 
@@ -336,6 +337,12 @@ class Calculator:
             and (isinstance(elem_one, Real) or isinstance(elem_one, Complex))
         ):
             # Calcul matrice by Complex/Real
+            if operator.value in SIGN or operator.value in DIVIDING_OPERATORS:
+                raise ValueError(
+                    "Operator "
+                    + operator.value
+                    + " have an undefined behavior between a matrice and a real/complex number."
+                )
             if isinstance(elem_one, Matrice):
                 matrice: Matrice = elem_one
                 complex_or_real: Union[Real, Complex] = elem_two
@@ -427,7 +434,7 @@ class Calculator:
 
         result: BaseType = self._resolve_rpi_type_listed_expression()
 
-        # Check for unresolved matrice.
+        # Check for unresolved matrice and resolve it.
         result = self._resolve_inside_matrice(matrice=result)
 
         return result

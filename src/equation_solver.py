@@ -12,9 +12,7 @@
 
 import re
 
-from globals_vars import (
-    SIGN,
-)
+from src.globals_vars import *
 
 from src.utils import (
     convert_to_tokens,
@@ -25,7 +23,7 @@ from src.utils import (
     split_expression_parts_from_tokens,
 )
 
-from src.math_functions import my_power, my_round, my_sqrt
+from src.math_utils import my_power, my_round, my_sqrt
 
 
 class _EquationSolver:
@@ -75,13 +73,21 @@ class _EquationSolver:
                 if self._check_have_var(part):
                     power = self._get_power(part)
                     if power == 1:
-                        polynom_dict["b"] = "-" + part if sign == "-" else part
+                        polynom_dict["b"] = (
+                            SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                        )
                     elif power == 2:
-                        polynom_dict["a"] = "-" + part if sign == "-" else part
+                        polynom_dict["a"] = (
+                            SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                        )
                     else:
-                        polynom_dict[str(power)] = "-" + part if sign == "-" else part
+                        polynom_dict[str(power)] = (
+                            SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                        )
                 else:
-                    polynom_dict["c"] = "-" + part if sign == "-" else part
+                    polynom_dict["c"] = (
+                        SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                    )
                 part = ""
             if simplified_part[index] in SIGN:
                 sign = simplified_part[index]
@@ -91,13 +97,15 @@ class _EquationSolver:
         if self._check_have_var(part):
             power = self._get_power(part)
             if power == 1:
-                polynom_dict["b"] = "-" + part if sign == "-" else part
+                polynom_dict["b"] = SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
             elif power == 2:
-                polynom_dict["a"] = "-" + part if sign == "-" else part
+                polynom_dict["a"] = SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
             else:
-                polynom_dict[str(power)] = "-" + part if sign == "-" else part
+                polynom_dict[str(power)] = (
+                    SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                )
         else:
-            polynom_dict["c"] = "-" + part if sign == "-" else part
+            polynom_dict["c"] = SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
         return polynom_dict
 
     def _push_right_to_left(self):
@@ -110,7 +118,7 @@ class _EquationSolver:
                 convert_signed_number(
                     parse_sign(
                         add_implicit_cross_operator_for_vars(list(self.var_name), str(left_value))
-                        + "-"
+                        + SUBSTRACTION_SIGN
                         + add_implicit_cross_operator_for_vars(
                             list(self.var_name), str(right_value)
                         )
@@ -245,7 +253,7 @@ class _EquationSolver:
         split = string.split(self.var_name + "^")
         index = 1
         while index < len(split):
-            if split[index].startswith("-"):
+            if split[index].startswith(SUBSTRACTION_SIGN):
                 raise NotImplementedError(f"Some part of the polynomial var have negative power.")
             index += 1
 
