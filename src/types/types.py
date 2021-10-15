@@ -154,12 +154,7 @@ class Complex(BaseType):
                 return str(self.real) + " - " + str(my_abs(float(self.imaginary.value))) + "i"
 
 
-class Matrice(BaseType):
-    # Total columns.
-    _n: int
-    # Total lines.
-    _m: int
-
+class Matrix(BaseType):
     @property
     def value(self):
         return self._value
@@ -168,8 +163,6 @@ class Matrice(BaseType):
     def value(self, value: str):
         try:
             self._value = value
-            count_n: int = 0
-            count_m: int = 0
             matrice_column: list = []
             # [*.]
             if value[0] != MATRICE_OPEN_PARENTHESES or value[-1] != MATRICE_CLOSING_PARENTHESES:
@@ -184,7 +177,7 @@ class Matrice(BaseType):
                     if matched_matrice_column:
 
                         value = value[len(matched_matrice_column.group(0)) :]
-                        count_n += 1
+                        self.n += 1
 
                         matrice_line: list = []
 
@@ -192,10 +185,10 @@ class Matrice(BaseType):
                         matched_matrice_column = matched_matrice_column.group(0)[1:-1]
 
                         matched_lines = matched_matrice_column.split(MATRICE_LINE_SEPARATOR)
-                        if self._m == -1:
+                        if self.m == -1:
                             # Set the total line.
-                            self._m = len(matched_lines)
-                        elif self._m != len(matched_lines):
+                            self.m = len(matched_lines)
+                        elif self.m != len(matched_lines):
                             # Error line are not the same size.
                             raise SyntaxError()
 
@@ -232,7 +225,7 @@ class Matrice(BaseType):
                         matrice_column.append(matrice_line.copy())
                     elif value[0] == MATRICE_COLUMN_SEPARATOR:
                         value = value[1:]
-                        count_n += 1
+                        self.n += 1
                     else:
                         raise SyntaxError()
 
@@ -252,8 +245,8 @@ class Matrice(BaseType):
     def __init__(self, value: str, pending_calc: bool = False):
         super().__init__()
         # Set to -1 before initializing the matrice value.
-        self._n = -1
-        self._m = -1
+        self.n = -1
+        self.m = -1
         self.value = value
         # pending_calc attribute is used to know if some calculation is unresolve inside the matrice.
         self.pending_calc = pending_calc

@@ -10,6 +10,7 @@ from src.types.types_utils import (
     check_type_listed_expression_and_add_implicit_cross_operators,
 )
 from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
+from src.matrix_utils import identity_square_square_matrix_factory
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
@@ -37,7 +38,7 @@ def calc_is_in_matrice(elem_one: BaseType, elem_two: BaseType, operator: BaseTyp
     """
     This method take two type in input and return true if the result of the calcul between those two type will be a matrice type.
     """
-    return isinstance(elem_one, Matrice) or isinstance(elem_two, Matrice)
+    return isinstance(elem_one, Matrix) or isinstance(elem_two, Matrix)
 
 
 class Calculator:
@@ -104,7 +105,7 @@ class Calculator:
 
         print("\nComplex calculator :") if self._verbose is True else None
         print(
-            str(elem_one) + " " + str(operator) + " " + str(elem_two) + "\n"
+            "(" + str(elem_one) + ")" + " " + str(operator) + " " + "(" + str(elem_two) + ")" + "\n"
         ) if self._verbose is True else None
 
         # Convert real into complex.
@@ -170,10 +171,14 @@ class Calculator:
                 imaginary_value=str(float(elem_two.imaginary.value) * -1.0),
             )
             dividend: Complex = self._complex_calculator(
-                elem_one=elem_one, elem_two=conjugate_value, operator=Operator(value="*")
+                elem_one=elem_one,
+                elem_two=conjugate_value,
+                operator=Operator(value=MULTIPLICATION_SIGN),
             )
             divider: Complex = self._complex_calculator(
-                elem_one=elem_two, elem_two=conjugate_value, operator=Operator(value="*")
+                elem_one=elem_two,
+                elem_two=conjugate_value,
+                operator=Operator(value=MULTIPLICATION_SIGN),
             )
             if float(divider.imaginary.value) != 0.0:
                 raise Exception("Unexpected error when trying to resolve a division in complex.")
@@ -278,7 +283,7 @@ class Calculator:
                     imaginary_value="0.0",
                 )
                 result = self._complex_calculator(
-                    elem_one=r, elem_two=e, operator=Operator(value="*")
+                    elem_one=r, elem_two=e, operator=Operator(value=MULTIPLICATION_SIGN)
                 )
                 return result
         else:
@@ -286,29 +291,33 @@ class Calculator:
                 "Operator '" + operator.value + "' not implemented yet for complex.",
             )
 
-    def _resolve_inside_matrice(self, matrice: Matrice) -> Matrice:
-        if isinstance(matrice, Matrice) and matrice.pending_calc:
+    def _resolve_inside_matrice(self, matrice: Matrix) -> Matrix:
+        if isinstance(matrice, Matrix) and matrice.pending_calc:
 
             print("\nResolve_inside_matrice :") if self._verbose is True else None
             print(str(matrice) + "\n") if self._verbose is True else None
 
             for column in matrice.value:
                 for line in column:
-                    line = self.solve(
-                        type_listed_expression=check_type_listed_expression_and_add_implicit_cross_operators(
-                            type_listed_expression=line
-                        ),
-                        verbose=self._verbose,
+                    line_save = line.copy()
+                    line.clear()
+                    line.append(
+                        self.solve(
+                            type_listed_expression=check_type_listed_expression_and_add_implicit_cross_operators(
+                                type_listed_expression=line_save
+                            ),
+                            verbose=self._verbose,
+                        )
                     )
             matrice.pending_calc = False
         return matrice
 
     def _matrice_calculator(
         self,
-        elem_one: Union[Real, Complex, Matrice],
-        elem_two: Union[Real, Complex, Matrice],
+        elem_one: Union[Real, Complex, Matrix],
+        elem_two: Union[Real, Complex, Matrix],
         operator: Operator,
-    ) -> Matrice:
+    ) -> Matrix:
         """
         This method take matrice/real/complex in input and an operator and return a matrice by resolving calculation
         """
@@ -317,7 +326,7 @@ class Calculator:
             str(elem_one) + " " + str(operator) + " " + str(elem_two) + "\n"
         ) if self._verbose is True else None
 
-        if not isinstance(elem_one, Matrice) and not isinstance(elem_two, Matrice):
+        if not isinstance(elem_one, Matrix) and not isinstance(elem_two, Matrix):
             raise ValueError(
                 """
                 Wrong type in matrice calculator. Input type should be:
@@ -330,38 +339,78 @@ class Calculator:
         self._resolve_inside_matrice(matrice=elem_two)
 
         if (
-            isinstance(elem_one, Matrice)
+            isinstance(elem_one, Matrix)
             and (isinstance(elem_two, Real) or isinstance(elem_two, Complex))
         ) or (
-            isinstance(elem_two, Matrice)
+            isinstance(elem_two, Matrix)
             and (isinstance(elem_one, Real) or isinstance(elem_one, Complex))
         ):
             # Calcul matrice by Complex/Real
-            if operator.value in SIGN or operator.value in DIVIDING_OPERATORS:
+            if operator.value in SIGN:
                 raise ValueError(
-                    "Operator "
+                    "Operator '"
                     + operator.value
-                    + " have an undefined behavior between a matrice and a real/complex number."
+                    + "' have an undefined behavior between a matrice and a real/complex number."
                 )
-            if isinstance(elem_one, Matrice):
-                matrice: Matrice = elem_one
+            if operator.value != MULTIPLICATION_SIGN and isinstance(elem_two, Matrix):
+                raise ValueError(
+                    "A real/complex have an undefined behavior with the following operator '"
+                    + operator.value
+                    + "' and a matrice."
+                )
+            if isinstance(elem_one, Matrix):
+                matrice: Matrix = elem_one
                 complex_or_real: Union[Real, Complex] = elem_two
             else:
-                matrice: Matrice = elem_two
+                matrice: Matrix = elem_two
                 complex_or_real: Union[Real, Complex] = elem_one
-            for column in matrice.value:
-                for line in column:
-                    if isinstance(line[0], Complex) or isinstance(complex_or_real, Complex):
-                        line[0] = self._complex_calculator(
-                            elem_one=line[0], elem_two=complex_or_real, operator=operator
+            if operator.value == EXPONENT_SIGN:
+                if not isinstance(complex_or_real, Real) or not is_natural(n=complex_or_real.value):
+                    raise ValueError("A matrice should be powered by Natural numbers.")
+                if matrice.m != matrice.n:
+                    raise NotImplementedError("Powering a matrice only work for square matrix.")
+                natural_exponent = float(complex_or_real.value)
+                if natural_exponent > 0:
+                    while natural_exponent > 1:
+                        matrice = self._matrice_calculator(
+                            elem_one=matrice,
+                            elem_two=matrice,
+                            operator=Operator(value=MULTIPLICATION_SIGN),
                         )
-                    else:
-                        line[0] = self._real_calculator(
-                            elem_one=line[0], elem_two=complex_or_real, operator=operator
-                        )
+                        natural_exponent -= 1
+                elif natural_exponent == 0:
+                    # Return by convention the identity matrix
+                    return identity_square_matrix_factory(size=matrice.m)
+                else:
+                    raise NotImplementedError(
+                        "Powering a matrice by a negative number is not implemented yet."
+                    )
+            else:
+                for column in matrice.value:
+                    for line in column:
+                        if isinstance(line[0], Complex) or isinstance(complex_or_real, Complex):
+                            line[0] = self._complex_calculator(
+                                elem_one=line[0], elem_two=complex_or_real, operator=operator
+                            )
+                        else:
+                            line[0] = self._real_calculator(
+                                elem_one=line[0], elem_two=complex_or_real, operator=operator
+                            )
             return matrice
         else:
-            return None
+            matrice_one = elem_one
+            matrice_two = elem_two
+            # Matrix should be of same size.
+            if matrice_one.n != matrice_two.n or matrice_one.m != matrice_two.m:
+                raise ValueError(
+                    "A real/complex have an undefined behavior with the following operator '"
+                    + operator.value
+                    + "' and a matrice."
+                )
+            if operator.value == ADDITION_SIGN:
+                pass
+
+            # Calcul matrice with matrice
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
         """
@@ -392,7 +441,7 @@ class Calculator:
                     result = self._complex_calculator(
                         elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
                     )
-                # Matrice calc
+                # Matrix calc
                 elif calc_is_in_matrice(
                     elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
                 ):

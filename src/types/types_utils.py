@@ -105,7 +105,7 @@ def convert_expression_to_type_list(
                     "No potential matrice should be found in the expression. (no_potential_matrice set to true.)"
                 )
             match_size = len(matched_potential_matrice.group(0))
-            type_list.append(Matrice(value=matched_potential_matrice.group(0), pending_calc=True))
+            type_list.append(Matrix(value=matched_potential_matrice.group(0), pending_calc=True))
         # Match functions before var because can have a var inside
         elif matched_function:
             if no_function:
