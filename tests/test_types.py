@@ -26,8 +26,8 @@ def test_types_creation():
     # Test complex
 
     Complex(real_value="10", imaginary_value="i")
-    Complex(real_value="10", imaginary_value="i")
-    Complex(real_value="10", imaginary_value="i")
+    Complex(real_value="10", imaginary_value="1")
+    Complex(real_value="10", imaginary_value="1i")
     with pytest.raises(SyntaxError) as e:
         complex = Complex(real_value="3", imaginary_value="[35]")
     assert (
@@ -41,6 +41,11 @@ def test_types_creation():
         == "An error occured when trying to create Complex object: An error occured when trying to create Real object with the value : 3.12309i"
     )
     Complex(real_value="35", imaginary_value="35")
+
+    # Test repr complex
+    complex = Complex(real_value="-0.72", imaginary_value="1.14")
+    assert complex.__repr__() == "Complex('-0.72 + 1.14i')"
+    assert str(complex) == "-0.72 + 1.14i"
 
     # Test functions
     Function(name="FN", argument="X")
@@ -57,48 +62,48 @@ def test_types_creation():
 
     # Empty matrice
     with pytest.raises(SyntaxError) as e:
-        Matrice(value="[]")
+        Matrix(value="[]")
     assert (
-        str(e.value) == "An error occured when trying to create Matrice object with the value : []"
+        str(e.value) == "An error occured when trying to create Matrix object with the value : []"
     )
     # Wrong value
     with pytest.raises(SyntaxError) as e:
-        Matrice(value="10")
+        Matrix(value="10")
     assert (
-        str(e.value) == "An error occured when trying to create Matrice object with the value : 10"
+        str(e.value) == "An error occured when trying to create Matrix object with the value : 10"
     )
 
     # Wrong column sep
     with pytest.raises(SyntaxError) as e:
-        Matrice(value="[[0],[0]]")
+        Matrix(value="[[0],[0]]")
     assert (
         str(e.value)
-        == "An error occured when trying to create Matrice object with the value : [[0],[0]]"
+        == "An error occured when trying to create Matrix object with the value : [[0],[0]]"
     )
-    Matrice(value="[[0];[0]]")
+    Matrix(value="[[0];[0]]")
 
     # No line
     with pytest.raises(SyntaxError) as e:
-        Matrice(value="[0]")
+        Matrix(value="[0]")
     assert (
-        str(e.value) == "An error occured when trying to create Matrice object with the value : [0]"
+        str(e.value) == "An error occured when trying to create Matrix object with the value : [0]"
     )
-    Matrice(value="[[0]]")
+    Matrix(value="[[0]]")
 
     # Wrong number of line
     with pytest.raises(SyntaxError) as e:
-        Matrice(value="[[0];[0];[0,2]]")
+        Matrix(value="[[0];[0];[0,2]]")
     assert (
         str(e.value)
-        == "An error occured when trying to create Matrice object with the value : [[0];[0];[0,2]]"
+        == "An error occured when trying to create Matrix object with the value : [[0];[0];[0,2]]"
     )
-    Matrice(value="[[0];[0];[0]]")
+    Matrix(value="[[0];[0];[0]]")
 
     # Wrong line sep
     with pytest.raises(SyntaxError) as e:
-        Matrice(value="[[0;5];[0;5]]")
+        Matrix(value="[[0;5];[0;5]]")
     assert (
         str(e.value)
-        == "An error occured when trying to create Matrice object with the value : [[0;5];[0;5]]"
+        == "An error occured when trying to create Matrix object with the value : [[0;5];[0;5]]"
     )
-    Matrice(value="[[0,5];[0,5]]")
+    Matrix(value="[[0,5];[0,5]]")

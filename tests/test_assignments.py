@@ -15,7 +15,7 @@ resolver = ExpressionResolver()
 #     assert str(e.value) == "Problem with assignment : trying to assign to a wrong type : Complex"
 #     with pytest.raises(SyntaxError) as e:
 #         resolver.solve("[5i]=2")
-#     assert str(e.value) == "Problem with assignment : trying to assign to a wrong type : Matrice"
+#     assert str(e.value) == "Problem with assignment : trying to assign to a wrong type : Matrix"
 
 
 # def test_simple_assignment():
