@@ -1,3 +1,5 @@
+import pytest
+
 from src.expression_resolver import ExpressionResolver
 
 
@@ -38,4 +40,27 @@ def test_calculator_complex():
 def test_calculator_matrice():
     resolver = ExpressionResolver(verbose=False)
 
-    pass
+    # Test undefined operation.
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="[[5,2];[1,9i]] + 5")
+    assert (
+        str(e.value)
+        == "Operator + have an undefined behavior between a matrice and a real/complex number."
+    )
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="5 - [[5,2];[1,9i]]")
+    assert (
+        str(e.value)
+        == "Operator - have an undefined behavior between a matrice and a real/complex number."
+    )
+    # Real divided by matrice
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="2 / [[5,2];[1,9i]]")
+    assert (
+        str(e.value)
+        == "Operator - have an undefined behavior between a matrice and a real/complex number."
+    )
+
+    # Multiply by real
+    ret = resolver.solve(expression="2 [[5,2];[1,9i]]")
+    assert str(ret) == "[[10.0 , 4.0] ; [2.0 , 18.0i]]"
