@@ -1,6 +1,7 @@
 import pytest
 
 from src.expression_resolver import ExpressionResolver
+from src.matrix_utils import square_matrix_factory
 
 
 def test_calculator_complex():
@@ -123,6 +124,4 @@ def test_calculator_matrice():
 
 
 def test_square_matrix_factory():
-    from src.matrix_utils import square_matrix_factory, print_matrix
-
-    print_matrix(matrix=square_matrix_factory(size=5))
+    matrix = square_matrix_factory(size=15)
