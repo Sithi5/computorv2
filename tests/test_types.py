@@ -58,9 +58,9 @@ def test_types_creation():
         == "An error occured when trying to create Function object with the name : TEST5NIMP and the argument : 15.2"
     )
 
-    # Test matrice
+    # Test matrix
 
-    # Empty matrice
+    # Empty matrix
     with pytest.raises(SyntaxError) as e:
         Matrix(value="[]")
     assert (

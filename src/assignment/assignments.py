@@ -37,7 +37,7 @@ class Assignments:
         force_calculator_verbose: bool = False,
     ):
         """
-        This method take a type_listed_expression, check if the assignment format is correct, assign a var/matrice/function and save it into a file.
+        This method take a type_listed_expression, check if the assignment format is correct, assign a var/matrix/function and save it into a file.
         """
 
         self._type_listed_expression = type_listed_expression

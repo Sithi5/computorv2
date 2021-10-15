@@ -66,7 +66,7 @@ def print_shell_help():
     'FunctionName(VariableName)' '=' 'expression'
 
 
-    Assign a matrice:
+    Assign a matrix:
 
     'MatriceName' '=' 'expression'
 

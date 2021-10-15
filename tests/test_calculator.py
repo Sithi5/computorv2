@@ -45,45 +45,45 @@ def test_calculator_matrice():
         resolver.solve(expression="[[5,2];[1,9i]] + 5")
     assert (
         str(e.value)
-        == "Operator '+' have an undefined behavior between a matrice and a real/complex number."
+        == "Operator '+' have an undefined behavior between a matrix and a real/complex number."
     )
     with pytest.raises(ValueError) as e:
         resolver.solve(expression="5 - [[5,2];[1,9i]]")
     assert (
         str(e.value)
-        == "Operator '-' have an undefined behavior between a matrice and a real/complex number."
+        == "Operator '-' have an undefined behavior between a matrix and a real/complex number."
     )
 
-    # Real divided by matrice
+    # Real divided by matrix
     with pytest.raises(ValueError) as e:
         resolver.solve(expression="2 / [[5,2];[1,9i]]")
     assert (
         str(e.value)
-        == "A real/complex have an undefined behavior with the following operator '/' and a matrice."
+        == "A real/complex have an undefined behavior with the following operator '/' and a matrix."
     )
 
-    # Real modulo by matrice
+    # Real modulo by matrix
     with pytest.raises(ValueError) as e:
         resolver.solve(expression="2 % [[5,2];[1,9i]]")
     assert (
         str(e.value)
-        == "A real/complex have an undefined behavior with the following operator '%' and a matrice."
+        == "A real/complex have an undefined behavior with the following operator '%' and a matrix."
     )
 
-    # Real powered by matrice
+    # Real powered by matrix
     with pytest.raises(ValueError) as e:
         resolver.solve(expression="2.15 ^ [[5,2];[1,9i]]")
     assert (
         str(e.value)
-        == "A real/complex have an undefined behavior with the following operator '^' and a matrice."
+        == "A real/complex have an undefined behavior with the following operator '^' and a matrix."
     )
 
-    # Real addition by matrice
+    # Real addition by matrix
     with pytest.raises(ValueError) as e:
         resolver.solve(expression="2 + [[5,2];[1,9i]]")
     assert (
         str(e.value)
-        == "Operator '+' have an undefined behavior between a matrice and a real/complex number."
+        == "Operator '+' have an undefined behavior between a matrix and a real/complex number."
     )
 
     # Multiply by Natural
@@ -109,20 +109,20 @@ def test_calculator_matrice():
     # Matrix powered by negative number
     with pytest.raises(NotImplementedError) as e:
         resolver.solve(expression="[[5,2];[1,9i]] ^ -1")
-    assert str(e.value) == "Powering a matrice by a negative number is not implemented yet."
+    assert str(e.value) == "Powering a matrix by a negative number is not implemented yet."
 
     # Matrix powered by complex number
     with pytest.raises(ValueError) as e:
         resolver.solve(expression="[[5,2];[1,9i]] ^ (1 + 5i)")
-    assert str(e.value) == "A matrice should be powered by Natural numbers."
+    assert str(e.value) == "A matrix should be powered by Natural numbers."
 
     # Matrix powered by Real number
     with pytest.raises(ValueError) as e:
         resolver.solve(expression="[[5,2];[1,9i]] ^ 1.5")
-    assert str(e.value) == "A matrice should be powered by Natural numbers."
+    assert str(e.value) == "A matrix should be powered by Natural numbers."
 
 
 def test_square_matrix_factory():
-    from src.matrix_utils import square_matrix_factory
+    from src.matrix_utils import square_matrix_factory, print_matrix
 
-    print(square_matrix_factory(size=5))
+    print_matrix(matrix=square_matrix_factory(size=5))

@@ -79,7 +79,7 @@ def convert_expression_to_type_list(
     Convert a string expression to a list using the different types object.
     A minimum of parsing is required before calling this function, accepting correct char, no space etc.
     option:
-        -   no_potential_matrice: if it's set to true, raise a ValueError if a potential matrice is matched.
+        -   no_potential_matrice: if it's set to true, raise a ValueError if a potential matrix is matched.
         -   no_function: if it's set to true, raise a ValueError if a function is matched.
         -   no_variable: if it's set to true, raise a ValueError if a variable is matched.
         -   no_equal_sign: if it's set to true, raise a ValueError if an operator '{EQUALS_SIGN}' is matched.
@@ -98,11 +98,11 @@ def convert_expression_to_type_list(
         matched_complex = regex_complex.match(string=expression)
         matched_real = regex_real.match(string=expression)
 
-        # Matching matrice should be first because it can be compound of more matrice/real/var etc.
+        # Matching matrix should be first because it can be compound of more matrix/real/var etc.
         if matched_potential_matrice:
             if no_potential_matrice:
                 raise ValueError(
-                    "No potential matrice should be found in the expression. (no_potential_matrice set to true.)"
+                    "No potential matrix should be found in the expression. (no_potential_matrice set to true.)"
                 )
             match_size = len(matched_potential_matrice.group(0))
             type_list.append(Matrix(value=matched_potential_matrice.group(0), pending_calc=True))

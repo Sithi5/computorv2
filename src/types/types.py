@@ -167,7 +167,7 @@ class Matrix(BaseType):
             # [*.]
             if value[0] != MATRICE_OPEN_PARENTHESES or value[-1] != MATRICE_CLOSING_PARENTHESES:
                 raise SyntaxError()
-            # Remove first matrice parentheses
+            # Remove first matrix parentheses
             value = value[1:-1]
             if len(value) > 0:
 
@@ -231,7 +231,7 @@ class Matrix(BaseType):
 
                 self._value = matrice_column
             else:
-                # Cannot create empty matrice.
+                # Cannot create empty matrix.
                 raise SyntaxError()
 
         except SyntaxError:
@@ -244,11 +244,11 @@ class Matrix(BaseType):
 
     def __init__(self, value: str, pending_calc: bool = False):
         super().__init__()
-        # Set to -1 before initializing the matrice value.
+        # Set to -1 before initializing the matrix value.
         self.n = -1
         self.m = -1
         self.value = value
-        # pending_calc attribute is used to know if some calculation is unresolve inside the matrice.
+        # pending_calc attribute is used to know if some calculation is unresolve inside the matrix.
         self.pending_calc = pending_calc
 
     def __str__(self) -> str:

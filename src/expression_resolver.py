@@ -84,7 +84,7 @@ class ExpressionResolver:
         last_operator = None
         # Var to check good parentheses use.
         parentheses_count = 0
-        # Var to check good matrice parentheses use.
+        # Var to check good matrix parentheses use.
         matrice_parentheses_count = 0
         last_char = False
         for idx, c in enumerate(self.expression):
@@ -132,7 +132,7 @@ class ExpressionResolver:
             if parentheses_count < 0:
                 raise SyntaxError("Closing parenthesis with no opened one.")
             if matrice_parentheses_count < 0:
-                raise SyntaxError("Closing matrice parenthesis with no opened one.")
+                raise SyntaxError("Closing matrix parenthesis with no opened one.")
             last_char = c
         if (
             self.expression[-1] in OPERATORS
@@ -143,7 +143,7 @@ class ExpressionResolver:
         if parentheses_count != 0:
             raise SyntaxError("Problem with parenthesis.")
         if matrice_parentheses_count != 0:
-            raise SyntaxError("Problem with matrice parenthesis.")
+            raise SyntaxError("Problem with matrix parenthesis.")
 
     def _parse_expression(self):
         print("Expression before parsing : ", self.expression) if self.verbose is True else None
@@ -177,7 +177,9 @@ class ExpressionResolver:
             "convert_expression_to_type_list : ", self.type_listed_expression
         ) if self.verbose is True else None
 
-        self.type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(type_listed_expression=self.type_listed_expression)
+        self.type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(
+            type_listed_expression=self.type_listed_expression
+        )
 
         print(
             "check_type_listed_expression_and_add_implicit_cross_operators : ",
