@@ -155,6 +155,17 @@ class Complex(BaseType):
 
 
 class Matrix(BaseType):
+    """
+    Matrix type, take a matrix like in input values:
+    Example:
+    -   [[5,3]]
+    -   [[5,3];[3i + 2.5 ,8]]
+    The matrix could have pending calcul inside, in that case the 'pending_calc' should be set to true at the initialization.
+    """
+
+    n: int  # Number of columns of the matrix
+    m: int  # Number of lines of the matrix
+
     @property
     def value(self):
         return self._value
