@@ -1,19 +1,22 @@
 from src.types.types import Matrix, Real
 
 
-def square_matrix_factory(size: int) -> Matrix:
-    if size < 1:
+def matrix_factory(columns_size: int, lines_size: int) -> Matrix:
+    """
+    Create a matrix with the input sizes and all value set to 0 and return it.
+    """
+    if columns_size < 1 or lines_size < 1:
         raise ValueError("Input size should be a strictly positive Natural number.")
     first_column = True
     matrice_value = "["
-    for i in range(size):
+    for i in range(columns_size):
         if first_column:
             first_column = False
         else:
             matrice_value += ";"
         matrice_value += "["
         first_line = True
-        for j in range(size):
+        for j in range(lines_size):
             if first_line:
                 first_line = False
             else:
@@ -23,6 +26,11 @@ def square_matrix_factory(size: int) -> Matrix:
     matrice_value += "]"
     matrix = Matrix(value=matrice_value)
     return matrix
+
+
+def square_matrix_factory(size: int) -> Matrix:
+    """Return a square matrix with the input size and all value set to 0."""
+    return matrix_factory(columns_size=size, lines_size=size)
 
 
 def identity_square_matrix_factory(size: int) -> Matrix:
