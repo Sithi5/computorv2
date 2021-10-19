@@ -30,7 +30,7 @@ def matrix_factory(columns_size: int, row_size: int) -> Matrix:
 
 def square_matrix_factory(size: int) -> Matrix:
     """Return a square matrix with the input size and all value set to 0."""
-    return matrix_factory(columns_size=size, lines_size=size)
+    return matrix_factory(columns_size=size, row_size=size)
 
 
 def identity_square_matrix_factory(size: int) -> Matrix:

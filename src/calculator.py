@@ -345,7 +345,8 @@ class Calculator:
             isinstance(elem_two, Matrix)
             and (isinstance(elem_one, Real) or isinstance(elem_one, Complex))
         ):
-            # Calcul matrix by Complex/Real
+            # CALCUL MATRIX WITH COMPLEX/REAL #
+
             if operator.value in SIGN:
                 raise ValueError(
                     "Operator '"
@@ -397,16 +398,21 @@ class Calculator:
                                 elem_one=row[0], elem_two=complex_or_real, operator=operator
                             )
             return matrix
+            # END OF CALCUL MATRIX WITH COMPLEX/REAL #
+
         else:
-            # Calcul matrix with matrix
-            matrice_one = elem_one
-            matrice_two = elem_two
+
+            # CALCUL MATRIX WITH MATRIX #
+
+            first_matrix = elem_one
+            second_matrix = elem_two
             if (
                 operator.value in MATRIX_OPERATORS + SIGN
                 and operator.value != MATRIX_MULTIPLICATION_SIGN
             ):
-                # Term to term calc
-                if matrice_one.n != matrice_two.n or matrice_one.m != matrice_two.m:
+                # MATRIX TERM TO TERM #
+
+                if first_matrix.n != second_matrix.n or first_matrix.m != second_matrix.m:
                     # Matrix should be of same size.
                     raise ValueError(
                         "For operator of type '"
@@ -415,38 +421,116 @@ class Calculator:
                     )
                 else:
                     columns_index = 0
-                    matrix = matrix_factory(columns_size=matrice_one.n, lines_size=matrice_one.m)
-                    while columns_index < matrice_one.n:
-                        lines_index = 0
-                        while lines_index < matrice_one.m:
+                    matrix = matrix_factory(columns_size=first_matrix.n, row_size=first_matrix.m)
+                    while columns_index < first_matrix.n:
+                        row_index = 0
+                        while row_index < first_matrix.m:
                             if isinstance(
-                                matrice_one.value[columns_index][lines_index][0], Complex
+                                first_matrix.value[columns_index][row_index][0], Complex
                             ) or isinstance(
-                                matrice_two.value[columns_index][lines_index][0], Complex
+                                second_matrix.value[columns_index][row_index][0], Complex
                             ):
-                                matrix.value[columns_index][lines_index][
+                                matrix.value[columns_index][row_index][
                                     0
                                 ] = self._complex_calculator(
-                                    elem_one=matrice_one.value[columns_index][lines_index][0],
-                                    elem_two=matrice_two.value[columns_index][lines_index][0],
+                                    elem_one=first_matrix.value[columns_index][row_index][0],
+                                    elem_two=second_matrix.value[columns_index][row_index][0],
                                     operator=operator,
                                 )
                             else:
-                                matrix.value[columns_index][lines_index][0] = self._real_calculator(
-                                    elem_one=matrice_one.value[columns_index][lines_index][0],
-                                    elem_two=matrice_two.value[columns_index][lines_index][0],
+                                matrix.value[columns_index][row_index][0] = self._real_calculator(
+                                    elem_one=first_matrix.value[columns_index][row_index][0],
+                                    elem_two=second_matrix.value[columns_index][row_index][0],
                                     operator=operator,
                                 )
-                            lines_index += 1
+                            row_index += 1
                         columns_index += 1
+
+                # END OF MATRIX TERM TO TERM  #
+
             elif operator.value == MATRIX_MULTIPLICATION_SIGN:
-                if matrice_one.n != matrice_two.m:
-                    # the number of columns in the first matrix must be equal to the number of rows in the second matrix.
+
+                # MATRIX MULTIPLICATION #
+
+                if first_matrix.n != second_matrix.m:
                     raise ValueError(
-                        "For operator of type '"
-                        + operator.value
-                        + "' between two matrix, both matrix should be of same size."
+                        """The number of columns in the first matrix must be equal to the number of rows in the second matrix in a matrix multiplication."""
                     )
+                else:
+
+                    def dot_product(
+                        self,
+                        first_matrix,
+                        second_matrix,
+                        first_matrix_row_index: int,
+                        second_matrix_column_index: int,
+                    ) -> Union[Real, Complex]:
+                        sum: Union[Real, Complex] = Real(0)
+                        index = 0
+                        while index < first_matrix.n:
+                            if (
+                                isinstance(
+                                    first_matrix.value[index][first_matrix_row_index][0],
+                                    Complex,
+                                )
+                                or isinstance(
+                                    sum,
+                                    Complex,
+                                )
+                                or isinstance(
+                                    second_matrix.value[second_matrix_column_index][index][0],
+                                    Complex,
+                                )
+                            ):
+                                sum = self._complex_calculator(
+                                    elem_one=sum,
+                                    elem_two=self._complex_calculator(
+                                        elem_one=first_matrix.value[index][first_matrix_row_index][
+                                            0
+                                        ],
+                                        elem_two=second_matrix.value[second_matrix_column_index][
+                                            index
+                                        ][0],
+                                        operator=Operator(value=MULTIPLICATION_SIGN),
+                                    ),
+                                    operator=Operator(value=ADDITION_SIGN),
+                                )
+                            else:
+                                sum = self._real_calculator(
+                                    elem_one=sum,
+                                    elem_two=self._real_calculator(
+                                        elem_one=first_matrix.value[index][first_matrix_row_index][
+                                            0
+                                        ],
+                                        elem_two=second_matrix.value[second_matrix_column_index][
+                                            index
+                                        ][0],
+                                        operator=Operator(value=MULTIPLICATION_SIGN),
+                                    ),
+                                    operator=Operator(value=ADDITION_SIGN),
+                                )
+                            index += 1
+                        return sum
+
+                    # The resulting matrix has the number of rows of the first and the number of columns of the second matrix.
+                    matrix = matrix_factory(columns_size=second_matrix.n, row_size=first_matrix.m)
+                    columns_index = 0
+                    while columns_index < first_matrix.n:
+                        row_index = 0
+                        while row_index < first_matrix.m:
+                            matrix.value[columns_index][row_index][0] = dot_product(
+                                self,
+                                first_matrix=first_matrix,
+                                second_matrix=second_matrix,
+                                first_matrix_row_index=row_index,
+                                second_matrix_column_index=columns_index,
+                            )
+                            row_index += 1
+                        columns_index += 1
+
+                # END OF MATRIX MULTIPLICATION #
+
+            # END OF CALCUL MATRIX WITH MATRIX #
             else:
                 raise NotImplementedError(
                     "Operator '" + operator.value + "' not implemented yet for complex.",

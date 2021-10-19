@@ -155,10 +155,10 @@ def test_calculator_matrice():
     # Matrix - Matrix same size
     matrix = resolver.solve(expression="[[5,2];[1,5]] - [[5,2];[1,5]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(
-        matrix=matrix_factory(columns_size=2, lines_size=2)
+        matrix=matrix_factory(columns_size=2, row_size=2)
     )
     assert return_2d_matrix_in_str(matrix=matrix) != return_2d_matrix_in_str(
-        matrix=matrix_factory(columns_size=2, lines_size=1)
+        matrix=matrix_factory(columns_size=2, row_size=1)
     )
     # Matrix + Matrix same size
     matrix = resolver.solve(expression="[[5,5];[5,5i]] + [[5,5];[5,5i]]")
@@ -190,7 +190,20 @@ def test_calculator_matrice():
     expected_result = Matrix(value="[[0][1]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
 
-    # Matrix ** Matrix same size
-    matrix = resolver.solve(expression="[[10,1];[3,1];[7,1]] ** [[2,2,2];[2,2,2];[2,2,2]]")
-    expected_result = Matrix(value="[[-20,3];[-40,-6];[60,9]]")
+    # Matrix ** Matrix column size != row size
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="[[10,1];[3,1];[7,1]] ** [[2,2]]")
+    assert (
+        str(e.value)
+        == "The number of columns in the first matrix must be equal to the number of rows in the second matrix in a matrix multiplication."
+    )
+
+    # Matrix ** Matrix column size == row size
+    matrix = resolver.solve(expression="[[30,31];[32,33];[34,35]] ** [[1,2,3];[4,5,6];[7,8,9]]")
+    expected_result = Matrix(value="[[196,202];[484,499];[772,796]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix ** Matrix column size == row size
+    matrix = resolver.solve(expression="[[30];[-15]] ** [[5,2]]")
+    expected_result = Matrix(value="[[120]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
