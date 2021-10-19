@@ -9,6 +9,20 @@ from src.matrix_utils import (
 from src.types.types import Matrix
 
 
+def test_return_2d_matrix_in_str() -> str:
+    matrix = Matrix(value="[[5]]")
+    return_2d_matrix_in_str(matrix=matrix)
+    assert return_2d_matrix_in_str(matrix=matrix) == "\n[5.0]\n"
+
+    matrix = Matrix(value="[[5.0,2.3];[4.8,18]]")
+    return_2d_matrix_in_str(matrix=matrix)
+    assert return_2d_matrix_in_str(matrix=matrix) == "\n[5.0] [2.3]\n[4.8] [18.0]\n"
+
+    matrix = Matrix(value="[[5.0i,2.3i];[4.8i,18i]]")
+    return_2d_matrix_in_str(matrix=matrix)
+    assert return_2d_matrix_in_str(matrix=matrix) == "\n[5.0i] [2.3i]\n[4.8i] [18.0i]\n"
+
+
 def test_matrix_factory():
     matrix = matrix_factory(columns_size=2, lines_size=1)
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(

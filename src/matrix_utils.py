@@ -64,6 +64,7 @@ def return_2d_matrix_in_str(matrix: Matrix) -> str:
             else:
                 matrix_value += " "
             matrix_value += "["
-            matrix_value += str(line[0])
+            for elem in line:
+                matrix_value += str(elem)
             matrix_value += "]"
     return "\n" + matrix_value + "\n"
