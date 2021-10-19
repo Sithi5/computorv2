@@ -298,13 +298,13 @@ class Calculator:
             print(str(matrix) + "\n") if self._verbose is True else None
 
             for column in matrix.value:
-                for line in column:
-                    line_save = line.copy()
-                    line.clear()
-                    line.append(
+                for row in column:
+                    row_save = row.copy()
+                    row.clear()
+                    row.append(
                         self.solve(
                             type_listed_expression=check_type_listed_expression_and_add_implicit_cross_operators(
-                                type_listed_expression=line_save
+                                type_listed_expression=row_save
                             ),
                             verbose=self._verbose,
                         )
@@ -387,14 +387,14 @@ class Calculator:
                     )
             else:
                 for column in matrix.value:
-                    for line in column:
-                        if isinstance(line[0], Complex) or isinstance(complex_or_real, Complex):
-                            line[0] = self._complex_calculator(
-                                elem_one=line[0], elem_two=complex_or_real, operator=operator
+                    for row in column:
+                        if isinstance(row[0], Complex) or isinstance(complex_or_real, Complex):
+                            row[0] = self._complex_calculator(
+                                elem_one=row[0], elem_two=complex_or_real, operator=operator
                             )
                         else:
-                            line[0] = self._real_calculator(
-                                elem_one=line[0], elem_two=complex_or_real, operator=operator
+                            row[0] = self._real_calculator(
+                                elem_one=row[0], elem_two=complex_or_real, operator=operator
                             )
             return matrix
         else:
@@ -440,9 +440,13 @@ class Calculator:
                             lines_index += 1
                         columns_index += 1
             elif operator.value == MATRIX_MULTIPLICATION_SIGN:
-                print("ICIIIII")
-                exit()
-                raise NotImplementedError()
+                if matrice_one.n != matrice_two.m:
+                    # the number of columns in the first matrix must be equal to the number of rows in the second matrix.
+                    raise ValueError(
+                        "For operator of type '"
+                        + operator.value
+                        + "' between two matrix, both matrix should be of same size."
+                    )
             else:
                 raise NotImplementedError(
                     "Operator '" + operator.value + "' not implemented yet for complex.",

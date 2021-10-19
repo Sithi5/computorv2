@@ -82,7 +82,7 @@ def test_types_creation():
     )
     Matrix(value="[[0];[0]]")
 
-    # No line
+    # No row
     with pytest.raises(SyntaxError) as e:
         Matrix(value="[0]")
     assert (
@@ -90,7 +90,7 @@ def test_types_creation():
     )
     Matrix(value="[[0]]")
 
-    # Wrong number of line
+    # Wrong number of row
     with pytest.raises(SyntaxError) as e:
         Matrix(value="[[0];[0];[0,2]]")
     assert (
@@ -99,7 +99,7 @@ def test_types_creation():
     )
     Matrix(value="[[0];[0];[0]]")
 
-    # Wrong line sep
+    # Wrong row sep
     with pytest.raises(SyntaxError) as e:
         Matrix(value="[[0;5];[0;5]]")
     assert (
@@ -108,7 +108,7 @@ def test_types_creation():
     )
     Matrix(value="[[0,5];[0,5]]")
 
-    # Wrong line sep
+    # Wrong row sep
     with pytest.raises(SyntaxError) as e:
         Matrix(value="[[0,,5];[0,5]]")
     assert (

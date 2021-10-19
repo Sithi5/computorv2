@@ -10,7 +10,7 @@ from src.globals_vars import (
     CLOSING_PARENTHESES,
     MATRICE_CLOSING_PARENTHESES,
     MATRICE_OPEN_PARENTHESES,
-    MATRICE_LINE_SEPARATOR,
+    MATRICE_ROW_SEPARATOR,
     MATRICE_COLUMN_SEPARATOR,
     MATRIX_MULTIPLICATION_SIGN,
 )
@@ -66,7 +66,7 @@ allowed_char_string = (
     + "\\"
     + "\\".join(MATRICE_CLOSING_PARENTHESES)
     + "\\"
-    + "\\".join(MATRICE_LINE_SEPARATOR)
+    + "\\".join(MATRICE_ROW_SEPARATOR)
     + "\\"
     + "\\".join(MATRICE_COLUMN_SEPARATOR)
     + "\\"

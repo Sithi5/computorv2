@@ -4,7 +4,7 @@ from src.globals_vars import (
     OPEN_PARENTHESES,
     CLOSING_PARENTHESES,
     MATRICE_OPEN_PARENTHESES,
-    MATRICE_LINE_SEPARATOR,
+    MATRICE_ROW_SEPARATOR,
     MATRICE_COLUMN_SEPARATOR,
     MATRICE_CLOSING_PARENTHESES,
     MATRIX_MULTIPLICATION_SIGN,
@@ -165,7 +165,7 @@ class Matrix(BaseType):
     """
 
     n: int  # Number of columns of the matrix
-    m: int  # Number of lines of the matrix
+    m: int  # Number of row of the matrix
 
     @property
     def value(self):
@@ -194,32 +194,32 @@ class Matrix(BaseType):
                             # initialize total column.
                             self.n = 1
 
-                        matrice_line: list = []
+                        matrice_row: list = []
 
                         # Remove matrice_column parentheses
                         matched_matrice_column = matched_matrice_column.group(0)[1:-1]
 
-                        matched_lines = matched_matrice_column.split(MATRICE_LINE_SEPARATOR)
-                        for line in matched_lines:
-                            if line == "":
-                                # Empty line
+                        matched_row = matched_matrice_column.split(MATRICE_ROW_SEPARATOR)
+                        for row in matched_row:
+                            if row == "":
+                                # Empty row
                                 raise SyntaxError()
                         if self.m == -1:
-                            # Set the total line.
-                            self.m = len(matched_lines)
-                        elif self.m != len(matched_lines):
-                            # Error line are not the same size.
+                            # Set the total row.
+                            self.m = len(matched_row)
+                        elif self.m != len(matched_row):
+                            # Error row are not the same size.
                             raise SyntaxError()
 
-                        for line in matched_lines:
+                        for row in matched_row:
 
                             type_list: list = []
 
-                            while line:
-                                # Convert inside line expression to type_listed (same way than convert_expression_to_type_list function).
-                                matched_complex = regex_complex.match(string=line)
-                                matched_real = regex_real.match(string=line)
-                                matched_operator = regex_operators_parenthesis.match(string=line)
+                            while row:
+                                # Convert inside row expression to type_listed (same way than convert_expression_to_type_list function).
+                                matched_complex = regex_complex.match(string=row)
+                                matched_real = regex_real.match(string=row)
+                                matched_operator = regex_operators_parenthesis.match(string=row)
                                 if matched_operator:
                                     type_list.append(Operator(value=matched_operator.group(0)))
                                     match_size = len(matched_operator.group(0))
@@ -237,11 +237,11 @@ class Matrix(BaseType):
                                     match_size = len(matched_real.group(0))
                                 else:
                                     raise SyntaxError()
-                                line = line[match_size:]
+                                row = row[match_size:]
 
-                            matrice_line.append(type_list.copy())
+                            matrice_row.append(type_list.copy())
 
-                        matrice_column.append(matrice_line.copy())
+                        matrice_column.append(matrice_row.copy())
                     elif matrix_column_expected is True:
                         raise SyntaxError()
                     elif value[0] == MATRICE_COLUMN_SEPARATOR:
@@ -282,13 +282,13 @@ class Matrix(BaseType):
             else:
                 ret += " ; "
             ret += "["
-            first_line = True
-            for line in column:
-                if first_line:
-                    first_line = False
+            first_row = True
+            for row in column:
+                if first_row:
+                    first_row = False
                 else:
                     ret += " , "
-                for elem in line:
+                for elem in row:
                     ret += str(elem)
             ret += "]"
         return ret + "]"

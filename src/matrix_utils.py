@@ -1,11 +1,11 @@
 from src.types.types import Matrix, Real
 
 
-def matrix_factory(columns_size: int, lines_size: int) -> Matrix:
+def matrix_factory(columns_size: int, row_size: int) -> Matrix:
     """
     Create a matrix with the input sizes and all value set to 0 and return it.
     """
-    if columns_size < 1 or lines_size < 1:
+    if columns_size < 1 or row_size < 1:
         raise ValueError("Input size should be a strictly positive Natural number.")
     first_column = True
     matrice_value = "["
@@ -16,7 +16,7 @@ def matrix_factory(columns_size: int, lines_size: int) -> Matrix:
             matrice_value += ";"
         matrice_value += "["
         first_line = True
-        for j in range(lines_size):
+        for j in range(row_size):
             if first_line:
                 first_line = False
             else:
@@ -38,10 +38,10 @@ def identity_square_matrix_factory(size: int) -> Matrix:
     i = 0
     for column in matrix.value:
         j = 0
-        for line in column:
+        for row in column:
             if j == i:
-                line.clear()
-                line.append(Real(value="1.0"))
+                row.clear()
+                row.append(Real(value="1.0"))
             j += 1
         i += 1
 
@@ -57,14 +57,14 @@ def return_2d_matrix_in_str(matrix: Matrix) -> str:
             first_column = False
         else:
             matrix_value += "\n"
-        first_line = True
-        for line in column:
-            if first_line:
-                first_line = False
+        first_row = True
+        for row in column:
+            if first_row:
+                first_row = False
             else:
                 matrix_value += " "
             matrix_value += "["
-            for elem in line:
+            for elem in row:
                 matrix_value += str(elem)
             matrix_value += "]"
     return "\n" + matrix_value + "\n"
