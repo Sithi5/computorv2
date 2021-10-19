@@ -440,6 +440,8 @@ class Calculator:
                             lines_index += 1
                         columns_index += 1
             elif operator.value == MATRIX_MULTIPLICATION_SIGN:
+                print("ICIIIII")
+                exit()
                 raise NotImplementedError()
             else:
                 raise NotImplementedError(

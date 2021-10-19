@@ -7,6 +7,7 @@ from src.globals_vars import (
     MATRICE_LINE_SEPARATOR,
     MATRICE_COLUMN_SEPARATOR,
     MATRICE_CLOSING_PARENTHESES,
+    MATRIX_MULTIPLICATION_SIGN,
 )
 
 from src.regex import regex_matrice_column, regex_complex, regex_real, regex_operators_parenthesis
@@ -308,7 +309,13 @@ class Operator:
     def __init__(self, value: str):
         if (
             len(value) == 1
-            and value in "=?" + OPERATORS + SIGN + OPEN_PARENTHESES + CLOSING_PARENTHESES
+            and value
+            in "=?"
+            + OPERATORS
+            + SIGN
+            + OPEN_PARENTHESES
+            + CLOSING_PARENTHESES
+            + MATRIX_MULTIPLICATION_SIGN
         ):
             self.value = value
         else:

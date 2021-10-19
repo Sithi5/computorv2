@@ -12,6 +12,7 @@ from src.globals_vars import (
     MATRICE_OPEN_PARENTHESES,
     MATRICE_LINE_SEPARATOR,
     MATRICE_COLUMN_SEPARATOR,
+    MATRIX_MULTIPLICATION_SIGN,
 )
 
 regex_matrice_column = re.compile(
@@ -36,6 +37,8 @@ operators_parenthesis_equal_question_string = (
     + "\\".join(QUESTIONS_SIGN)
     + "\\"
     + operators_parenthesis_string
+    + "\\"
+    + "\\".join(MATRIX_MULTIPLICATION_SIGN)
 )
 regex_operators_parenthesis_equal_question = re.compile(
     rf"[{operators_parenthesis_equal_question_string}]"
@@ -66,6 +69,8 @@ allowed_char_string = (
     + "\\".join(MATRICE_LINE_SEPARATOR)
     + "\\"
     + "\\".join(MATRICE_COLUMN_SEPARATOR)
+    + "\\"
+    + "\\".join(MATRIX_MULTIPLICATION_SIGN)
 )
 regex_check_forbidden_char = re.compile(pattern=rf"[^\d\w{allowed_char_string}]")
 

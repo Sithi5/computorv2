@@ -17,6 +17,7 @@ from src.globals_vars import (
     EQUALS_SIGN,
     OPEN_PARENTHESES,
     CLOSING_PARENTHESES,
+    MATRIX_MULTIPLICATION_SIGN,
 )
 
 
@@ -198,7 +199,7 @@ def sort_type_listed_expression_to_rpi(type_listed_expression: list):
                     unstack = stack.pop()
             except IndexError:
                 raise IndexError("Bad parenthesis.")
-        elif elem.value in OPERATORS + SIGN:
+        elif elem.value in OPERATORS + SIGN + MATRIX_MULTIPLICATION_SIGN:
             try:
                 unstack = stack[-1]
                 while (

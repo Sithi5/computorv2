@@ -16,6 +16,7 @@ from src.types.types import BaseType, Operator
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
 from src.globals_vars import (
+    MATRIX_MULTIPLICATION_SIGN,
     OPERATORS,
     SIGN,
     COMMA,
@@ -151,13 +152,17 @@ class ExpressionResolver:
         # Removing all spaces
         self.expression = self.expression.replace(" ", "")
         # Replace '{' parenthesis type by '(' parenthesis type.
-        self.expression = self.expression.replace("{", "(")
-        self.expression = self.expression.replace("}", ")")
+        self.expression = self.expression.replace("{", OPEN_PARENTHESES)
+        self.expression = self.expression.replace("}", CLOSING_PARENTHESES)
         self.expression = convert_expression_to_upper(input_string=self.expression)
 
         print(
             "Removing all space from the expression : ", self.expression
         ) if self.verbose is True else None
+
+        # Converting operator '**' for matricial multiplication to '@'
+        self.expression = self.expression.replace("**", MATRIX_MULTIPLICATION_SIGN)
+        print("Converting operators : ", self.expression) if self.verbose is True else None
 
         # To put before convert_signed_number because it is creating parenthesis
         self.expression = parse_sign(self.expression)

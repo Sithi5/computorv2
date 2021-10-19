@@ -189,3 +189,8 @@ def test_calculator_matrice():
     matrix = resolver.solve(expression="[[10];[3]] % [[2];[2]]")
     expected_result = Matrix(value="[[0][1]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix ** Matrix same size
+    matrix = resolver.solve(expression="[[10,1];[3,1];[7,1]] ** [[2,2,2];[2,2,2];[2,2,2]]")
+    expected_result = Matrix(value="[[-20,3];[-40,-6];[60,9]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
