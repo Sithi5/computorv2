@@ -1,7 +1,6 @@
 from src.types.types import *
 
 from src.regex import (
-    regex_potential_matrice,
     regex_functions,
     regex_function_name,
     regex_function_argument,
@@ -9,6 +8,7 @@ from src.regex import (
     regex_operators_parenthesis_equal_question,
     regex_complex,
     regex_real,
+    matching_first_potential_matrice,
 )
 from src.globals_vars import (
     OPERATORS,
@@ -89,7 +89,7 @@ def convert_expression_to_type_list(
 
     while expression:
         match_size = 0
-        matched_potential_matrice = regex_potential_matrice.match(string=expression)
+        matched_potential_matrice = matching_first_potential_matrice(string=expression)
         matched_function = regex_functions.match(string=expression)
         matched_variable = regex_variables.match(string=expression)
         matched_operators_parenthesis_equal_question = (
@@ -98,14 +98,14 @@ def convert_expression_to_type_list(
         matched_complex = regex_complex.match(string=expression)
         matched_real = regex_real.match(string=expression)
 
-        # Matching matrix should be first because it can be compound of more matrix/real/var etc.
+        # Matching matrix should be first because it can be compound of more Real/Var etc.
         if matched_potential_matrice:
             if no_potential_matrice:
                 raise ValueError(
                     "No potential matrix should be found in the expression. (no_potential_matrice set to true.)"
                 )
-            match_size = len(matched_potential_matrice.group(0))
-            type_list.append(Matrix(value=matched_potential_matrice.group(0), pending_calc=True))
+            match_size = len(matched_potential_matrice)
+            type_list.append(Matrix(value=matched_potential_matrice, pending_calc=True))
         # Match functions before var because can have a var inside
         elif matched_function:
             if no_function:
