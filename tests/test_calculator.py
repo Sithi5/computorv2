@@ -163,5 +163,29 @@ def test_calculator_matrice():
     # Matrix + Matrix same size
     matrix = resolver.solve(expression="[[5,5];[5,5i]] + [[5,5];[5,5i]]")
     expected_result = Matrix(value="[[10,10];[10,10i]]")
-    print(return_2d_matrix_in_str(matrix=matrix))
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix + Matrix same size
+    matrix = resolver.solve(expression="[[(5*2)2]] + [[5]] * 2")
+    expected_result = Matrix(value="[[30]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix - Matrix same size
+    matrix = resolver.solve(expression="[[(5)*-2];[18]] - [[5];[2]] * 2")
+    expected_result = Matrix(value="[[-20][14]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix * Matrix same size
+    matrix = resolver.solve(expression="[[1];[2]] * [[2];[2]]/ 2")
+    expected_result = Matrix(value="[[1][2]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix / Matrix same size
+    matrix = resolver.solve(expression="[[10];[20]] / [[2];[2]]")
+    expected_result = Matrix(value="[[5][10]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix % Matrix same size
+    matrix = resolver.solve(expression="[[10];[3]] % [[2];[2]]")
+    expected_result = Matrix(value="[[0][1]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)

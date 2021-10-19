@@ -189,7 +189,9 @@ class Matrix(BaseType):
                     if matched_matrice_column:
                         matrix_column_expected = False
                         value = value[len(matched_matrice_column.group(0)) :]
-                        self.n += 1
+                        if self.n == -1:
+                            # initialize total column.
+                            self.n = 1
 
                         matrice_line: list = []
 
