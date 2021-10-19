@@ -10,7 +10,7 @@ from src.types.types_utils import (
     check_type_listed_expression_and_add_implicit_cross_operators,
 )
 from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
-from src.matrix_utils import identity_square_matrix_factory
+from src.matrix_utils import identity_square_matrix_factory, matrix_factory
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
@@ -398,19 +398,54 @@ class Calculator:
                             )
             return matrix
         else:
+            # Calcul matrix with matrix
             matrice_one = elem_one
             matrice_two = elem_two
-            # Matrix should be of same size.
-            if matrice_one.n != matrice_two.n or matrice_one.m != matrice_two.m:
-                raise ValueError(
-                    "A real/complex have an undefined behavior with the following operator '"
-                    + operator.value
-                    + "' and a matrix."
+            if (
+                operator.value in MATRIX_OPERATORS + SIGN
+                and operator.value != MATRIX_MULTIPLICATION_SIGN
+            ):
+                # Term to term calc
+                if matrice_one.n != matrice_two.n or matrice_one.m != matrice_two.m:
+                    # Matrix should be of same size.
+                    raise ValueError(
+                        "For operator of type '"
+                        + operator.value
+                        + "' between two matrix, both matrix should be of same size."
+                    )
+                else:
+                    columns_index = 0
+                    matrix = matrix_factory(columns_size=matrice_one.n, lines_size=matrice_one.m)
+                    while columns_index < matrice_one.n:
+                        lines_index = 0
+                        while lines_index < matrice_one.m:
+                            if isinstance(
+                                matrice_one.value[columns_index][lines_index][0], Complex
+                            ) or isinstance(
+                                matrice_two.value[columns_index][lines_index][0], Complex
+                            ):
+                                matrix.value[columns_index][lines_index][
+                                    0
+                                ] = self._complex_calculator(
+                                    elem_one=matrice_one.value[columns_index][lines_index][0],
+                                    elem_two=matrice_two.value[columns_index][lines_index][0],
+                                    operator=operator,
+                                )
+                            else:
+                                matrix.value[columns_index][lines_index][0] = self._real_calculator(
+                                    elem_one=matrice_one.value[columns_index][lines_index][0],
+                                    elem_two=matrice_two.value[columns_index][lines_index][0],
+                                    operator=operator,
+                                )
+                            lines_index += 1
+                        columns_index += 1
+            elif operator.value == MATRIX_MULTIPLICATION_SIGN:
+                raise NotImplementedError()
+            else:
+                raise NotImplementedError(
+                    "Operator '" + operator.value + "' not implemented yet for complex.",
                 )
-            if operator.value == ADDITION_SIGN:
-                pass
-
-            # Calcul matrix with matrix
+            return matrix
 
     def _resolve_rpi_type_listed_expression(self) -> BaseType:
         """
