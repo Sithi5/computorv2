@@ -107,3 +107,33 @@ def test_types_creation():
         == "An error occured when trying to create Matrix object with the value : [[0;5];[0;5]]"
     )
     Matrix(value="[[0,5];[0,5]]")
+
+    # Wrong line sep
+    with pytest.raises(SyntaxError) as e:
+        Matrix(value="[[0,,5];[0,5]]")
+    assert (
+        str(e.value)
+        == "An error occured when trying to create Matrix object with the value : [[0,,5];[0,5]]"
+    )
+
+    # Wrong column separator
+    with pytest.raises(SyntaxError) as e:
+        Matrix(value="[[0,5];[0,5]];")
+    assert (
+        str(e.value)
+        == "An error occured when trying to create Matrix object with the value : [[0,5];[0,5]];"
+    )
+    # Wrong column separator
+    with pytest.raises(SyntaxError) as e:
+        Matrix(value="[[0,5];;[0,5]]")
+    assert (
+        str(e.value)
+        == "An error occured when trying to create Matrix object with the value : [[0,5];;[0,5]]"
+    )
+    # Wrong column separator
+    with pytest.raises(SyntaxError) as e:
+        Matrix(value="[[0,5],[0,5]]")
+    assert (
+        str(e.value)
+        == "An error occured when trying to create Matrix object with the value : [[0,5],[0,5]]"
+    )

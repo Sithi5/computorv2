@@ -172,10 +172,11 @@ class Matrix(BaseType):
             if len(value) > 0:
 
                 # While there is a column:
+                matrix_column_expected = False
                 while value:
                     matched_matrice_column = regex_matrice_column.match(string=value)
                     if matched_matrice_column:
-
+                        matrix_column_expected = False
                         value = value[len(matched_matrice_column.group(0)) :]
                         self.n += 1
 
@@ -185,6 +186,10 @@ class Matrix(BaseType):
                         matched_matrice_column = matched_matrice_column.group(0)[1:-1]
 
                         matched_lines = matched_matrice_column.split(MATRICE_LINE_SEPARATOR)
+                        for line in matched_lines:
+                            if line == "":
+                                # Empty line
+                                raise SyntaxError()
                         if self.m == -1:
                             # Set the total line.
                             self.m = len(matched_lines)
@@ -223,8 +228,11 @@ class Matrix(BaseType):
                             matrice_line.append(type_list.copy())
 
                         matrice_column.append(matrice_line.copy())
+                    elif matrix_column_expected is True:
+                        raise SyntaxError()
                     elif value[0] == MATRICE_COLUMN_SEPARATOR:
                         value = value[1:]
+                        matrix_column_expected = True
                         self.n += 1
                     else:
                         raise SyntaxError()
