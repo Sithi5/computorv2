@@ -5,7 +5,10 @@ from src.expression_resolver import ExpressionResolver
 from src.matrix_utils import (
     return_2d_matrix_in_str,
     identity_square_matrix_factory,
+    matrix_factory,
 )
+
+from src.types.types import Matrix
 
 
 def test_calculator_complex():
@@ -134,3 +137,31 @@ def test_calculator_matrice():
     assert return_2d_matrix_in_str(matrix=matrix) != return_2d_matrix_in_str(
         matrix=identity_square_matrix_factory(size=4)
     )
+
+    # Matrix + Matrix not same size
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="[[5,2];[1,9i]] + [[2,4]]")
+    assert (
+        str(e.value)
+        == "For operator of type '+' between two matrix, both matrix should be of same size."
+    )
+    # Matrix - Matrix not same size
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="[[5,2];[1,9i]] - [[2,4]]")
+    assert (
+        str(e.value)
+        == "For operator of type '-' between two matrix, both matrix should be of same size."
+    )
+    # Matrix - Matrix same size
+    matrix = resolver.solve(expression="[[5,2];[1,5]] - [[5,2];[1,5]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(
+        matrix=matrix_factory(columns_size=2, lines_size=2)
+    )
+    assert return_2d_matrix_in_str(matrix=matrix) != return_2d_matrix_in_str(
+        matrix=matrix_factory(columns_size=2, lines_size=1)
+    )
+    # Matrix + Matrix same size
+    matrix = resolver.solve(expression="[[5,5];[5,5i]] + [[5,5];[5,5i]]")
+    expected_result = Matrix(value="[[10,10];[10,10i]]")
+    print(return_2d_matrix_in_str(matrix=matrix))
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
