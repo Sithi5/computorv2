@@ -17,11 +17,9 @@ class Assignments:
         self._force_calculator_verbose = False
 
     def _assign_function(self):
-        self._new_assignment = self._type_listed_expression[0]
         self._new_assignment.right_expression = self._type_listed_expression[2:]
 
     def _assign_variable(self):
-        self._new_assignment = self._type_listed_expression[0]
         self._new_assignment.value = self._calculator.solve(
             type_listed_expression=convert_variables_and_functions_to_base_type(
                 type_listed_expression=self._type_listed_expression[2:],
@@ -43,6 +41,11 @@ class Assignments:
         self._type_listed_expression = type_listed_expression
         self._verbose = verbose
         self._force_calculator_verbose = force_calculator_verbose
+
+        print(
+            "Assigning following type_listed_expression : ", self._type_listed_expression
+        ) if self._verbose is True else None
+
         # The type_listed_expression should have at least 3 arguments and an '=' operator as a second argument.
         if (
             len(self._type_listed_expression) < 3
@@ -54,14 +57,11 @@ class Assignments:
             )
         else:
             if isinstance(self._type_listed_expression[0], Function):
+                self._new_assignment = self._type_listed_expression[0]
                 self._assign_function()
             elif isinstance(self._type_listed_expression[0], Variable):
+                self._new_assignment = self._type_listed_expression[0]
                 self._assign_variable()
-            elif (
-                isinstance(self._type_listed_expression[0], Complex)
-                and self._type_listed_expression[0].value == "i"
-            ):
-                raise SyntaxError("Problem with assignment : Variable cannot be named 'i' or 'I'")
             else:
                 raise SyntaxError(
                     "Problem with assignment : trying to assign to a wrong type : "
