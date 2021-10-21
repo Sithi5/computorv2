@@ -204,6 +204,11 @@ def test_calculator_matrice():
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
 
     # Matrix ** Matrix column size == row size
+    matrix = resolver.solve(expression="[[30];[15]] ** [[5,2]]")
+    expected_result = Matrix(value="[[180]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Matrix ** Matrix column size == row size
     matrix = resolver.solve(expression="[[30];[-15]] ** [[5,2]]")
     expected_result = Matrix(value="[[120]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
