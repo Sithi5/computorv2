@@ -13,6 +13,7 @@ from src.regex import (
 from src.globals_vars import (
     OPERATORS,
     OPERATORS_PRIORITY,
+    QUESTIONS_SIGN,
     SIGN,
     EQUALS_SIGN,
     OPEN_PARENTHESES,
@@ -60,6 +61,7 @@ def check_type_listed_expression_and_add_implicit_cross_operators(
             and last_elem.value not in CLOSING_PARENTHESES
             and isinstance(elem, Operator)
             and elem.value not in OPEN_PARENTHESES
+            and (last_elem.value != EQUALS_SIGN or elem.value !=  QUESTIONS_SIGN)
         ):
             emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
             raise SyntaxError(str(emsg))

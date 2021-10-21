@@ -8,6 +8,7 @@ from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
     check_type_listed_expression_and_add_implicit_cross_operators,
+    convert_variables_and_functions_to_base_type,
 )
 from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
 from src.matrix_utils import identity_square_matrix_factory, matrix_factory
@@ -602,7 +603,9 @@ class Calculator:
         Resolving calcul from one part type_listed_expression.
         """
         self._verbose = verbose
-        self._type_listed_expression = type_listed_expression
+        self._type_listed_expression = convert_variables_and_functions_to_base_type(
+            type_listed_expression=type_listed_expression, assigned_list=self._assigned_list
+        )
 
         print(
             "Resolving following type_listed_expression : ", self._type_listed_expression

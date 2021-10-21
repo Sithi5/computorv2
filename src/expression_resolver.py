@@ -16,8 +16,10 @@ from src.types.types import BaseType, Operator
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
 from src.globals_vars import (
+    EQUALS_SIGN,
     MATRIX_MULTIPLICATION_SIGN,
     OPERATORS,
+    QUESTIONS_SIGN,
     SIGN,
     COMMA,
     OPEN_PARENTHESES,
@@ -197,9 +199,9 @@ class ExpressionResolver:
         """
         calculator = Calculator(assigned_list=self._assigned_list)
         if (
-            "=" not in self.expression
+            EQUALS_SIGN not in self.expression
             or isinstance(self.type_listed_expression[-1], Operator)
-            and self.type_listed_expression[-1].value == "?"
+            and self.type_listed_expression[-1].value == QUESTIONS_SIGN
         ):
             print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
             self._solver = calculator
