@@ -157,8 +157,11 @@ def convert_expression_to_type_list(
     return type_list
 
 
-def convert_variables_and_functions_to_base_type(type_listed_expression: list, assigned_list: list):
+def convert_variables_and_functions_to_base_type(
+    type_listed_expression: list, assigned_list: list
+) -> list:
     """Convert all variables and functions from a type listed expression to their respective value.
+    Return the new type_listed_expression.
     Raise a ValueError error if it is not resolvable."""
 
     def _get_variable_value(variable: Variable) -> BaseType:
@@ -179,6 +182,7 @@ def convert_variables_and_functions_to_base_type(type_listed_expression: list, a
             type_listed_expression[index] = _get_variable_value(variable=elem)
         elif isinstance(elem, Function):
             type_listed_expression[index] = _return_function_right_part(function=elem)
+    return type_listed_expression
 
 
 def sort_type_listed_expression_to_rpi(type_listed_expression: list):
