@@ -1,3 +1,9 @@
+import os
+
+ASSIGNMENT_DIR_PATH: str = os.path.abspath(os.path.join(__file__, "..", "assignment"))
+ASSIGNMENT_FILE_NAME: str = "variables.ser"
+ASSIGNMENT_FILE_PATH: str = os.path.join(ASSIGNMENT_DIR_PATH, ASSIGNMENT_FILE_NAME)
+
 EQUALS_SIGN = "="
 DIVISION_SIGN = "/"
 MODULO_SIGN = "%"
@@ -32,5 +38,3 @@ MATRICE_OPEN_PARENTHESES = "["
 MATRICE_CLOSING_PARENTHESES = "]"
 MATRICE_ROW_SEPARATOR = ","
 MATRICE_COLUMN_SEPARATOR = ";"
-
-ASSIGNED_FILE_NAME: str = "variables.ser"
