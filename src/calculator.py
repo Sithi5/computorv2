@@ -467,6 +467,16 @@ class Calculator:
                     ) -> Union[Real, Complex]:
                         sum: Union[Real, Complex] = Real(0)
                         index = 0
+                        print(
+                            "Doing dot product of matrix ",
+                            str(first_matrix),
+                            " and matrix ",
+                            str(second_matrix),
+                            "\n\nFirst matrix row index:\t",
+                            first_matrix_row_index,
+                            "\nSecond matrix column index:\t",
+                            second_matrix_column_index,
+                        ) if self._verbose is True else None
                         while index < first_matrix.n:
                             if (
                                 isinstance(
@@ -515,7 +525,7 @@ class Calculator:
                     # The resulting matrix has the number of rows of the first and the number of columns of the second matrix.
                     matrix = matrix_factory(columns_size=second_matrix.n, row_size=first_matrix.m)
                     columns_index = 0
-                    while columns_index < first_matrix.n:
+                    while columns_index < second_matrix.n:
                         row_index = 0
                         while row_index < first_matrix.m:
                             matrix.value[columns_index][row_index][0] = dot_product(
