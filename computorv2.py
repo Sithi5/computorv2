@@ -181,14 +181,18 @@ def main(argv=None):
             format=f"{Fore.RED}%(levelname)s:\t{Fore.YELLOW}%(message)s{Style.RESET_ALL}",
             level=logging.ERROR,
         )
-    if args.gui:
-        logging.debug("Launch in GUI mode.")
-        main_gui(resolver=resolver)
-    elif str(args.expression).lower() == "shell":
-        logging.debug("""Starting inline shell expression resolver : """)
-        shell_expression_resolver(resolver=resolver)
-    else:
-        resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)
+    try:
+        if args.gui:
+            logging.debug("Launch in GUI mode.")
+            main_gui(resolver=resolver)
+        elif str(args.expression).lower() == "shell":
+            logging.debug("""Starting inline shell expression resolver : """)
+            shell_expression_resolver(resolver=resolver)
+        else:
+            resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)
+    except Exception as e:
+        logging.critical("An exception appened : ")
+        logging.error(e)
 
 
 if __name__ == "__main__":
