@@ -89,13 +89,13 @@ def convert_signed_number(expression: str, accept_var: bool = False):
         5 * -5 is converted to 5 * (0 - 5)
         10 / +5 is converted to 10 / (0 + 5)
     """
-    # Checking for first sign
     if len(expression) > 1:
         if expression[0] in SIGN and (
             is_real(expression[1])
             or expression[1] in OPEN_PARENTHESES
             or (expression[1].isalpha() and accept_var)
         ):
+            # Convert first sign : expression = "-5 + 2" --> "(0 - 5) + 2"
             i = 1
             number = ""
             if expression[i] in OPEN_PARENTHESES:
@@ -117,45 +117,45 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                 if len(var_name) > 0:
                     expression = "(0" + expression[0] + var_name + ")" + expression[i:]
 
-    for operator in OPERATORS + OPEN_PARENTHESES + "=":
-        for sign in SIGN:
-            split = expression.split(operator + sign)
-            if len(split) > 1:
-                # Starting with 2nd part
-                index = 1
-                while index < len(split):
-                    # Getting number
-                    number = ""
-                    i = 0
-                    while i < len(split[index]):
-                        if not is_real(split[index][i]) and not split[index][i] in COMMA:
-                            break
-                        number = number + split[index][i]
-                        i += 1
-                    # Replacing signed number by the new sentence
-                    if len(number) > 0:
-                        split[index] = operator + "(0" + sign + number + ")" + split[index][i:]
-                    # If no number, maybe it's a var:
-                    elif accept_var:
-                        # Getting varname
-                        var_name = ""
+        for operator in OPERATORS + OPEN_PARENTHESES + MATRICE_OPEN_PARENTHESES + "=":
+            for sign in SIGN:
+                split = expression.split(operator + sign)
+                if len(split) > 1:
+                    # Starting with 2nd part
+                    index = 1
+                    while index < len(split):
+                        # Getting number
+                        number = ""
                         i = 0
                         while i < len(split[index]):
-                            if not split[index][i].isalpha():
+                            if not is_real(split[index][i]) and not split[index][i] in COMMA:
                                 break
-                            var_name = var_name + split[index][i]
+                            number = number + split[index][i]
                             i += 1
-                        if len(var_name) > 0:
-                            split[index] = (
-                                operator + "(0" + sign + var_name + ")" + split[index][i:]
-                            )
+                        # Replacing signed number by the new sentence
+                        if len(number) > 0:
+                            split[index] = operator + "(0" + sign + number + ")" + split[index][i:]
+                        # If no number, maybe it's a var:
+                        elif accept_var:
+                            # Getting varname
+                            var_name = ""
+                            i = 0
+                            while i < len(split[index]):
+                                if not split[index][i].isalpha():
+                                    break
+                                var_name = var_name + split[index][i]
+                                i += 1
+                            if len(var_name) > 0:
+                                split[index] = (
+                                    operator + "(0" + sign + var_name + ")" + split[index][i:]
+                                )
+                            else:
+                                split[index] = operator + sign + split[index][i:]
                         else:
                             split[index] = operator + sign + split[index][i:]
-                    else:
-                        split[index] = operator + sign + split[index][i:]
-                    index += 1
+                        index += 1
 
-            expression = "".join(split)
+                expression = "".join(split)
     return expression
 
 
