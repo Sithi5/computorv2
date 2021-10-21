@@ -4,6 +4,7 @@ import logging
 
 
 from src.expression_resolver import ExpressionResolver
+from colorama import Fore, Style
 from gui.app import Application
 from src.assignment.assigned_file import clear_assigned_file, list_assigned_file
 
@@ -170,7 +171,16 @@ def main(argv=None):
         force_calculator_verbose=args.force_calculator_verbose,
         output_graph=args.output_graph,
     )
-    logging.basicConfig(level=logging.DEBUG) if args.debug is True else None
+    if args.debug:
+        logging.basicConfig(
+            format=f"{Fore.RED}%(levelname)s:\t{Fore.YELLOW}%(message)s{Style.RESET_ALL}",
+            level=logging.DEBUG,
+        )
+    else:
+        logging.basicConfig(
+            format=f"{Fore.RED}%(levelname)s:\t{Fore.YELLOW}%(message)s{Style.RESET_ALL}",
+            level=logging.ERROR,
+        )
     if args.gui:
         logging.debug("Launch in GUI mode.")
         main_gui(resolver=resolver)
