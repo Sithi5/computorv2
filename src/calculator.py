@@ -549,7 +549,7 @@ class Calculator:
                 )
             return matrix
 
-    def _resolve_rpi_type_listed_expression(self) -> BaseType:
+    def _resolve_rpi_type_listed_expression(self) -> Union[BaseType, Unresolved]:
         """
         This method resolve a type_listed_expression and return the result with the correct type.
         """
@@ -586,6 +586,25 @@ class Calculator:
                     result = self._matrix_calculator(
                         elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
                     )
+                elif (
+                    isinstance(last_two_in_stack[0], Variable)
+                    or isinstance(last_two_in_stack[1], Variable)
+                    or isinstance(last_two_in_stack[0], Unresolved)
+                    or isinstance(last_two_in_stack[1], Unresolved)
+                ):
+                    if isinstance(last_two_in_stack[0], Unresolved):
+                        last_two_in_stack[0].append(elem)
+                        last_two_in_stack[0].append(last_two_in_stack[1])
+                        result = last_two_in_stack[0]
+                    elif isinstance(last_two_in_stack[1], Unresolved):
+                        last_two_in_stack[1].append(elem)
+                        last_two_in_stack[1].append(last_two_in_stack[0])
+                        result = last_two_in_stack[1]
+                    else:
+                        result = Unresolved()
+                        result.append(last_two_in_stack[0])
+                        result.append(elem)
+                        result.append(last_two_in_stack[1])
                 else:
                     raise Exception(
                         "Unexpected error when trying to resolve npi. Maybe your input format is not accepted?"
@@ -597,12 +616,15 @@ class Calculator:
                 "Unexpected error when trying to resolve npi. Maybe your input format is not accepted?"
             )
 
-        return stack[0]
+        if self._reduce_form_allowed is True and isinstance(stack[0], Unresolved):
+            return stack[0]
+        else:
+            return stack[0]
 
     def _resolve_variables_and_functions(self):
         """
         Resolve all variables and functions from a type listed expression to their respective value.
-        Raise a Syntax error if couln't resolve.
+        Raise a ValueError if couln't resolve.
         Return the new type_listed_expression.
         """
 
@@ -641,17 +663,30 @@ class Calculator:
             elif isinstance(elem, Function):
                 self._type_listed_expression[index] = _resolve_function_value(function=elem)
 
-    def solve(self, type_listed_expression: list, verbose: bool = False, *arg, **kwarg) -> BaseType:
+    def solve(
+        self,
+        type_listed_expression: list,
+        verbose: bool = False,
+        reduce_form_allowed: bool = True,
+        *arg,
+        **kwarg
+    ) -> Union[BaseType, Unresolved]:
         """
         Resolving calcul from one part type_listed_expression.
+        If the reduce_form_allowed is set to true, it will try to reduce as much as possible expression even with unknow vars.
         """
         self._verbose = verbose
         self._type_listed_expression = type_listed_expression
+        self._reduce_form_allowed = reduce_form_allowed
         print(
             "Resolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
 
-        self._resolve_variables_and_functions()
+        try:
+            self._resolve_variables_and_functions()
+        except ValueError as e:
+            if reduce_form_allowed == False:
+                raise ValueError(e)
 
         print(
             "Converting var and function to their respective value : ", self._type_listed_expression
@@ -665,9 +700,8 @@ class Calculator:
             type_listed_expression_in_str(type_listed_expression=self._type_listed_expression),
         ) if self._verbose is True else None
 
-        result: BaseType = self._resolve_rpi_type_listed_expression()
+        result: Union[BaseType, Unresolved] = self._resolve_rpi_type_listed_expression()
 
         # Check for unresolved matrix and resolve it.
         result = self._resolve_inside_matrice(matrix=result)
-
         return result

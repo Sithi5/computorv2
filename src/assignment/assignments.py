@@ -1,4 +1,5 @@
-from os import path
+from typing import Union
+
 from src.calculator import Calculator
 from src.assignment.assigned_file import serialize_and_save_assigned_list
 
@@ -33,7 +34,7 @@ class Assignments:
         type_listed_expression: list,
         verbose: bool = False,
         force_calculator_verbose: bool = False,
-    ):
+    ) -> Union[BaseType, Unresolved]:
         """
         This method take a type_listed_expression, check if the assignment format is correct, assign a var/matrix/function and save it into a file.
         """
@@ -73,9 +74,11 @@ class Assignments:
                     self._assigned_list.remove(elem)
             self._assigned_list.append(self._new_assignment)
             serialize_and_save_assigned_list(assigned_list=self._assigned_list)
-            if isinstance(self._new_assignment, Function):
-                return "".join([str(elem) for elem in self._new_assignment.value])
-            elif isinstance(self._new_assignment, Variable):
-                return str(self._new_assignment.value)
-            else:
+
+            try:
+                # Try to see if the functions/var is already resolvable or if we can get a reduce form.
+                return self._calculator.solve(
+                    type_listed_expression=self._new_assignment.value, reduce_form_allowed=True
+                )
+            except Exception:
                 return self._new_assignment

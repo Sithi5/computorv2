@@ -11,7 +11,10 @@
 # **************************************************************************** #
 
 import re
-from src.types.types import BaseType, Operator
+
+from typing import Union
+
+from src.types.types import BaseType, Operator, Unresolved
 
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
@@ -219,7 +222,7 @@ class ExpressionResolver:
                 assigned_list=self._assigned_list,
             )
 
-    def solve(self, expression: str):
+    def solve(self, expression: str) -> Union[BaseType, Unresolved, str]:
         """
         Use the solver of the class set by set_solver to solve the expression.
         """
@@ -230,10 +233,11 @@ class ExpressionResolver:
             self.expression = expression
             self._parse_expression()
             self._set_solver()
-            result: BaseType = self._solver.solve(
+            result: Union[BaseType, Unresolved] = self._solver.solve(
                 type_listed_expression=self.type_listed_expression,
                 verbose=self.verbose,
                 force_calculator_verbose=self.force_calculator_verbose,
             )
             print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self.verbose is True else None
-            return result
+
+            return str(result.value)

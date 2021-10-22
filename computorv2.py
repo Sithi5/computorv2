@@ -144,7 +144,7 @@ def shell_expression_resolver(resolver: ExpressionResolver):
 
 
 def main(argv=None):
-    print(f"{Style.RESET_ALL}")
+    print(f"{Fore.WHITE}")
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--gui",
@@ -243,6 +243,7 @@ def main(argv=None):
             shell_expression_resolver(resolver=resolver)
         else:
             resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)
+    print(f"{Fore.WHITE}", end="")
 
 
 if __name__ == "__main__":

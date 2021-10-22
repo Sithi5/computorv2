@@ -396,3 +396,24 @@ class Variable:
             return self.__class__.__name__ + "(" + self.name + " = " + str(self.value) + ")"
         else:
             return self.__class__.__name__ + "(" + self.name + " = " + "Not defined" + ")"
+
+
+class Unresolved(list):
+    """
+    This class is inheriting from the list class and is used for unresolved calcule.
+    Unresolved calcul should be of the format of a type_listed_expression.
+    """
+
+    @property
+    def value(self):
+        return str(self)
+
+    def __init__(self):
+        super().__init__()
+        self.type = self.__class__.__name__
+
+    def __str__(self) -> str:
+        return "".join([str(elem) for elem in self])
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "('" + str(self) + "')"
