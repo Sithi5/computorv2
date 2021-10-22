@@ -199,10 +199,17 @@ class ExpressionResolver:
         """
         calculator = Calculator(assigned_list=self._assigned_list)
         if (
-            EQUALS_SIGN not in self.expression
-            or isinstance(self.type_listed_expression[-1], Operator)
+            len(self.type_listed_expression) > 1
+            and isinstance(self.type_listed_expression[-1], Operator)
             and self.type_listed_expression[-1].value == QUESTIONS_SIGN
+            and isinstance(self.type_listed_expression[-2], Operator)
+            and self.type_listed_expression[-2].value == EQUALS_SIGN
         ):
+            # Removing the '=?' at the end of expression.
+            self.type_listed_expression = self.type_listed_expression[:-2]
+            print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
+            self._solver = calculator
+        elif EQUALS_SIGN not in self.expression:
             print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
             self._solver = calculator
         else:
