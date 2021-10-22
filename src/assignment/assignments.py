@@ -17,9 +17,14 @@ class Assignments:
         self._force_calculator_verbose = False
 
     def _assign_function(self):
-        self._new_assignment.right_expression = self._type_listed_expression[2:]
+        print("ASSIGNING FUNCTION") if self._verbose is True else None
+        self._new_assignment.value = convert_variables_and_functions_to_base_type(
+            type_listed_expression=self._type_listed_expression[2:],
+            assigned_list=self._assigned_list,
+        )
 
     def _assign_variable(self):
+        print("ASSIGNING VARIABLE") if self._verbose is True else None
         self._new_assignment.value = self._calculator.solve(
             type_listed_expression=convert_variables_and_functions_to_base_type(
                 type_listed_expression=self._type_listed_expression[2:],
@@ -73,4 +78,4 @@ class Assignments:
                     self._assigned_list.remove(elem)
             self._assigned_list.append(self._new_assignment)
             serialize_and_save_assigned_list(assigned_list=self._assigned_list)
-            return self._new_assignment.value
+            return self._new_assignment
