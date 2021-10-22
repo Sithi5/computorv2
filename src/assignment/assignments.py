@@ -3,7 +3,6 @@ from src.calculator import Calculator
 from src.assignment.assigned_file import serialize_and_save_assigned_list
 
 from src.types.types import *
-from src.types.types_utils import convert_variables_and_functions_to_base_type
 
 
 class Assignments:
@@ -18,18 +17,14 @@ class Assignments:
 
     def _assign_function(self):
         print("ASSIGNING FUNCTION") if self._verbose is True else None
-        self._new_assignment.value = convert_variables_and_functions_to_base_type(
-            type_listed_expression=self._type_listed_expression[2:],
-            assigned_list=self._assigned_list,
-        )
+        if not isinstance(self._new_assignment.argument, Variable):
+            raise SyntaxError("The argument of the function should be a variable for assignment.")
+        self._new_assignment.value = self._type_listed_expression[2:]
 
     def _assign_variable(self):
         print("ASSIGNING VARIABLE") if self._verbose is True else None
         self._new_assignment.value = self._calculator.solve(
-            type_listed_expression=convert_variables_and_functions_to_base_type(
-                type_listed_expression=self._type_listed_expression[2:],
-                assigned_list=self._assigned_list,
-            ),
+            type_listed_expression=self._type_listed_expression[2:],
             verbose=self._force_calculator_verbose,
         )
 
@@ -78,4 +73,9 @@ class Assignments:
                     self._assigned_list.remove(elem)
             self._assigned_list.append(self._new_assignment)
             serialize_and_save_assigned_list(assigned_list=self._assigned_list)
-            return self._new_assignment
+            if isinstance(self._new_assignment, Function):
+                return "".join([str(elem) for elem in self._new_assignment.value])
+            elif isinstance(self._new_assignment, Variable):
+                return str(self._new_assignment.value)
+            else:
+                return self._new_assignment

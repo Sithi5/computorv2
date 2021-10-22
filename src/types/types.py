@@ -335,11 +335,17 @@ class Operator:
 
 class Function:
     def __init__(self, name: str, argument: str, value: list = None):
-        if name.isalpha():
-            self.name = name
-            self.argument = argument
-            self.value = value
-        else:
+        try:
+            if name.isalpha():
+                self.name = name
+                if argument.isalpha():
+                    self.argument = Variable(name=argument, value=None)
+                else:
+                    self.argument = Real(value=argument)
+                self.value = value
+            else:
+                raise SyntaxError()
+        except SyntaxError:
             raise SyntaxError(
                 "An error occured when trying to create "
                 + self.__class__.__name__
@@ -354,13 +360,13 @@ class Function:
             return (
                 self.name
                 + "('"
-                + self.argument
+                + str(self.argument)
                 + "')"
                 + "="
                 + "".join([str(elem) for elem in self.value])
             )
         else:
-            return self.name + "(" + self.argument + ")" + "=" + "Not defined"
+            return self.name + "(" + str(self.argument) + ")" + "=" + "Not defined"
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "(" + self.__str__() + ")"

@@ -8,7 +8,6 @@ from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
     type_listed_expression_in_str,
     check_type_listed_expression_and_add_implicit_cross_operators,
-    convert_variables_and_functions_to_base_type,
 )
 from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
 from src.matrix_utils import identity_square_matrix_factory, matrix_factory
@@ -302,6 +301,7 @@ class Calculator:
                 for row in column:
                     row_save = row.copy()
                     row.clear()
+                    old_type_listed_expression = self._type_listed_expression
                     row.append(
                         self.solve(
                             type_listed_expression=check_type_listed_expression_and_add_implicit_cross_operators(
@@ -310,6 +310,7 @@ class Calculator:
                             verbose=self._verbose,
                         )
                     )
+                    self._type_listed_expression = old_type_listed_expression
             matrix.pending_calc = False
         return matrix
 
@@ -598,6 +599,48 @@ class Calculator:
 
         return stack[0]
 
+    def _resolve_variables_and_functions(self):
+        """
+        Resolve all variables and functions from a type listed expression to their respective value.
+        Raise a Syntax error if couln't resolve.
+        Return the new type_listed_expression.
+        """
+
+        def _resolve_variable_value(variable: Variable) -> BaseType:
+            for elem in self._assigned_list:
+                if variable.name == elem.name:
+                    return elem.value
+            raise ValueError("Couln't resolve the variable : ", variable)
+
+        def _resolve_function_value(function: Function) -> list:
+            if isinstance(function.argument, Variable):
+                function_variable_value = _resolve_variable_value(variable=function.argument)
+            elif isinstance(function.argument, Real):
+                function_variable_value = function.argument
+            else:
+                raise ValueError("Couln't resolve the function : ", str(function))
+            function_variable_name = None
+            for elem in self._assigned_list:
+                if function.name == elem.name:
+                    function_variable_name = elem.argument.name
+                    function.value = elem.value
+            if not function.value or not function_variable_name:
+                raise ValueError("Couln't resolve the function : ", str(function))
+            else:
+                for index, elem in enumerate(function.value):
+                    if isinstance(elem, Variable) and elem.name == function_variable_name:
+                        function.value[index] = function_variable_value
+            old_type_listed_expression = self._type_listed_expression
+            ret = self.solve(type_listed_expression=function.value, verbose=self._verbose)
+            self._type_listed_expression = old_type_listed_expression
+            return ret
+
+        for index, elem in enumerate(self._type_listed_expression):
+            if isinstance(elem, Variable):
+                self._type_listed_expression[index] = _resolve_variable_value(variable=elem)
+            elif isinstance(elem, Function):
+                self._type_listed_expression[index] = _resolve_function_value(function=elem)
+
     def solve(self, type_listed_expression: list, verbose: bool = False, *arg, **kwarg) -> BaseType:
         """
         Resolving calcul from one part type_listed_expression.
@@ -608,9 +651,7 @@ class Calculator:
             "Resolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
 
-        self._type_listed_expression = convert_variables_and_functions_to_base_type(
-            type_listed_expression=type_listed_expression, assigned_list=self._assigned_list
-        )
+        self._resolve_variables_and_functions()
 
         print(
             "Converting var and function to their respective value : ", self._type_listed_expression

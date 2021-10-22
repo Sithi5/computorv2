@@ -159,35 +159,6 @@ def convert_expression_to_type_list(
     return type_list
 
 
-def convert_variables_and_functions_to_base_type(
-    type_listed_expression: list, assigned_list: list
-) -> list:
-    """
-    Convert all variables and functions from a type listed expression to their respective value.
-    Keep the variable type or function type if it is unresolved or unknow.
-    Return the new type_listed_expression.
-    """
-
-    def _get_variable_value(variable: Variable) -> BaseType:
-        for elem in assigned_list:
-            if variable.name == elem.name:
-                return elem.value
-        return variable
-
-    def _return_function_right_part(function: Function) -> BaseType:
-        for elem in assigned_list:
-            if function.name == elem.name:
-                return elem.value
-        return function
-
-    for index, elem in enumerate(type_listed_expression):
-        if isinstance(elem, Variable):
-            type_listed_expression[index] = _get_variable_value(variable=elem)
-        elif isinstance(elem, Function):
-            type_listed_expression[index] = _return_function_right_part(function=elem)
-    return type_listed_expression
-
-
 def sort_type_listed_expression_to_rpi(type_listed_expression: list):
     """This function will sort the type_listed expression to the RPI system."""
 
