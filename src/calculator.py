@@ -603,12 +603,17 @@ class Calculator:
         Resolving calcul from one part type_listed_expression.
         """
         self._verbose = verbose
+        self._type_listed_expression = type_listed_expression
+        print(
+            "Resolving following type_listed_expression : ", self._type_listed_expression
+        ) if self._verbose is True else None
+
         self._type_listed_expression = convert_variables_and_functions_to_base_type(
             type_listed_expression=type_listed_expression, assigned_list=self._assigned_list
         )
 
         print(
-            "Resolving following type_listed_expression : ", self._type_listed_expression
+            "Converting var and function to their respective value : ", self._type_listed_expression
         ) if self._verbose is True else None
 
         self._type_listed_expression = sort_type_listed_expression_to_rpi(
