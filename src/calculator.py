@@ -555,6 +555,7 @@ class Calculator:
         """
         stack = []
         result: BaseType
+        last_operator_priority_for_unresolved = OPERATORS_MINIMAL_PRIORITY
 
         for elem in self._type_listed_expression:
             if not isinstance(elem, Operator):
@@ -586,25 +587,41 @@ class Calculator:
                     result = self._matrix_calculator(
                         elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
                     )
-                elif (
+                # Reduce form for var
+                elif self._reduce_form_allowed is True and (
                     isinstance(last_two_in_stack[0], Variable)
                     or isinstance(last_two_in_stack[1], Variable)
                     or isinstance(last_two_in_stack[0], Unresolved)
                     or isinstance(last_two_in_stack[1], Unresolved)
                 ):
+                    # This part will create a reduce form
+                    first_elem_in_unresolved = None
                     if isinstance(last_two_in_stack[0], Unresolved):
-                        last_two_in_stack[0].append(elem)
-                        last_two_in_stack[0].append(last_two_in_stack[1])
-                        result = last_two_in_stack[0]
+                        unresolved = last_two_in_stack[0]
+                        elem_in_stack = last_two_in_stack[1]
                     elif isinstance(last_two_in_stack[1], Unresolved):
-                        last_two_in_stack[1].append(elem)
-                        last_two_in_stack[1].append(last_two_in_stack[0])
-                        result = last_two_in_stack[1]
+                        unresolved = last_two_in_stack[1]
+                        elem_in_stack = last_two_in_stack[0]
                     else:
-                        result = Unresolved()
-                        result.append(last_two_in_stack[0])
-                        result.append(elem)
-                        result.append(last_two_in_stack[1])
+                        unresolved = Unresolved()
+                        elem_in_stack = last_two_in_stack[1]
+                        first_elem_in_unresolved = last_two_in_stack[0]
+                    if (
+                        OPERATORS_PRIORITY[elem.value] > last_operator_priority_for_unresolved
+                        and len(unresolved) > 0
+                    ):
+                        unresolved.insert(0, Operator(value="("))
+                    if first_elem_in_unresolved:
+                        unresolved.append(first_elem_in_unresolved)
+                    if (
+                        OPERATORS_PRIORITY[elem.value] > last_operator_priority_for_unresolved
+                        and len(unresolved) > 3
+                    ):
+                        unresolved.append(Operator(value=")"))
+                    unresolved.append(elem)
+                    unresolved.append(elem_in_stack)
+                    last_operator_priority_for_unresolved = OPERATORS_PRIORITY[elem.value]
+                    result = unresolved
                 else:
                     raise Exception(
                         "Unexpected error when trying to resolve npi. Maybe your input format is not accepted?"
@@ -616,10 +633,7 @@ class Calculator:
                 "Unexpected error when trying to resolve npi. Maybe your input format is not accepted?"
             )
 
-        if self._reduce_form_allowed is True and isinstance(stack[0], Unresolved):
-            return stack[0]
-        else:
-            return stack[0]
+        return stack[0]
 
     def _resolve_variables_and_functions(self):
         """
@@ -702,6 +716,7 @@ class Calculator:
 
         result: Union[BaseType, Unresolved] = self._resolve_rpi_type_listed_expression()
 
-        # Check for unresolved matrix and resolve it.
-        result = self._resolve_inside_matrice(matrix=result)
+        if isinstance(result, Matrix):
+            # Check for unresolved matrix and resolve it.
+            result = self._resolve_inside_matrice(matrix=result)
         return result
