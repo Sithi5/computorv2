@@ -334,13 +334,11 @@ class Operator:
 
 
 class Function:
-    _lock: bool = False
-
-    def __init__(self, name: str, argument: str, right_expression: str = ""):
+    def __init__(self, name: str, argument: str, value: list = None):
         if name.isalpha():
             self.name = name
             self.argument = argument
-            self.right_expression = right_expression
+            self.value = value
         else:
             raise SyntaxError(
                 "An error occured when trying to create "
@@ -352,38 +350,23 @@ class Function:
             )
 
     def __str__(self) -> str:
-        return self.name + "('" + self.argument + "')"
-
-    def __repr__(self) -> str:
-        if len(self.right_expression) > 0:
+        if self.value and len(self.value) > 0:
             return (
-                self.__class__.__name__
-                + "("
-                + self.name
-                + "("
+                self.name
+                + "('"
                 + self.argument
-                + ")"
+                + "')"
                 + "="
-                + self.right_expression
-                + ")"
+                + "".join([str(elem) for elem in self.value])
             )
         else:
-            return (
-                self.__class__.__name__
-                + "("
-                + self.name
-                + "("
-                + self.argument
-                + ")"
-                + "="
-                + "Not defined"
-                + ")"
-            )
+            return self.name + "(" + self.argument + ")" + "=" + "Not defined"
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "(" + self.__str__() + ")"
 
 
 class Variable:
-    _lock: bool = False
-
     def __init__(self, name: str, value: list = None):
         super().__init__()
         if name.isalpha:
@@ -404,6 +387,6 @@ class Variable:
 
     def __repr__(self) -> str:
         if self.value is not None:
-            return self.__class__.__name__ + "(" + self.name + " = " + self.value.__repr__() + ")"
+            return self.__class__.__name__ + "(" + self.name + " = " + str(self.value) + ")"
         else:
             return self.__class__.__name__ + "(" + self.name + " = " + "Not defined" + ")"
