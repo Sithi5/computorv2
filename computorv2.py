@@ -171,7 +171,9 @@ def main(argv=None):
         force_calculator_verbose=args.force_calculator_verbose,
         output_graph=args.output_graph,
     )
-    if args.debug:
+    debug = args.debug
+
+    if debug:
         logging.basicConfig(
             format=f"{Fore.RED}%(levelname)s:\t{Fore.YELLOW}%(message)s{Style.RESET_ALL}",
             level=logging.DEBUG,
@@ -181,7 +183,20 @@ def main(argv=None):
             format=f"{Fore.RED}%(levelname)s:\t{Fore.YELLOW}%(message)s{Style.RESET_ALL}",
             level=logging.ERROR,
         )
-    try:
+    if debug is False:
+        try:
+            if args.gui:
+                logging.debug("Launch in GUI mode.")
+                main_gui(resolver=resolver)
+            elif str(args.expression).lower() == "shell":
+                logging.debug("""Starting inline shell expression resolver : """)
+                shell_expression_resolver(resolver=resolver)
+            else:
+                resolve_input(resolver=resolver, expression=args.expression, debug=debug)
+        except Exception as e:
+            logging.critical("An exception appened : ")
+            logging.error(e)
+    else:
         if args.gui:
             logging.debug("Launch in GUI mode.")
             main_gui(resolver=resolver)
@@ -190,9 +205,6 @@ def main(argv=None):
             shell_expression_resolver(resolver=resolver)
         else:
             resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)
-    except Exception as e:
-        logging.critical("An exception appened : ")
-        logging.error(e)
 
 
 if __name__ == "__main__":
