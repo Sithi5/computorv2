@@ -13,7 +13,15 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
     if debug is False:
         try:
             result = resolver.solve(expression)
-            print("result = ", result)
+            print(f"{Fore.GREEN}", end="")
+            print("==========RESULT==========")
+            print(f"{Style.RESET_ALL}", end="")
+            print(f"{Fore.YELLOW}", end="")
+            print(str(result).rjust(15))
+            print(f"{Style.RESET_ALL}", end="")
+            print(f"{Fore.GREEN}", end="")
+            print("==========RESULT==========")
+            print(f"{Style.RESET_ALL}", end="")
         except SyntaxError as e:
             logging.error("The expression syntax is not accepted : ")
             logging.error(e)
@@ -29,7 +37,15 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
     else:
         logging.basicConfig(level=logging.DEBUG)
         result = resolver.solve(expression)
-        print("result = ", result)
+        print(f"{Fore.GREEN}", end="")
+        print("==========RESULT==========")
+        print(f"{Style.RESET_ALL}", end="")
+        print(f"{Fore.YELLOW}", end="")
+        print(str(result).rjust(15))
+        print(f"{Style.RESET_ALL}", end="")
+        print(f"{Fore.GREEN}", end="")
+        print("==========RESULT==========")
+        print(f"{Style.RESET_ALL}", end="")
 
 
 def main_gui(resolver: ExpressionResolver):
@@ -44,8 +60,8 @@ def print_shell_help():
     Available commands:
 
     - help : Get available commands
-    - list : List all saved variables
-    - clear : Clear saved variables/matrices/functions
+    - list : List all saved variables/functions
+    - clear : Clear saved variables/functions
     - exit/quit/q : Quit program
     - v/verbose : Add/remove verbose
     - vv/vverbose : Add/remove full verbose
@@ -128,11 +144,21 @@ def shell_expression_resolver(resolver: ExpressionResolver):
 
 
 def main(argv=None):
-    print()
+    print(f"{Style.RESET_ALL}")
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--gui",
         help="Launch computor in GUI mode",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--list",
+        help="List all saved variables/functions.",
+        action="store_true",
+    )
+    parser.add_argument(
+        "--clear",
+        help="Clear saved variables/functions.",
         action="store_true",
     )
     parser.add_argument(
@@ -166,8 +192,9 @@ def main(argv=None):
     )
     args = parser.parse_args(argv)
 
+    verbose = args.verbose
     resolver = ExpressionResolver(
-        verbose=args.verbose | args.force_calculator_verbose,
+        verbose=verbose | args.force_calculator_verbose,
         force_calculator_verbose=args.force_calculator_verbose,
         output_graph=args.output_graph,
     )
@@ -183,9 +210,15 @@ def main(argv=None):
             format=f"{Fore.RED}%(levelname)s:\t{Fore.YELLOW}%(message)s{Style.RESET_ALL}",
             level=logging.ERROR,
         )
+
     if debug is False:
         try:
-            if args.gui:
+            if args.clear:
+                clear_assigned_file()
+                print("All assigned var have been cleared.") if verbose is True else None
+            elif args.list:
+                list_assigned_file()
+            elif args.gui:
                 logging.debug("Launch in GUI mode.")
                 main_gui(resolver=resolver)
             elif str(args.expression).lower() == "shell":
@@ -197,7 +230,12 @@ def main(argv=None):
             logging.critical("An exception appened : ")
             logging.error(e)
     else:
-        if args.gui:
+        if args.clear:
+            clear_assigned_file()
+            print("All assigned var have been cleared.") if verbose is True else None
+        elif args.list:
+            list_assigned_file()
+        elif args.gui:
             logging.debug("Launch in GUI mode.")
             main_gui(resolver=resolver)
         elif str(args.expression).lower() == "shell":
