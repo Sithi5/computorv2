@@ -13,7 +13,7 @@
 import re
 
 from src.globals_vars import *
-from src.types.types import Operator, Real, Unresolved, Variable
+from src.types.types import Function, Operator, Real, Unresolved, Variable
 
 from src.utils import (
     convert_to_tokens,
@@ -366,7 +366,7 @@ class EquationSolver:
         Checking if there is one var and getting the name of it. Set to None otherwise.
         Also checking notImplemented operations.
         """
-        self._var_name: str = None
+        self._var_name: str = ""
         for elem in self._equation_left_part + self._equation_right_part:
             if isinstance(elem, Variable):
                 if self._var_name and elem.name != self._var_name:
@@ -412,6 +412,10 @@ class EquationSolver:
             ret = Unresolved()
             ret.append(self._equation_right_part)
             self._equation_right_part = ret
+        for elem in self._equation_left_part + self._equation_right_part:
+            # Checking for empty functions.
+            if isinstance(elem, Function) and not elem.value:
+                raise ValueError("A function have unknow value.")
         print("Left part equation = ", self._equation_left_part) if self._verbose is True else None
         print(
             "Right part equation = ", self._equation_right_part
@@ -419,7 +423,7 @@ class EquationSolver:
 
         self._check_vars()
 
-        if self._var_name:
+        if self._var_name != "":
             self._check_var_exponent(type_listed_expression=self._equation_left_part)
             self._check_var_exponent(type_listed_expression=self._equation_right_part)
 
@@ -431,7 +435,7 @@ class EquationSolver:
         print("Polynom_dict_right = ", self._polynom_dict_right) if self._verbose is True else None
 
         # Below if is only for equation without var
-        if not self._var_name:
+        if self._var_name == "":
             print(
                 "There is no var in the equation, considering there is an X^0(=1), checking if the statement is true"
             )

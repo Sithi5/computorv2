@@ -1,7 +1,3 @@
-import pytest
-
-import time
-
 from src.expression_resolver import ExpressionResolver
 from src.assignment.assigned_file import clear_assigned_file, open_and_deserialize_assigned_list
 
@@ -121,7 +117,7 @@ def test_subject():
         assert str(ret) == "0.0"
 
         ret = resolver.solve("funA(x) = y ?")
-        assert str(ret) == "x^2 + 2x + 1 = 0"
+        assert str(ret) == "-1.0"
 
     except Exception:
         clear_assigned_file()
