@@ -21,7 +21,11 @@ from src.utils import (
     parse_sign,
     get_var_multiplier,
     add_implicit_cross_operator_for_vars,
-    split_expression_parts_from_tokens,
+)
+
+from src.types.types_utils import (
+    convert_expression_to_type_list,
+    check_type_listed_expression_and_add_implicit_cross_operators,
 )
 
 from src.math_utils import my_power, my_round, my_sqrt, is_natural
@@ -104,21 +108,28 @@ class EquationSolver:
                 left_value = self._polynom_dict_left[key]
             except:
                 left_value = 0.0
-            tokens = convert_to_tokens(
-                convert_signed_number(
-                    parse_sign(
-                        add_implicit_cross_operator_for_vars(list(self._var_name), str(left_value))
-                        + SUBSTRACTION_SIGN
-                        + add_implicit_cross_operator_for_vars(
-                            list(self._var_name), str(right_value)
-                        )
-                    ),
-                    accept_var=True,
+
+            type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(
+                convert_expression_to_type_list(
+                    expression=convert_signed_number(
+                        parse_sign(
+                            add_implicit_cross_operator_for_vars(
+                                list(self._var_name), str(left_value)
+                            )
+                            + SUBSTRACTION_SIGN
+                            + add_implicit_cross_operator_for_vars(
+                                list(self._var_name), str(right_value)
+                            )
+                        ),
+                        accept_var=True,
+                    )
                 )
             )
-            self._polynom_dict_left[key] = self._calculator.solve(
-                tokens=tokens, verbose=self._force_calculator_verbose
+            ret = self._calculator.solve(
+                type_listed_expression=type_listed_expression,
+                verbose=self._force_calculator_verbose,
             )
+            self._polynom_dict_left[key] = ret.value
 
     def _check_polynom_degree(self):
         polynom_max_degree = 0.0
@@ -201,22 +212,30 @@ class EquationSolver:
             solution_one = convert_signed_number(
                 f"{-b} / (2 * {a}) + i * {my_sqrt(discriminant)} / (2 * {a})".replace(" ", "")
             )
-            tokens = convert_to_tokens(
-                convert_signed_number(parse_sign(solution_one), accept_var=True)
+            type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(
+                convert_expression_to_type_list(
+                    expression=convert_signed_number(parse_sign(solution_one), accept_var=True)
+                )
             )
-            self.solution.append(
-                self._calculator.solve(tokens=tokens, verbose=self._force_calculator_verbose)
+            ret = self._calculator.solve(
+                type_listed_expression=type_listed_expression,
+                verbose=self._force_calculator_verbose,
             )
+            self.solution.append(str(ret))
 
             solution_two = f"{-b} / (2 * {a}) - i * {my_sqrt(discriminant)} / (2 * {a})".replace(
                 " ", ""
             )
-            tokens = convert_to_tokens(
-                convert_signed_number(parse_sign(solution_two), accept_var=True)
+            type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(
+                convert_expression_to_type_list(
+                    expression=convert_signed_number(parse_sign(solution_one), accept_var=True)
+                )
             )
-            self.solution.append(
-                self._calculator.solve(tokens=tokens, verbose=self._force_calculator_verbose)
+            ret = self._calculator.solve(
+                type_listed_expression=type_listed_expression,
+                verbose=self._force_calculator_verbose,
             )
+            self.solution.append(str(ret))
 
     def _solve_polynom_degree_one(self):
         try:
@@ -407,6 +426,9 @@ class EquationSolver:
         self._polynom_dict_left = self._get_polynom_dict(str(self._equation_left_part))
         self._polynom_dict_right = self._get_polynom_dict(str(self._equation_right_part))
         self._push_right_to_left()
+
+        print("Polynom_dict_left = ", self._polynom_dict_left) if self._verbose is True else None
+        print("Polynom_dict_right = ", self._polynom_dict_right) if self._verbose is True else None
 
         # Below if is only for equation without var
         if not self._var_name:
