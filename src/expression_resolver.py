@@ -18,6 +18,7 @@ from src.types.types import BaseType, Operator, Unresolved
 
 from src.assignment.assignments import Assignments
 from src.calculator import Calculator
+from src.equation_solver import EquationSolver
 from src.globals_vars import (
     EQUALS_SIGN,
     MATRIX_MULTIPLICATION_SIGN,
@@ -104,16 +105,9 @@ class ExpressionResolver:
                 raise SyntaxError(
                     "Operators must be followed by a value or a variable, not another operator."
                 )
-            if c in "?" and (
-                idx != len(self.expression) - 1 or last_char is False or last_char != "="
-            ):
-                if last_char is False:
-                    raise SyntaxError("Operators '?' can't be in the first position.")
-                else:
-                    raise SyntaxError(
-                        "Operators '?' must follow operator '=' and be at the end of the expression."
-                    )
-            elif c in "=" and (last_char is False or last_char in "="):
+            if c in QUESTIONS_SIGN and (idx != len(self.expression) - 1 or last_char is False):
+                raise SyntaxError("Operators '?' Should be in end position.")
+            elif c in EQUALS_SIGN and (last_char is False or last_char in EQUALS_SIGN):
                 if last_char is False:
                     raise SyntaxError(
                         "Equality operator '=' shouln't be placed at the first position."
@@ -201,20 +195,28 @@ class ExpressionResolver:
         Setting the right class to solve the expression
         """
         calculator = Calculator(assigned_list=self._assigned_list)
-        if (
+        if EQUALS_SIGN not in self.expression:
+            print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
+            self._solver = calculator
+        elif (
             len(self.type_listed_expression) > 1
             and isinstance(self.type_listed_expression[-1], Operator)
             and self.type_listed_expression[-1].value == QUESTIONS_SIGN
-            and isinstance(self.type_listed_expression[-2], Operator)
-            and self.type_listed_expression[-2].value == EQUALS_SIGN
         ):
-            # Removing the '=?' at the end of expression.
-            self.type_listed_expression = self.type_listed_expression[:-2]
-            print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
-            self._solver = calculator
-        elif EQUALS_SIGN not in self.expression:
-            print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
-            self._solver = calculator
+            if (
+                isinstance(self.type_listed_expression[-2], Operator)
+                and self.type_listed_expression[-2].value == EQUALS_SIGN
+            ):
+                # Should be of format : "Any=?"
+                # Removing the '=?' at the end of expression.
+                self.type_listed_expression = self.type_listed_expression[:-2]
+                print("\nRESOLVING INSTANCE\n") if self.verbose is True else None
+                self._solver = calculator
+            else:
+                # Should be of format : "Any=Any?"
+                self._solver = EquationSolver(
+                    calculator=calculator, output_graph=self._output_graph
+                )
         else:
             print("\nVARIABLE ASSIGNMENT\n") if self.verbose is True else None
             self._solver = Assignments(
@@ -239,5 +241,4 @@ class ExpressionResolver:
                 force_calculator_verbose=self.force_calculator_verbose,
             )
             print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self.verbose is True else None
-
-            return str(result.value)
+            return result

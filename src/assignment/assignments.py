@@ -14,7 +14,6 @@ class Assignments:
     def __init__(self, calculator: Calculator, assigned_list: list):
         self._calculator = calculator
         self._assigned_list = assigned_list
-        self._force_calculator_verbose = False
 
     def _assign_function(self):
         print("ASSIGNING FUNCTION") if self._verbose is True else None
@@ -44,7 +43,7 @@ class Assignments:
         self._force_calculator_verbose = force_calculator_verbose
 
         print(
-            "Assigning following type_listed_expression : ", self._type_listed_expression
+            "\nAssigning following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
 
         # The type_listed_expression should have at least 3 arguments and an '=' operator as a second argument.
@@ -78,7 +77,9 @@ class Assignments:
             try:
                 # Try to see if the functions/var is already resolvable or if we can get a reduce form.
                 return self._calculator.solve(
-                    type_listed_expression=self._new_assignment.value, reduce_form_allowed=True
+                    type_listed_expression=self._new_assignment.value,
+                    reduce_form_allowed=True,
+                    verbose=self._force_calculator_verbose,
                 )
             except Exception:
                 return self._new_assignment

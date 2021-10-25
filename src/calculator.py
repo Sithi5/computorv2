@@ -6,7 +6,7 @@ from src.globals_vars import *
 from src.types.types import *
 from src.types.types_utils import (
     sort_type_listed_expression_to_rpi,
-    type_listed_expression_in_str,
+    convert_type_listed_expression_to_str,
     check_type_listed_expression_and_add_implicit_cross_operators,
 )
 from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
@@ -587,10 +587,16 @@ class Calculator:
                     result = self._matrix_calculator(
                         elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
                     )
-                # Reduce form for var
+                # Reduce form for Unresolved calc
                 elif self._reduce_form_allowed is True and (
-                    isinstance(last_two_in_stack[0], Variable)
-                    or isinstance(last_two_in_stack[1], Variable)
+                    (
+                        isinstance(last_two_in_stack[0], Variable)
+                        or isinstance(last_two_in_stack[0], Function)
+                    )
+                    or (
+                        isinstance(last_two_in_stack[1], Variable)
+                        or isinstance(last_two_in_stack[1], Function)
+                    )
                     or isinstance(last_two_in_stack[0], Unresolved)
                     or isinstance(last_two_in_stack[1], Unresolved)
                 ):
@@ -642,15 +648,20 @@ class Calculator:
         Return the new type_listed_expression.
         """
 
-        def _resolve_variable_value(variable: Variable) -> BaseType:
+        def _get_variable_value(variable: Variable) -> BaseType:
             for elem in self._assigned_list:
                 if variable.name == elem.name:
                     return elem.value
             raise ValueError("Couln't resolve the variable : ", variable)
 
+        def _get_function_value(function: Function) -> list:
+            for elem in self._assigned_list:
+                if function.name == elem.name:
+                    return elem.value
+
         def _resolve_function_value(function: Function) -> list:
             if isinstance(function.argument, Variable):
-                function_variable_value = _resolve_variable_value(variable=function.argument)
+                function_variable_value = _get_variable_value(variable=function.argument)
             elif isinstance(function.argument, Real):
                 function_variable_value = function.argument
             else:
@@ -673,9 +684,17 @@ class Calculator:
 
         for index, elem in enumerate(self._type_listed_expression):
             if isinstance(elem, Variable):
-                self._type_listed_expression[index] = _resolve_variable_value(variable=elem)
+                self._type_listed_expression[index] = _get_variable_value(variable=elem)
             elif isinstance(elem, Function):
-                self._type_listed_expression[index] = _resolve_function_value(function=elem)
+                elem.value = _get_function_value(function=elem)
+                if isinstance(elem.argument, Variable):
+                    try:
+                        _get_variable_value(variable=elem)
+                        self._type_listed_expression[index] = _resolve_function_value(function=elem)
+                    except:
+                        self._type_listed_expression[index] = elem.value
+                else:
+                    self._type_listed_expression[index] = _resolve_function_value(function=elem)
 
     def solve(
         self,
@@ -693,7 +712,7 @@ class Calculator:
         self._type_listed_expression = type_listed_expression
         self._reduce_form_allowed = reduce_form_allowed
         print(
-            "Resolving following type_listed_expression : ", self._type_listed_expression
+            "\nResolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
 
         try:
@@ -711,7 +730,9 @@ class Calculator:
         )
         print(
             "\nExpression in RPI: ",
-            type_listed_expression_in_str(type_listed_expression=self._type_listed_expression),
+            convert_type_listed_expression_to_str(
+                type_listed_expression=self._type_listed_expression
+            ),
         ) if self._verbose is True else None
 
         result: Union[BaseType, Unresolved] = self._resolve_rpi_type_listed_expression()

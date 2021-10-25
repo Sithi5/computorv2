@@ -13,6 +13,7 @@
 import re
 
 from src.globals_vars import *
+from src.types.types import Operator, Unresolved, Variable
 
 from src.utils import (
     convert_to_tokens,
@@ -25,27 +26,34 @@ from src.utils import (
 
 from src.math_utils import my_power, my_round, my_sqrt
 
+from src.calculator import Calculator
 
-class _EquationSolver:
-    _tokens: list = []
+
+class EquationSolver:
     _left_part: list = []
     _right_part: list = []
 
-    def __init__(self, calculator, output_graph: bool = False):
-        self._output_graph = output_graph
+    def __init__(self, calculator: Calculator, output_graph: bool = False):
         self._calculator = calculator
+        self._output_graph = output_graph
 
     def _check_vars(self):
         """
         Actually checking there is one and only one var and getting the name of it.
         Also checking notImplemented operations.
         """
-        vars_list = re.findall(pattern=r"[A-Z]+", string="".join(self._tokens))
-        # Removing duplicate var
-        vars_set = list(set(vars_list))
-        if len(vars_set) > 1:
-            raise SyntaxError("EquationSolver cannot handle more than one var for the moment.")
-        self.var_name = "".join(vars_set)
+        count_var = 0
+        self._var_name: str = None
+        for elem in self._equation_left_part and self._equation_right_part:
+            if isinstance(elem, Variable):
+                if self._var_name and elem.name != self._var_name:
+                    raise SyntaxError(
+                        "EquationSolver cannot handle more than one var for the moment."
+                    )
+                else:
+                    self._var_name = elem.name
+        if not self._var_name:
+            raise SyntaxError("There is no unknow var in this equation.")
 
     def _check_have_var(self, var) -> bool:
         if self.var_name in var:
@@ -307,16 +315,76 @@ class _EquationSolver:
         # show the plot
         plt.savefig(graph_name + ".png")
 
-    def solve(self, tokens: list, verbose: bool = False, force_calculator_verbose: bool = False):
+    def _get_equation_parts(self):
+        """
+        This method use the type_listed_expression and dispatch it in two list respectively for the left part of the equation and the right part.
+        """
+        self._equation_left_part = []
+        self._equation_right_part = []
+        fill_left: bool = True
+        equality_sign_found: bool = False
+        question_sign_found: bool = False
+        for elem in self._type_listed_expression:
+            if question_sign_found is True:
+                raise SyntaxError("Question sign should be the last character of an equation.")
+            if isinstance(elem, Operator) and (
+                elem.value == EQUALS_SIGN or elem.value == QUESTIONS_SIGN
+            ):
+                if elem.value == EQUALS_SIGN:
+                    if equality_sign_found is True:
+                        raise SyntaxError("More than one equality sign in the equation.")
+                    else:
+                        equality_sign_found = True
+                        fill_left = False
+                elif elem.value == QUESTIONS_SIGN:
+                    if equality_sign_found is False:
+                        raise SyntaxError(
+                            "Question sign before any equality sign. Wrong equation format."
+                        )
+                    else:
+                        question_sign_found = True
+            elif fill_left is True:
+                self._equation_left_part.append(elem)
+            else:
+                self._equation_right_part.append(elem)
+
+    def solve(
+        self,
+        type_listed_expression: list,
+        verbose: bool = False,
+        force_calculator_verbose: bool = False,
+    ):
         self._verbose = verbose
         self._force_calculator_verbose = force_calculator_verbose
-        self._tokens = tokens
-        self._check_vars()
-        splits_parts = split_expression_parts_from_tokens(self._tokens)
-        self._left_part = splits_parts[0]
-        self._right_part = splits_parts[1]
-
+        self._type_listed_expression = type_listed_expression
         print("\nEQUATION SOLVER\n") if self._verbose is True else None
+
+        print(
+            "\nResolving following type_listed_expression equation : ", self._type_listed_expression
+        ) if self._verbose is True else None
+
+        self._get_equation_parts()
+
+        self._equation_left_part = self._calculator.solve(
+            type_listed_expression=self._equation_left_part,
+            verbose=self._force_calculator_verbose,
+            reduce_form_allowed=True,
+        )
+        self._equation_right_part = self._calculator.solve(
+            type_listed_expression=self._equation_right_part,
+            verbose=self._force_calculator_verbose,
+            reduce_form_allowed=True,
+        )
+
+        if not isinstance(self._equation_left_part, Unresolved):
+            self._equation_left_part = Unresolved(value=self._equation_left_part)
+        if not isinstance(self._equation_right_part, Unresolved):
+            self._equation_right_part = Unresolved(value=self._equation_right_part)
+
+        print("self._equation_left_part = ", self._equation_left_part)
+        print("self._equation_right_part = ", self._equation_right_part)
+        self._check_vars()
+
         print("Reducing left equation :") if self._verbose is True else None
         simplified_left = self._calculator.solve(
             tokens=self._left_part, verbose=self._force_calculator_verbose

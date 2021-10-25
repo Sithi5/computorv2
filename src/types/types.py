@@ -389,7 +389,10 @@ class Variable:
             )
 
     def __str__(self) -> str:
-        return self.name
+        if self.value:
+            return str(self.value)
+        else:
+            return self.name
 
     def __repr__(self) -> str:
         if self.value is not None:
