@@ -13,7 +13,7 @@
 import re
 
 from src.globals_vars import *
-from src.types.types import Operator, Unresolved, Variable
+from src.types.types import Operator, Real, Unresolved, Variable
 
 from src.utils import (
     convert_to_tokens,
@@ -24,7 +24,7 @@ from src.utils import (
     split_expression_parts_from_tokens,
 )
 
-from src.math_utils import my_power, my_round, my_sqrt
+from src.math_utils import my_power, my_round, my_sqrt, is_natural
 
 from src.calculator import Calculator
 
@@ -37,26 +37,8 @@ class EquationSolver:
         self._calculator = calculator
         self._output_graph = output_graph
 
-    def _check_vars(self):
-        """
-        Actually checking there is one and only one var and getting the name of it.
-        Also checking notImplemented operations.
-        """
-        count_var = 0
-        self._var_name: str = None
-        for elem in self._equation_left_part and self._equation_right_part:
-            if isinstance(elem, Variable):
-                if self._var_name and elem.name != self._var_name:
-                    raise SyntaxError(
-                        "EquationSolver cannot handle more than one var for the moment."
-                    )
-                else:
-                    self._var_name = elem.name
-        if not self._var_name:
-            raise SyntaxError("There is no unknow var in this equation.")
-
     def _check_have_var(self, var) -> bool:
-        if self.var_name in var:
+        if self._var_name in var:
             return True
         return False
 
@@ -125,10 +107,10 @@ class EquationSolver:
             tokens = convert_to_tokens(
                 convert_signed_number(
                     parse_sign(
-                        add_implicit_cross_operator_for_vars(list(self.var_name), str(left_value))
+                        add_implicit_cross_operator_for_vars(list(self._var_name), str(left_value))
                         + SUBSTRACTION_SIGN
                         + add_implicit_cross_operator_for_vars(
-                            list(self.var_name), str(right_value)
+                            list(self._var_name), str(right_value)
                         )
                     ),
                     accept_var=True,
@@ -142,18 +124,18 @@ class EquationSolver:
         polynom_max_degree = 0.0
         for key, value in self._polynom_dict_left.items():
             if key == "a":
-                if self.var_name in value and polynom_max_degree < 2:
+                if self._var_name in value and polynom_max_degree < 2:
                     polynom_max_degree = float(2)
                 else:
                     continue
             elif key == "b":
-                if self.var_name in value and polynom_max_degree < 1:
+                if self._var_name in value and polynom_max_degree < 1:
                     polynom_max_degree = float(1)
                 else:
                     continue
             elif key == "c":
                 continue
-            elif float(key) > 2 and self.var_name in value and polynom_max_degree < float(key):
+            elif float(key) > 2 and self._var_name in value and polynom_max_degree < float(key):
                 polynom_max_degree = float(key)
         self._polynom_degree = polynom_max_degree
 
@@ -162,11 +144,11 @@ class EquationSolver:
 
     def _solve_polynom_degree_two(self):
         try:
-            a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self.var_name)
+            a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self._var_name)
         except:
             a = 0.0
         try:
-            b = get_var_multiplier(self._polynom_dict_left["b"], var_name=self.var_name)
+            b = get_var_multiplier(self._polynom_dict_left["b"], var_name=self._var_name)
         except:
             b = 0.0
         try:
@@ -257,14 +239,6 @@ class EquationSolver:
         if self.solution == "-0.0":
             self.solution = "0.0"
 
-    def _check_var_negative_power(self, string: str):
-        split = string.split(self.var_name + "^")
-        index = 1
-        while index < len(split):
-            if split[index].startswith(SUBSTRACTION_SIGN):
-                raise NotImplementedError(f"Some part of the polynomial var have negative power.")
-            index += 1
-
     def _reducing_form(self):
         self._reduced_form = ""
         a, b, c = "0.0", "0.0", "0.0"
@@ -348,6 +322,41 @@ class EquationSolver:
             else:
                 self._equation_right_part.append(elem)
 
+    def _check_var_exponent(self, type_listed_expression):
+        """
+        Check if a var exponent is a non natural or negative number.
+        """
+        last_was_exponent_sign: bool = False
+        last_was_var: bool = False
+        for elem in type_listed_expression:
+
+            if not isinstance(elem, Real) and last_was_exponent_sign and last_was_var:
+                raise NotImplementedError(
+                    f"Some part of the polynomial var have negative or non natural exponent."
+                )
+            elif isinstance(elem, Operator) and elem.value == EXPONENT_SIGN:
+                last_was_exponent_sign = True
+            elif isinstance(elem, Variable):
+                last_was_var = True
+            else:
+                last_was_exponent_sign = False
+                last_was_var = False
+
+    def _check_vars(self):
+        """
+        Checking if there is one var and getting the name of it. Set to None otherwise.
+        Also checking notImplemented operations.
+        """
+        self._var_name: str = None
+        for elem in self._equation_left_part + self._equation_right_part:
+            if isinstance(elem, Variable):
+                if self._var_name and elem.name != self._var_name:
+                    raise SyntaxError(
+                        "EquationSolver cannot handle more than one var for the moment."
+                    )
+                else:
+                    self._var_name = elem.name
+
     def solve(
         self,
         type_listed_expression: list,
@@ -377,42 +386,34 @@ class EquationSolver:
         )
 
         if not isinstance(self._equation_left_part, Unresolved):
-            self._equation_left_part = Unresolved(value=self._equation_left_part)
+            ret = Unresolved()
+            ret.append(self._equation_left_part)
+            self._equation_left_part = ret
         if not isinstance(self._equation_right_part, Unresolved):
-            self._equation_right_part = Unresolved(value=self._equation_right_part)
+            ret = Unresolved()
+            ret.append(self._equation_right_part)
+            self._equation_right_part = ret
+        print("Left part equation = ", self._equation_left_part) if self._verbose is True else None
+        print(
+            "Right part equation = ", self._equation_right_part
+        ) if self._verbose is True else None
 
-        print("self._equation_left_part = ", self._equation_left_part)
-        print("self._equation_right_part = ", self._equation_right_part)
         self._check_vars()
 
-        print("Reducing left equation :") if self._verbose is True else None
-        simplified_left = self._calculator.solve(
-            tokens=self._left_part, verbose=self._force_calculator_verbose
-        )
-        print("Reduced left : ", simplified_left) if self._verbose is True else None
-        # Bellow both if for simplified part prevent float convertion to scientific notation
-        if self.var_name not in simplified_left:
-            simplified_left = f"{float(simplified_left):.6f}"
-        print("Reducing right equation :") if self._verbose is True else None
-        simplified_right = self._calculator.solve(
-            tokens=self._right_part, verbose=self._force_calculator_verbose
-        )
-        print("Reduced right : ", simplified_right) if self._verbose is True else None
-        if self.var_name not in simplified_right:
-            simplified_right = f"{float(simplified_right):.6f}"
-        if self.var_name != "":
-            self._check_var_negative_power(simplified_left)
-            self._check_var_negative_power(simplified_right)
-        self._polynom_dict_left = self._get_polynom_dict(simplified_left)
-        self._polynom_dict_right = self._get_polynom_dict(simplified_right)
+        if self._var_name:
+            self._check_var_exponent(type_listed_expression=self._equation_left_part)
+            self._check_var_exponent(type_listed_expression=self._equation_right_part)
+
+        self._polynom_dict_left = self._get_polynom_dict(str(self._equation_left_part))
+        self._polynom_dict_right = self._get_polynom_dict(str(self._equation_right_part))
         self._push_right_to_left()
 
         # Below if is only for equation without var
-        if self.var_name == "":
+        if not self._var_name:
             print(
                 "There is no var in the equation, considering there is an X^0(=1), checking if the statement is true"
             )
-            if simplified_left == simplified_right:
+            if str(self._equation_left_part) == str(self._equation_right_part):
                 self.solution = "X can be any real number."
             else:
                 self.solution = "The equation is False."

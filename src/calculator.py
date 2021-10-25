@@ -658,6 +658,7 @@ class Calculator:
             for elem in self._assigned_list:
                 if function.name == elem.name:
                     return elem.value
+            raise ValueError("Couln't resolve the function : ", function)
 
         def _resolve_function_value(function: Function) -> list:
             if isinstance(function.argument, Variable):
@@ -740,4 +741,8 @@ class Calculator:
         if isinstance(result, Matrix):
             # Check for unresolved matrix and resolve it.
             result = self._resolve_inside_matrice(matrix=result)
+        print(
+            "\nResult at end of calculator: ",
+            str(result),
+        ) if self._verbose is True else None
         return result

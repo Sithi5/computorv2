@@ -333,45 +333,6 @@ class Operator:
         return self.__class__.__name__ + "('" + str(self) + "')"
 
 
-class Function:
-    def __init__(self, name: str, argument: str, value: list = None):
-        try:
-            if name.isalpha():
-                self.name = name
-                if argument.isalpha():
-                    self.argument = Variable(name=argument, value=None)
-                else:
-                    self.argument = Real(value=argument)
-                self.value = value
-            else:
-                raise SyntaxError()
-        except SyntaxError:
-            raise SyntaxError(
-                "An error occured when trying to create "
-                + self.__class__.__name__
-                + " object with the name : "
-                + name
-                + " and the argument : "
-                + argument
-            )
-
-    def __str__(self) -> str:
-        if self.value and len(self.value) > 0:
-            return (
-                self.name
-                + "('"
-                + str(self.argument)
-                + "')"
-                + "="
-                + "".join([str(elem) for elem in self.value])
-            )
-        else:
-            return self.name + "(" + str(self.argument) + ")" + "=" + "Not defined"
-
-    def __repr__(self) -> str:
-        return self.__class__.__name__ + "(" + self.__str__() + ")"
-
-
 class Variable:
     def __init__(self, name: str, value: list = None):
         super().__init__()
@@ -411,8 +372,8 @@ class Unresolved(list):
     def value(self):
         return str(self)
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *arg):
+        super().__init__(arg)
         self.type = self.__class__.__name__
 
     def __str__(self) -> str:
@@ -420,3 +381,35 @@ class Unresolved(list):
 
     def __repr__(self) -> str:
         return self.__class__.__name__ + "('" + str(self) + "')"
+
+
+class Function:
+    def __init__(self, name: str, argument: str, value: Unresolved = None):
+        try:
+            if name.isalpha():
+                self.name = name
+                if argument.isalpha():
+                    self.argument = Variable(name=argument, value=None)
+                else:
+                    self.argument = Real(value=argument)
+                self.value = value
+            else:
+                raise SyntaxError()
+        except SyntaxError:
+            raise SyntaxError(
+                "An error occured when trying to create "
+                + self.__class__.__name__
+                + " object with the name : "
+                + name
+                + " and the argument : "
+                + argument
+            )
+
+    def __str__(self) -> str:
+        if self.value and len(self.value) > 0:
+            return self.name + "('" + str(self.argument) + "')" + "=" + str(self.value)
+        else:
+            return self.name + "(" + str(self.argument) + ")" + "=" + "Not defined"
+
+    def __repr__(self) -> str:
+        return self.__class__.__name__ + "(" + self.__str__() + ")"

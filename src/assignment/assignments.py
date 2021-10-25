@@ -19,7 +19,10 @@ class Assignments:
         print("ASSIGNING FUNCTION") if self._verbose is True else None
         if not isinstance(self._new_assignment.argument, Variable):
             raise SyntaxError("The argument of the function should be a variable for assignment.")
-        self._new_assignment.value = self._type_listed_expression[2:]
+        unresolved = Unresolved()
+        for elem in self._type_listed_expression[2:]:
+            unresolved.append(elem)
+        self._new_assignment.value = unresolved
 
     def _assign_variable(self):
         print("ASSIGNING VARIABLE") if self._verbose is True else None

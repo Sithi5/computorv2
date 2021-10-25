@@ -103,14 +103,6 @@ def my_round(number: float, precision: int = 6) -> float:
 
 
 def is_real(n: str) -> bool:
-    try:
-        float(n)
-        return True
-    except ValueError:
-        return False
-
-
-def is_real(n: str) -> bool:
     """
     Return true if number ∈ ℝ (Real numbers)
     """
