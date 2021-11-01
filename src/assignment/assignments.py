@@ -28,6 +28,7 @@ class Assignments:
         print("ASSIGNING VARIABLE") if self._verbose is True else None
         self._new_assignment.value = self._calculator.solve(
             type_listed_expression=self._type_listed_expression[2:],
+            reduce_form_allowed=False,
             verbose=self._force_calculator_verbose,
         )
 
@@ -70,6 +71,7 @@ class Assignments:
                     "Problem with assignment : trying to assign to a wrong type : "
                     + self._type_listed_expression[0].type,
                 )
+
             # Check for other assignment with same name and remove it.
             for elem in self._assigned_list:
                 if elem.name == self._new_assignment.name:

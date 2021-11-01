@@ -17,6 +17,18 @@ def test_expression_parsing():
     ret = resolver.solve(expression="5 * 5 + 10")
     assert str(ret) == "35.0"
 
+    # space/tab/new_line test
+    ret = resolver.solve("x    \r   \t\t   \n\n  =\t\t         2")
+    assert str(ret) == "2.0"
+
+    # multiple sign test
+    ret = resolver.solve("x=++++++++++2")
+    assert str(ret) == "2.0"
+    ret = resolver.solve("x=-+++-++--+++++2")
+    assert str(ret) == "2.0"
+    ret = resolver.solve("x=-+++-++--++-+2")
+    assert str(ret) == "-2.0"
+
     # Simple test with float
     ret = resolver.solve(expression="5.3 * 5.2 + 10.8")
     assert str(ret) == "38.36"

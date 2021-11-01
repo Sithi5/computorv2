@@ -741,6 +741,9 @@ class Calculator:
         if isinstance(result, Matrix):
             # Check for unresolved matrix and resolve it.
             result = self._resolve_inside_matrice(matrix=result)
+        if isinstance(result, Unresolved) and not reduce_form_allowed:
+            raise ValueError("One of the variable/function have an unknow value.")
+
         print(
             "\nResult at end of calculator: ",
             str(result),

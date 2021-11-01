@@ -148,8 +148,11 @@ class ExpressionResolver:
     def _parse_expression(self):
         print("Expression before parsing : ", self.expression) if self.verbose is True else None
 
-        # Removing all spaces
+        # Removing all spaces/tabs/newline
         self.expression = self.expression.replace(" ", "")
+        self.expression = self.expression.replace("\t", "")
+        self.expression = self.expression.replace("\r", "")
+        self.expression = self.expression.replace("\n", "")
         # Replace '{' parenthesis type by '(' parenthesis type.
         self.expression = self.expression.replace("{", OPEN_PARENTHESES)
         self.expression = self.expression.replace("}", CLOSING_PARENTHESES)
