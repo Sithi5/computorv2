@@ -1,5 +1,6 @@
 import pytest
 
+from src.globals_vars import TESTS_VERBOSE
 from src.expression_resolver import ExpressionResolver
 
 from src.matrix_utils import (
@@ -16,7 +17,7 @@ def test_calculator_function():
 
     try:
         clear_assigned_file()
-        resolver = ExpressionResolver(verbose=True)
+        resolver = ExpressionResolver(verbose=TESTS_VERBOSE)
 
         ret = resolver.solve(expression="f(x) = 2 *( x + 3 * (x - 4))")
         assert str(ret) == "((X-4.0)*3.0+X)*2.0"
@@ -31,7 +32,7 @@ def test_calculator_function():
 
 
 def test_calculator_complex():
-    resolver = ExpressionResolver(verbose=False)
+    resolver = ExpressionResolver(verbose=TESTS_VERBOSE)
 
     # Simple test
     ret = resolver.solve(expression="5 * 5i")
@@ -64,8 +65,8 @@ def test_calculator_complex():
     assert str(ret) == "50.0i"
 
 
-def test_calculator_matrice():
-    resolver = ExpressionResolver(verbose=False)
+def test_calculator_matrix():
+    resolver = ExpressionResolver(verbose=TESTS_VERBOSE)
 
     # Test undefined operation.
     with pytest.raises(ValueError) as e:
@@ -231,3 +232,29 @@ def test_calculator_matrice():
     matrix = resolver.solve(expression="[[30];[-15]] ** [[5,2]]")
     expected_result = Matrix(value="[[120]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    matrix = resolver.solve(expression="ma = [[2,2];[2,2]]")
+    matrix = resolver.solve(expression="ma = ?")
+    expected_result = Matrix(value="[[2,2];[2,2]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+    matrix = resolver.solve(expression="ma * 2")
+    expected_result = Matrix(value="[[4,4];[4,4]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+    matrix = resolver.solve(expression="ma = ?")
+    expected_result = Matrix(value="[[2,2];[2,2]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+
+def test_calculator_quadratic_equation():
+    try:
+        clear_assigned_file()
+        resolver = ExpressionResolver(verbose=TESTS_VERBOSE)
+
+        ret = resolver.solve(expression="f(x) = -x ^ 2 +2x-3")
+        assert str(ret) == "((X-4.0)*3.0+X)*2.0"
+        ret = resolver.solve(expression="f(x) = 0 ?")
+        assert str(ret) == "-8.0"
+    except Exception:
+        clear_assigned_file()
+        raise
+    clear_assigned_file()

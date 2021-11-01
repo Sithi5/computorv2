@@ -1,10 +1,11 @@
 import pytest
 
 from src.expression_resolver import ExpressionResolver
+from src.globals_vars import TESTS_VERBOSE
 
 
 def test_undefined():
-    resolver = ExpressionResolver(verbose=False)
+    resolver = ExpressionResolver(verbose=TESTS_VERBOSE)
 
     with pytest.raises(ValueError) as e:
         resolver.solve(expression=" (5 + 2i)/(0.0)")

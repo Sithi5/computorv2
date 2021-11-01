@@ -10,6 +10,7 @@ from src.globals_vars import (
     MATRIX_MULTIPLICATION_SIGN,
 )
 
+
 from src.regex import regex_matrice_column, regex_complex, regex_real, regex_operators_parenthesis
 from src.math_utils import is_real, my_round, my_abs
 

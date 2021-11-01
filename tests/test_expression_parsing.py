@@ -1,9 +1,11 @@
 from src.expression_resolver import ExpressionResolver
 from src.math_utils import my_round
 
+from src.globals_vars import TESTS_VERBOSE
+
 
 def test_expression_parsing():
-    resolver = ExpressionResolver(verbose=False)
+    resolver = ExpressionResolver(verbose=TESTS_VERBOSE)
 
     # Simple test
     ret = resolver.solve(expression="5 * 5^0")

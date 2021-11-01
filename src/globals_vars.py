@@ -1,5 +1,7 @@
 import os
 
+TESTS_VERBOSE = False
+
 ASSIGNMENT_DIR_PATH: str = os.path.abspath(os.path.join(__file__, "..", "assignment"))
 ASSIGNMENT_FILE_NAME: str = "variables.ser"
 ASSIGNMENT_FILE_PATH: str = os.path.join(ASSIGNMENT_DIR_PATH, ASSIGNMENT_FILE_NAME)
