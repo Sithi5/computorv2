@@ -407,7 +407,7 @@ class Function:
 
     def __str__(self) -> str:
         if self.value and len(self.value) > 0:
-            return self.name + "('" + str(self.argument) + "')" + "=" + str(self.value)
+            return str(self.value)
         else:
             return self.name + "(" + str(self.argument) + ")" + "=" + "Not defined"
 

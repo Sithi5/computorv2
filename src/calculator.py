@@ -1,5 +1,4 @@
 from math import cos, sin, atan
-
 from typing import Union
 
 from src.globals_vars import *
@@ -653,13 +652,13 @@ class Calculator:
         """
 
         def _get_variable_value(variable: Variable) -> BaseType:
-            for elem in self._assigned_list:
+            for elem in self._assigned_list.copy():
                 if variable.name == elem.name:
                     return elem.value
             raise ValueError("Couln't resolve the variable : ", variable)
 
         def _get_function_value(function: Function) -> list:
-            for elem in self._assigned_list:
+            for elem in self._assigned_list.copy():
                 if function.name == elem.name:
                     return elem.value
             raise ValueError("Couln't resolve the function : ", function)
@@ -672,22 +671,29 @@ class Calculator:
             else:
                 raise ValueError("Couln't resolve the function : ", str(function))
             function_variable_name = None
-            for elem in self._assigned_list:
-                if function.name == elem.name:
+            assigned_list_copy = self._assigned_list.copy()
+            print("assigned list ici = ", self._assigned_list)
+            for elem in assigned_list_copy:
+                if str(function.name) == str(elem.name):
                     function_variable_name = elem.argument.name
-                    function.value = elem.value
+                    if isinstance(elem.value, Unresolved):
+                        value = elem.value.copy()
+                    else:
+                        value = elem.value.value
+                    function.value = value
+
             if not function.value or not function_variable_name:
                 raise ValueError("Couln't resolve the function : ", str(function))
             else:
                 for index, elem in enumerate(function.value):
                     if isinstance(elem, Variable) and elem.name == function_variable_name:
                         function.value[index] = function_variable_value
+
+            print("assigned list ici = ", self._assigned_list)
             old_type_listed_expression = self._type_listed_expression
             ret = self.solve(type_listed_expression=function.value, verbose=self._verbose)
             self._type_listed_expression = old_type_listed_expression
             return ret
-
-        print("self._type_listed_expression = ", self._type_listed_expression)
 
         type_listed_expression = self._type_listed_expression.copy()
         value_error: str = ""
@@ -737,7 +743,7 @@ class Calculator:
 
         if self._verbose:
             print("Assigned list: ")
-            for elem in self._assigned_list:
+            for elem in self._assigned_list.copy():
                 print(elem.name, " = ", elem.value)
 
         try:

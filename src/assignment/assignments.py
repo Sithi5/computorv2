@@ -19,11 +19,18 @@ class Assignments:
         print("ASSIGNING FUNCTION") if self._verbose is True else None
         if not isinstance(self._new_assignment.argument, Variable):
             raise SyntaxError("The argument of the function should be a variable for assignment.")
-        self._new_assignment.value = self._calculator.solve(
+        ret = self._calculator.solve(
             type_listed_expression=self._type_listed_expression[2:],
             reduce_form_allowed=True,
             verbose=self._force_calculator_verbose,
         )
+
+        # TODO functions only accept unresolved for the moment. This behavior can be updated.
+        if isinstance(ret, Unresolved):
+            self._new_assignment.value = ret
+        else:
+            self._new_assignment.value = Unresolved()
+            self._new_assignment.value.append(ret)
 
     def _assign_variable(self):
         print("ASSIGNING VARIABLE") if self._verbose is True else None
@@ -80,12 +87,4 @@ class Assignments:
             self._assigned_list.append(self._new_assignment)
             serialize_and_save_assigned_list(assigned_list=self._assigned_list)
 
-            try:
-                # Try to see if the functions/var is already resolvable or if we can get a reduce form.
-                return self._calculator.solve(
-                    type_listed_expression=self._new_assignment.value,
-                    reduce_form_allowed=True,
-                    verbose=self._force_calculator_verbose,
-                )
-            except Exception:
-                return self._new_assignment
+            return self._new_assignment

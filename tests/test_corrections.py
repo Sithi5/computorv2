@@ -1,7 +1,7 @@
 import pytest
 
 from src.expression_resolver import ExpressionResolver
-from src.assignment.assigned_file import clear_assigned_file, open_and_deserialize_assigned_list
+from src.assignment.assigned_file import clear_assigned_file
 
 
 def test_corrections():
@@ -113,14 +113,81 @@ def test_corrections():
         resolver = ExpressionResolver()
 
         # Advenced testing
-        ret = resolver.solve("x = 2")
-        assert str(ret) == "2.0"
+        resolver.solve("x = 2")
         ret = resolver.solve("y = x * [[4,2]]")
         assert str(ret) == "[[8.0 , 4.0]]"
         ret = resolver.solve("f(z) = z * y")
         assert str(ret) == "Z*[[8.0 , 4.0]]"
+        ret = resolver.solve("f(z) =?")
+        assert str(ret) == "Z*[[8.0 , 4.0]]"
         ret = resolver.solve("f(2) = ?")
-        assert str(ret) == "Z*[[8.0 , 16.0]]"
+        assert str(ret) == "[[16.0 , 8.0]]"
+
+        clear_assigned_file()
+        resolver = ExpressionResolver()
+
+        resolver.solve("x = 2")
+        ret = resolver.solve("f(x) = x * 5")
+        assert str(ret) == "10.0"
+
+        # Calc part
+        # Simple test valid
+        ret = resolver.solve("2 + 2 = ?")
+        assert str(ret) == "4.0"
+        ret = resolver.solve("3 *4 = ?")
+        assert str(ret) == "12.0"
+        resolver.solve("x = 2")
+        ret = resolver.solve("x + 2 = ?")
+        assert str(ret) == "4.0"
+
+        with pytest.raises(ValueError) as e:
+            resolver.solve("2 / 0 = ?")
+        assert (
+            str(e.value) == "('The expression lead to a division by zero : ', '2.0', ' / ', '0.0')"
+        )
+        with pytest.raises(ValueError) as e:
+            resolver.solve("2 % 0 = ?")
+        assert str(e.value) == "('The expression lead to a modulo zero : ', '2.0', ' % ', '0.0')"
+        ret = resolver.solve("1.5 + 1= ?")
+        assert str(ret) == "2.5"
+
+        # Semi-advenced test valid
+        resolver.solve("x = 2 * i")
+        ret = resolver.solve("x ^2 = ?")
+        assert str(ret) == "-4.0"
+
+        clear_assigned_file()
+        resolver = ExpressionResolver()
+
+        ret = resolver.solve("A = [[2,3];[3,4]]")
+        assert str(ret) == "[[2.0 , 3.0] ; [3.0 , 4.0]]"
+        ret = resolver.solve("B = [[1,0];[0,1]]")
+        assert str(ret) == "[[1.0 , 0.0] ; [0.0 , 1.0]]"
+        ret = resolver.solve("A ** B")
+        assert str(ret) == "[[2.0 , 3.0] ; [3.0 , 4.0]]"
+        ret = resolver.solve("f(x) = x + 2")
+        assert str(ret) == "X+2.0"
+        ret = resolver.solve("p = 4")
+        assert str(ret) == "4.0"
+        ret = resolver.solve("f(p) = ?")
+        assert str(ret) == "6.0"
+
+        clear_assigned_file()
+        resolver = ExpressionResolver()
+
+        # Advenced test valid
+        ret = resolver.solve("4 - 3 - (2 * 3) ^2 * (2 -4) + 4 = ?")
+        assert str(ret) == "77.0"
+
+        ret = resolver.solve("f(x) = 2 *( x + 3 * (x - 4))")
+        assert str(ret) == "((X-4.0)*3.0+X)*2.0"
+        resolver.solve("p = 2")
+        ret = resolver.solve("f(3) - f(p) + 2 = ?")
+        assert str(ret) == "10.0"
+
+        resolver.solve("f(x) = 2 * x * i")
+        ret = resolver.solve("f(2) = ?")
+        assert str(ret) == "4.0i"
 
     except Exception:
         clear_assigned_file()

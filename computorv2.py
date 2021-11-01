@@ -103,6 +103,7 @@ def print_shell_help():
 
 
 def shell_expression_resolver(resolver: ExpressionResolver):
+
     print_shell_help()
     debug = False
     while 1:

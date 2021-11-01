@@ -9,6 +9,25 @@ from src.matrix_utils import (
 )
 
 from src.types.types import Matrix
+from src.assignment.assigned_file import clear_assigned_file
+
+
+def test_calculator_function():
+
+    try:
+        clear_assigned_file()
+        resolver = ExpressionResolver(verbose=True)
+
+        ret = resolver.solve(expression="f(x) = 2 *( x + 3 * (x - 4))")
+        assert str(ret) == "((X-4.0)*3.0+X)*2.0"
+        ret = resolver.solve(expression="f(2) = ?")
+        assert str(ret) == "-8.0"
+        ret = resolver.solve(expression="f(3) = ?")
+        assert str(ret) == "0.0"
+    except Exception:
+        clear_assigned_file()
+        raise
+    clear_assigned_file()
 
 
 def test_calculator_complex():
