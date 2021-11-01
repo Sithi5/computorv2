@@ -567,39 +567,17 @@ class Calculator:
                     )
                 last_two_in_stack = stack[-2:]
                 del stack[-2:]
-                # Real calc
-                if calc_is_in_real(elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]):
-                    result = self._real_calculator(
-                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
-                    )
-                # Complex calc
-                elif calc_is_in_complex(
-                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
-                ):
-                    result = self._complex_calculator(
-                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
-                    )
-                # Matrix calc
-                elif calc_is_in_matrice(
-                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
-                ):
-
-                    result = self._matrix_calculator(
-                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
-                    )
-                # Reduce form for Unresolved calc
-                elif self._reduce_form_allowed is True and (
-                    (
-                        isinstance(last_two_in_stack[0], Variable)
-                        or isinstance(last_two_in_stack[0], Function)
-                    )
-                    or (
-                        isinstance(last_two_in_stack[1], Variable)
-                        or isinstance(last_two_in_stack[1], Function)
-                    )
+                # CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
+                if (
+                    isinstance(last_two_in_stack[0], Variable)
+                    or isinstance(last_two_in_stack[0], Function)
                     or isinstance(last_two_in_stack[0], Unresolved)
+                    or isinstance(last_two_in_stack[1], Variable)
+                    or isinstance(last_two_in_stack[1], Function)
                     or isinstance(last_two_in_stack[1], Unresolved)
                 ):
+                    if self._reduce_form_allowed is False:
+                        raise ValueError("No reduce form allowed for this non resolved expression.")
                     # This part will create a reduce form
                     first_elem_in_unresolved = None
                     if isinstance(last_two_in_stack[0], Unresolved):
@@ -628,6 +606,32 @@ class Calculator:
                     unresolved.append(elem_in_stack)
                     last_operator_priority_for_unresolved = OPERATORS_PRIORITY[elem.value]
                     result = unresolved
+                # END OF CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
+
+                # REAL CALC
+                elif calc_is_in_real(elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]):
+                    result = self._real_calculator(
+                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                    )
+                # END OF REAL CALC
+
+                # COMPLEX CALC
+                elif calc_is_in_complex(
+                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
+                ):
+                    result = self._complex_calculator(
+                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                    )
+                # END OF COMPLEX CALC
+
+                # MATRIX CALC
+                elif calc_is_in_matrice(
+                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
+                ):
+                    result = self._matrix_calculator(
+                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                    )
+                # END OF MATRIX CALC
                 else:
                     raise Exception(
                         "Unexpected error when trying to resolve npi. Maybe your input format is not accepted?"
@@ -683,19 +687,34 @@ class Calculator:
             self._type_listed_expression = old_type_listed_expression
             return ret
 
-        for index, elem in enumerate(self._type_listed_expression):
-            if isinstance(elem, Variable):
-                self._type_listed_expression[index] = _get_variable_value(variable=elem)
-            elif isinstance(elem, Function):
-                elem.value = _get_function_value(function=elem)
-                if isinstance(elem.argument, Variable):
-                    try:
-                        _get_variable_value(variable=elem)
+        print("self._type_listed_expression = ", self._type_listed_expression)
+
+        type_listed_expression = self._type_listed_expression.copy()
+        value_error: str = ""
+
+        for index, elem in enumerate(type_listed_expression):
+            try:
+                if isinstance(elem, Variable):
+                    self._type_listed_expression[index] = _get_variable_value(variable=elem)
+                elif isinstance(elem, Function):
+                    elem.value = _get_function_value(function=elem)
+                    if isinstance(elem.argument, Variable):
+                        try:
+                            _get_variable_value(variable=elem)
+                            self._type_listed_expression[index] = _resolve_function_value(
+                                function=elem
+                            )
+                        except:
+                            self._type_listed_expression[index] = elem.value
+                    else:
                         self._type_listed_expression[index] = _resolve_function_value(function=elem)
-                    except:
-                        self._type_listed_expression[index] = elem.value
+            except ValueError as e:
+                if value_error == "":
+                    value_error = str(e)
                 else:
-                    self._type_listed_expression[index] = _resolve_function_value(function=elem)
+                    value_error += " and " + str(e)
+        if value_error != "":
+            raise ValueError(value_error)
 
     def solve(
         self,
@@ -715,6 +734,11 @@ class Calculator:
         print(
             "\nResolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
+
+        if self._verbose:
+            print("Assigned list: ")
+            for elem in self._assigned_list:
+                print(elem.name, " = ", elem.value)
 
         try:
             self._resolve_variables_and_functions()

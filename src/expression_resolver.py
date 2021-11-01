@@ -94,6 +94,8 @@ class ExpressionResolver:
         # Var to check good matrix parentheses use.
         matrice_parentheses_count = 0
         last_char = False
+        equals_sign_set = False
+
         for idx, c in enumerate(self.expression):
             # Check multiple operators before alphanum. Check parenthesis count.
             # Checking also that a sign isn't followed by an operator
@@ -106,15 +108,19 @@ class ExpressionResolver:
                     "Operators must be followed by a value or a variable, not another operator."
                 )
             if c in QUESTIONS_SIGN and (idx != len(self.expression) - 1 or last_char is False):
-                raise SyntaxError("Operators '?' Should be in end position.")
+                raise SyntaxError(f"Operator '{QUESTIONS_SIGN}' Should be in end position.")
+            elif c in QUESTIONS_SIGN and equals_sign_set is False:
+                raise SyntaxError(
+                    f"Operator '{QUESTIONS_SIGN}' should be in end position and the operator '{EQUALS_SIGN}' should be in the equation."
+                )
             elif c in EQUALS_SIGN and (last_char is False or last_char in EQUALS_SIGN):
                 if last_char is False:
                     raise SyntaxError(
-                        "Equality operator '=' shouln't be placed at the first position."
+                        f"Equality operator '{EQUALS_SIGN}' shouln't be placed at the first position."
                     )
                 else:
                     raise SyntaxError(
-                        "Equality operator '=' shouln't be follow by another equality operator."
+                        f"Equality operator '{EQUALS_SIGN}' shouln't be follow by another equality operator."
                     )
             elif c in OPERATORS or c in SIGN:
                 last_operator = c
@@ -128,6 +134,9 @@ class ExpressionResolver:
                 parentheses_count -= 1
             elif c in MATRICE_CLOSING_PARENTHESES:
                 matrice_parentheses_count -= 1
+
+            if c in EQUALS_SIGN:
+                equals_sign_set = True
 
             if parentheses_count < 0:
                 raise SyntaxError("Closing parenthesis with no opened one.")

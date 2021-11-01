@@ -119,6 +119,8 @@ def test_corrections():
         assert str(ret) == "[[8.0 , 4.0]]"
         ret = resolver.solve("f(z) = z * y")
         assert str(ret) == "Z*[[8.0 , 4.0]]"
+        ret = resolver.solve("f(2) = ?")
+        assert str(ret) == "Z*[[8.0 , 16.0]]"
 
     except Exception:
         clear_assigned_file()
