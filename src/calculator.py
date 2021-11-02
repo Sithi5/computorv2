@@ -11,6 +11,7 @@ from src.types.types_utils import (
 )
 from src.math_utils import my_power, my_round, my_sqrt, is_natural, PI
 from src.matrix_utils import identity_square_matrix_factory, matrix_factory
+from src.real_calculator import real_calculator
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
@@ -34,6 +35,34 @@ def calc_is_in_real(elem_one: BaseType, elem_two: BaseType) -> bool:
     return isinstance(elem_one, Real) and isinstance(elem_two, Real)
 
 
+def calc_is_var_by_var(elem_one: BaseType, elem_two: BaseType) -> bool:
+    """
+    This method take two type in input and return true if both element are Variable.
+    """
+    return isinstance(elem_one, Variable) and isinstance(elem_two, Variable)
+
+
+def calc_is_var_multiply_or_exponent_by_real(
+    elem_one: BaseType, elem_two: BaseType, operator: Operator
+) -> bool:
+    """
+    This method take two type in input and return true if it imply a multiplication between a var and a real or a real exponent to a var.
+    """
+
+    return (
+        (
+            (isinstance(elem_one, Real) and isinstance(elem_two, Variable))
+            or (isinstance(elem_two, Real) and isinstance(elem_one, Variable))
+        )
+        and operator.value in MULTIPLICATION_SIGN + DIVISION_SIGN
+        or (
+            isinstance(elem_two, Real)
+            and isinstance(elem_one, Variable)
+            and operator.value == EXPONENT_SIGN
+        )
+    )
+
+
 def calc_is_in_matrice(elem_one: BaseType, elem_two: BaseType) -> bool:
     """
     This method take two type in input and return true if the result of the calcul between those two type will be a matrix type.
@@ -44,59 +73,6 @@ def calc_is_in_matrice(elem_one: BaseType, elem_two: BaseType) -> bool:
 class Calculator:
     def __init__(self, assigned_list: list):
         self._assigned_list = assigned_list
-
-    def _real_calculator(self, elem_one: Real, elem_two: Real, operator: Operator) -> Real:
-        """
-        This method take two real type in input and an operator and return a real by resolving trivial calculation
-        """
-
-        print("\nReal calculator :") if self._verbose is True else None
-        print(
-            str(elem_one) + " " + str(operator) + " " + str(elem_two) + "\n"
-        ) if self._verbose is True else None
-
-        if not isinstance(elem_one, Real) or not isinstance(elem_two, Real):
-            raise ValueError(
-                """
-                Wrong type in real calculator. Input type should be:
-                Real or Complex.
-                """
-            )
-
-        if operator.value == ADDITION_SIGN:
-            return Real(str(my_round(float(elem_one.value) + float(elem_two.value))))
-        elif operator.value == SUBSTRACTION_SIGN:
-            return Real(str(my_round(float(elem_one.value) - float(elem_two.value))))
-        elif operator.value == MODULO_SIGN:
-            if float(elem_two.value) == 0.0:
-                raise ValueError(
-                    "The expression lead to a modulo zero : ",
-                    str(elem_one),
-                    " " + operator.value + " ",
-                    str(elem_two),
-                )
-            return Real(str(my_round(float(elem_one.value) % float(elem_two.value))))
-
-        elif operator.value == DIVISION_SIGN:
-            if float(elem_two.value) == 0.0:
-                raise ValueError(
-                    "The expression lead to a division by zero : ",
-                    str(elem_one),
-                    " " + operator.value + " ",
-                    str(elem_two),
-                )
-            return Real(str(my_round(float(elem_one.value) / float(elem_two.value))))
-        elif operator.value == MULTIPLICATION_SIGN:
-            return Real(str(my_round(float(elem_one.value) * float(elem_two.value))))
-        elif operator.value == EXPONENT_SIGN:
-            if not is_natural(n=elem_two.value):
-                raise NotImplementedError("Exponent should be natural for the moment.")
-            return Real(str(my_round(my_power(float(elem_one.value), int(float(elem_two.value))))))
-        else:
-            raise ValueError(
-                "The expression operator is unknown : ",
-                operator.value,
-            )
 
     def _complex_calculator(
         self, elem_one: Union[Real, Complex], elem_two: Union[Real, Complex], operator: Operator
@@ -398,8 +374,11 @@ class Calculator:
                                 elem_one=row[0], elem_two=complex_or_real, operator=operator
                             )
                         else:
-                            row[0] = self._real_calculator(
-                                elem_one=row[0], elem_two=complex_or_real, operator=operator
+                            row[0] = real_calculator(
+                                elem_one=row[0],
+                                elem_two=complex_or_real,
+                                operator=operator,
+                                verbose=self._verbose,
                             )
             return matrix
             # END OF CALCUL MATRIX WITH COMPLEX/REAL #
@@ -442,7 +421,7 @@ class Calculator:
                                     operator=operator,
                                 )
                             else:
-                                matrix.value[columns_index][row_index][0] = self._real_calculator(
+                                matrix.value[columns_index][row_index][0] = real_calculator(
                                     elem_one=first_matrix.value[columns_index][row_index][0],
                                     elem_two=second_matrix.value[columns_index][row_index][0],
                                     operator=operator,
@@ -510,9 +489,9 @@ class Calculator:
                                     operator=Operator(value=ADDITION_SIGN),
                                 )
                             else:
-                                sum = self._real_calculator(
+                                sum = real_calculator(
                                     elem_one=sum,
-                                    elem_two=self._real_calculator(
+                                    elem_two=real_calculator(
                                         elem_one=first_matrix.value[index][first_matrix_row_index][
                                             0
                                         ],
@@ -586,12 +565,13 @@ class Calculator:
                     print("elem_one = ", elem_one)
                     print("operator = ", operator)
                     print("elem_two = ", elem_two)
-                    if (
-                        (isinstance(elem_one, Real) and isinstance(elem_two, Variable))
-                        or (isinstance(elem_two, Real) and isinstance(elem_one, Variable))
-                    ) and operator.value in MULTIPLICATION_SIGN + DIVISION_SIGN + EXPONENT_SIGN:
+                    if calc_is_var_multiply_or_exponent_by_real(
+                        elem_one=elem_one, elem_two=elem_two, operator=operator
+                    ):
                         # Multiplying var by real
                         print("here")
+
+                        # VAR BY REAL
                         if isinstance(elem_one, Variable):
                             variable = elem_one
                             real = elem_two
@@ -603,26 +583,30 @@ class Calculator:
                             if variable.exponent.value == "1.0":
                                 variable.exponent = real
                             else:
-                                variable.exponent = self._real_calculator(
+                                variable.exponent = real_calculator(
                                     elem_one=real, elem_two=variable.exponent, operator=operator
                                 )
                         else:
                             if isinstance(elem_one, Variable):
-                                variable.coefficient = self._real_calculator(
+                                variable.coefficient = real_calculator(
                                     elem_one=variable.coefficient, elem_two=real, operator=operator
                                 )
                             else:
-                                variable.coefficient = self._real_calculator(
+                                variable.coefficient = real_calculator(
                                     elem_one=real, elem_two=variable.coefficient, operator=operator
                                 )
                         result = variable
+                        # END OF VAR BY REAL
+                    # elif calc_is_var_by_var(elem_one=elem_one, elem_two=elem_two):
+                    #     # VAR BY VAR CALCULATION
+                    #     pass
+                    #     # END OF VAR BY VAR CALCULATION
                     else:
-                        # Reduced form
+                        # REDUCED FORM
                         if self._reduce_form_allowed is False:
                             raise ValueError(
                                 "No reduce form allowed for this non resolved expression."
                             )
-                        # This part will create a reduce form
                         first_elem_in_unresolved = None
                         if isinstance(elem_one, Unresolved):
                             unresolved = elem_one
@@ -652,11 +636,12 @@ class Calculator:
                         unresolved.append(elem_in_stack)
                         last_operator_priority_for_unresolved = OPERATORS_PRIORITY[operator.value]
                         result = unresolved
+                        # END OF REDUCED FORM
                 # END OF CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
 
                 # REAL CALC
                 elif calc_is_in_real(elem_one=elem_one, elem_two=elem_two):
-                    result = self._real_calculator(
+                    result = real_calculator(
                         elem_one=elem_one, elem_two=elem_two, operator=operator
                     )
                 # END OF REAL CALC
