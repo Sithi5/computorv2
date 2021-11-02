@@ -13,6 +13,8 @@ from src.real_calculator import real_calculator
 from src.complex_calculator import complex_calculator
 from src.matrix_calculator import matrix_calculator
 from src.variable_by_real_calculator import variable_by_real_calculator
+from src.variable_by_variable_calculator import variable_by_variable_calculator
+from src.unresolved_calculator import unresolved_calculator
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType) -> bool:
@@ -147,12 +149,25 @@ class Calculator:
                             verbose=self._verbose,
                         )
                         # END OF VAR BY REAL
-                    # elif calc_is_var_by_var(elem_one=elem_one, elem_two=elem_two):
-                    #     # VAR BY VAR CALCULATION
-                    #     pass
-                    #     # END OF VAR BY VAR CALCULATION
+                    elif calc_is_var_by_var(elem_one=elem_one, elem_two=elem_two):
+                        # VAR BY VAR CALCULATION
+                        try:
+                            result = variable_by_variable_calculator(
+                                elem_one=elem_one,
+                                elem_two=elem_two,
+                                operator=operator,
+                                verbose=self._verbose,
+                            )
+                        except NotImplementedError:
+                            unresolved_calculator(
+                                elem_one=elem_one,
+                                elem_two=elem_two,
+                                operator=operator,
+                                verbose=self._verbose,
+                            )
+                        # END OF VAR BY VAR CALCULATION
                     else:
-                        # REDUCED FORM
+                        # UNRESOLVED CALCULATION
                         if self._reduce_form_allowed is False:
                             raise ValueError(
                                 "No reduce form allowed for this non resolved expression."
@@ -186,7 +201,7 @@ class Calculator:
                         unresolved.append(elem_in_stack)
                         last_operator_priority_for_unresolved = OPERATORS_PRIORITY[operator.value]
                         result = unresolved
-                        # END OF REDUCED FORM
+                        # END OF UNRESOLVED CALCULATION
                 # END OF CALC WITH VAR/FUNCTION/UNRESOLVER, REDUCE FORM FOR UNRESOLVED CALC
 
                 # REAL CALC

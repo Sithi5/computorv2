@@ -26,7 +26,7 @@ def variable_by_real_calculator(
     ):
         raise ValueError(
             """
-            Wrong type in variable_by_real_calculator calculator. Input type should be:
+            Wrong type in variable_by_real_calculator. Input type should be:
             Real and Variable.
             """
         )
