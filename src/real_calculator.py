@@ -7,7 +7,7 @@ def real_calculator(
     elem_one: Real, elem_two: Real, operator: Operator, verbose: bool = True
 ) -> Real:
     """
-    This function take two real type in input and an operator and return a real by resolving trivial calculation
+    This function take two real type in input and an operator and return a real by resolving trivial calculation.
     """
 
     print("\nReal calculator :") if verbose is True else None
