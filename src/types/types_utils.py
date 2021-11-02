@@ -108,7 +108,7 @@ def convert_expression_to_type_list(
                     "No potential matrix should be found in the expression. (no_potential_matrice set to true.)"
                 )
             match_size = len(matched_potential_matrice)
-            type_list.append(Matrix(value=matched_potential_matrice, pending_calc=True))
+            type_list.append(Matrix(value=matched_potential_matrice, pending_calculation=True))
         # Match functions before var because can have a var inside
         elif matched_function:
             if no_function:
@@ -201,4 +201,3 @@ def convert_type_listed_expression_to_str(type_listed_expression: list) -> str:
             str_expression += " "
         str_expression += str(elem)
     return str_expression
-

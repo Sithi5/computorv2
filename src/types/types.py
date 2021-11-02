@@ -162,7 +162,7 @@ class Matrix(BaseType):
     Example:
     -   [[5,3]]
     -   [[5,3];[3i + 2.5 ,8]]
-    The matrix could have pending calcul inside, in that case the 'pending_calc' should be set to true at the initialization.
+    The matrix could have pending calcul inside, in that case the 'pending_calculation' should be set to true at the initialization.
     """
 
     n: int  # Number of columns of the matrix
@@ -265,14 +265,14 @@ class Matrix(BaseType):
                 + self._value
             )
 
-    def __init__(self, value: str, pending_calc: bool = False):
+    def __init__(self, value: str, pending_calculation: bool = False):
         super().__init__()
         # Set to -1 before initializing the matrix value.
         self.n = -1
         self.m = -1
         self.value = value
-        # pending_calc attribute is used to know if some calculation is unresolve inside the matrix.
-        self.pending_calc = pending_calc
+        # pending_calculation attribute is used to know if some calculation is unresolve inside the matrix.
+        self.pending_calculation = pending_calculation
 
     def __str__(self) -> str:
         ret: str = "["

@@ -4,7 +4,7 @@ from src.math_utils import my_power, my_round, is_natural
 
 
 def real_calculator(
-    elem_one: Real, elem_two: Real, operator: Operator, verbose: bool = True
+    elem_one: Real, elem_two: Real, operator: Operator, verbose: bool = False
 ) -> Real:
     """
     This function take two real type in input and an operator and return a real by resolving trivial calculation.

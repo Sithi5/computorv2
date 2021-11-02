@@ -10,7 +10,7 @@ def complex_calculator(
     elem_one: Union[Real, Complex],
     elem_two: Union[Real, Complex],
     operator: Operator,
-    verbose: bool = True,
+    verbose: bool = False,
 ) -> Complex:
     """
     This function take real/complex in input and an operator and return a complex number by resolving calculation.
