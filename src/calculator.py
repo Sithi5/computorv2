@@ -569,69 +569,86 @@ class Calculator:
                     )
                 last_two_in_stack = stack[-2:]
                 del stack[-2:]
+                elem_one = last_two_in_stack[0]
+                elem_two = last_two_in_stack[1]
+                operator = elem
                 # CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
                 if (
-                    isinstance(last_two_in_stack[0], Variable)
-                    or isinstance(last_two_in_stack[0], Function)
-                    or isinstance(last_two_in_stack[0], Unresolved)
-                    or isinstance(last_two_in_stack[1], Variable)
-                    or isinstance(last_two_in_stack[1], Function)
-                    or isinstance(last_two_in_stack[1], Unresolved)
+                    isinstance(elem_one, Variable)
+                    or isinstance(elem_one, Function)
+                    or isinstance(elem_one, Unresolved)
+                    or isinstance(elem_two, Variable)
+                    or isinstance(elem_two, Function)
+                    or isinstance(elem_two, Unresolved)
                 ):
-                    if self._reduce_form_allowed is False:
-                        raise ValueError("No reduce form allowed for this non resolved expression.")
-                    # This part will create a reduce form
-                    first_elem_in_unresolved = None
-                    if isinstance(last_two_in_stack[0], Unresolved):
-                        unresolved = last_two_in_stack[0]
-                        elem_in_stack = last_two_in_stack[1]
-                    elif isinstance(last_two_in_stack[1], Unresolved):
-                        unresolved = last_two_in_stack[1]
-                        elem_in_stack = last_two_in_stack[0]
+                    # TODO better variable and unresolved management
+                    if (
+                        isinstance(elem_one, Real)
+                        and operator.value == SUBSTRACTION_SIGN
+                        and elem_one.value == "0.0"
+                    ):
+                        if isinstance(elem_two, Unresolved):
+                            unresolved = elem_two
+                        else:
+                            unresolved = Unresolved()
+                            unresolved.append(elem_two)
+                        unresolved.insert(0, Operator(value="-"))
+                        result = unresolved
                     else:
-                        unresolved = Unresolved()
-                        elem_in_stack = last_two_in_stack[1]
-                        first_elem_in_unresolved = last_two_in_stack[0]
-                    if (
-                        OPERATORS_PRIORITY[elem.value] > last_operator_priority_for_unresolved
-                        and len(unresolved) > 0
-                    ):
-                        unresolved.insert(0, Operator(value="("))
-                    if first_elem_in_unresolved:
-                        unresolved.append(first_elem_in_unresolved)
-                    if (
-                        OPERATORS_PRIORITY[elem.value] > last_operator_priority_for_unresolved
-                        and len(unresolved) > 3
-                    ):
-                        unresolved.append(Operator(value=")"))
-                    unresolved.append(elem)
-                    unresolved.append(elem_in_stack)
-                    last_operator_priority_for_unresolved = OPERATORS_PRIORITY[elem.value]
-                    result = unresolved
+                        if self._reduce_form_allowed is False:
+                            raise ValueError(
+                                "No reduce form allowed for this non resolved expression."
+                            )
+                        # This part will create a reduce form
+                        first_elem_in_unresolved = None
+                        if isinstance(elem_one, Unresolved):
+                            unresolved = elem_one
+                            elem_in_stack = elem_two
+                        elif isinstance(elem_two, Unresolved):
+                            unresolved = elem_two
+                            elem_in_stack = elem_one
+                        else:
+                            unresolved = Unresolved()
+                            elem_in_stack = elem_two
+                            first_elem_in_unresolved = elem_one
+                        if (
+                            OPERATORS_PRIORITY[operator.value]
+                            > last_operator_priority_for_unresolved
+                            and len(unresolved) > 0
+                        ):
+                            unresolved.insert(0, Operator(value="("))
+                        if first_elem_in_unresolved:
+                            unresolved.append(first_elem_in_unresolved)
+                        if (
+                            OPERATORS_PRIORITY[operator.value]
+                            > last_operator_priority_for_unresolved
+                            and len(unresolved) > 3
+                        ):
+                            unresolved.append(Operator(value=")"))
+                        unresolved.append(operator)
+                        unresolved.append(elem_in_stack)
+                        last_operator_priority_for_unresolved = OPERATORS_PRIORITY[operator.value]
+                        result = unresolved
                 # END OF CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
 
                 # REAL CALC
-                elif calc_is_in_real(elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]):
+                elif calc_is_in_real(elem_one=elem_one, elem_two=elem_two):
                     result = self._real_calculator(
-                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                        elem_one=elem_one, elem_two=elem_two, operator=operator
                     )
                 # END OF REAL CALC
 
                 # COMPLEX CALC
-                elif calc_is_in_complex(
-                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
-                ):
+                elif calc_is_in_complex(elem_one=elem_one, elem_two=elem_two):
                     result = self._complex_calculator(
-                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                        elem_one=elem_one, elem_two=elem_two, operator=operator
                     )
                 # END OF COMPLEX CALC
 
                 # MATRIX CALC
-                elif calc_is_in_matrice(
-                    elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1]
-                ):
+                elif calc_is_in_matrice(elem_one=elem_one, elem_two=elem_two):
                     result = self._matrix_calculator(
-                        elem_one=last_two_in_stack[0], elem_two=last_two_in_stack[1], operator=elem
+                        elem_one=elem_one, elem_two=elem_two, operator=operator
                     )
                 # END OF MATRIX CALC
                 else:
