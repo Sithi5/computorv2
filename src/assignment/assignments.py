@@ -1,6 +1,6 @@
 from typing import Union
 
-from src.calculator import Calculator
+from src.calculators.calculator import Calculator
 from src.assignment.assigned_file import serialize_and_save_assigned_list
 
 from src.types.types import *

@@ -2,7 +2,7 @@ from typing import Union
 
 from src.types.types import *
 from src.globals_vars import *
-from src.real_calculator import real_calculator
+from src.calculators.real_calculator import real_calculator
 
 
 def variable_by_real_calculator(

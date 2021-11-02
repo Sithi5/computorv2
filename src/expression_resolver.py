@@ -17,7 +17,7 @@ from typing import Union
 from src.types.types import BaseType, Operator, Unresolved
 
 from src.assignment.assignments import Assignments
-from src.calculator import Calculator
+from src.calculators.calculator import Calculator
 from src.equation_solver import EquationSolver
 from src.globals_vars import (
     EQUALS_SIGN,

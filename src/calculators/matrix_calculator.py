@@ -3,8 +3,8 @@ from typing import Union
 from src.types.types import *
 from src.globals_vars import *
 from src.math_utils import is_natural
-from src.real_calculator import real_calculator
-from src.complex_calculator import complex_calculator
+from src.calculators.real_calculator import real_calculator
+from src.calculators.complex_calculator import complex_calculator
 from src.matrix_utils import identity_square_matrix_factory, matrix_factory
 
 

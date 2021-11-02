@@ -9,12 +9,12 @@ from src.types.types_utils import (
     convert_type_listed_expression_to_str,
     check_type_listed_expression_and_add_implicit_cross_operators,
 )
-from src.real_calculator import real_calculator
-from src.complex_calculator import complex_calculator
-from src.matrix_calculator import matrix_calculator
-from src.variable_by_real_calculator import variable_by_real_calculator
-from src.variable_by_variable_calculator import variable_by_variable_calculator
-from src.unresolved_calculator import unresolved_calculator
+from src.calculators.real_calculator import real_calculator
+from src.calculators.complex_calculator import complex_calculator
+from src.calculators.matrix_calculator import matrix_calculator
+from src.calculators.variable_by_real_calculator import variable_by_real_calculator
+from src.calculators.variable_by_variable_calculator import variable_by_variable_calculator
+from src.calculators.unresolved_calculator import unresolved_calculator
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType) -> bool:
@@ -159,6 +159,11 @@ class Calculator:
                                 verbose=self._verbose,
                             )
                         except NotImplementedError:
+                            # do unresolved calc
+                            if self._reduce_form_allowed is False:
+                                raise ValueError(
+                                    "No reduce form allowed for this non resolved expression."
+                                )
                             result, last_operator_priority_for_unresolved = unresolved_calculator(
                                 elem_one=elem_one,
                                 elem_two=elem_two,

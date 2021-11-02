@@ -30,7 +30,7 @@ from src.types.types_utils import (
 
 from src.math_utils import my_power, my_round, my_sqrt, is_natural
 
-from src.calculator import Calculator
+from src.calculators.calculator import Calculator
 
 
 class EquationSolver:
