@@ -48,12 +48,12 @@ def test_subject():
         # Function
 
         ret = resolver.solve("funA(x) = 2*x^5 + 4x^2 - 5*x + 4")
-        assert str(ret) == "X^5.0*2.0+X^2.0*4.0-5.0*X+4.0"
+        assert str(ret) == "2.0X^5.0+4.0X^2.0-5.0X+4.0"
 
         ret = resolver.solve(" funB(y) =43 * y / (4 % 2 * y)")
         # assert str(ret) == "43.0*Y/(4.0%2.0*Y)"
         ret = resolver.solve("funC(z) = -2 * z - 5")
-        assert str(ret) == "-2.0*Z-5.0"
+        assert str(ret) == "-2.0Z-5.0"
 
         # Reassignment
         ret = resolver.solve("x = 2")
@@ -73,9 +73,11 @@ def test_subject():
         assert str(ret) == "27.0"
         ret = resolver.solve("varB = 2 * varA - 5 %4")
         assert str(ret) == "53.0"
-        ret = resolver.solve("funA(x) = varA + varB * 4 - 1 / 2 + x")
+        ret = resolver.solve(
+            "funA(x) = varA + varB * 4 - 1 / 2 + x"
+        )  # funA(x) = 27 + 53 * 4 -1/2 + x
         assert str(ret) == "238.5+X"
-        ret = resolver.solve("varC = 2 * varA - varB")
+        ret = resolver.solve("varC = 2 * varA - varB")  # varc = 2 * 27 - 53
         assert str(ret) == "1.0"
         ret = resolver.solve("varD = funA(varC)")
         assert str(ret) == "239.5"
@@ -100,7 +102,7 @@ def test_subject():
         assert str(ret) == "(X+2.0)^2.0+-1.0-4.0"
 
         ret = resolver.solve("funC(x) = 4x + 5 - 2")
-        assert str(ret) == "4.0*X+5.0-2.0"
+        assert str(ret) == "4.0X+5.0-2.0"
 
         ret = resolver.solve("funA(2) + funB(4) = ?")
         assert str(ret) == "41.0"
@@ -111,7 +113,7 @@ def test_subject():
         # Quadratic equation
 
         ret = resolver.solve("funA(x) = x^2 + 2x + 1")
-        assert str(ret) == "X^2.0+2.0*X+1.0"
+        assert str(ret) == "X^2.0+2.0X+1.0"
 
         ret = resolver.solve("y=0")
         assert str(ret) == "0.0"

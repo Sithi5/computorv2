@@ -335,11 +335,19 @@ class Operator:
 
 
 class Variable:
-    def __init__(self, name: str, value: list = None):
+    def __init__(
+        self,
+        name: str,
+        value: list = None,
+        coefficient: Real = Real("1.0"),
+        exponent: Real = Real("1.0"),
+    ):
         super().__init__()
         if name.isalpha:
             self.name = name
             self.value = value
+            self.coefficient = coefficient
+            self.exponent = exponent
         else:
             raise SyntaxError(
                 "An error occured when trying to create "
@@ -352,9 +360,14 @@ class Variable:
 
     def __str__(self) -> str:
         if self.value:
-            return str(self.value)
+            value = str(self.value)
         else:
-            return self.name
+            value = self.name
+        if self.coefficient.value != "1.0":
+            value = str(self.coefficient) + value
+        if self.exponent.value != "1.0":
+            value = value + "^" + str(self.exponent)
+        return value
 
     def __repr__(self) -> str:
         if self.value is not None:

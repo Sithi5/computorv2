@@ -194,6 +194,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     verbose = args.verbose
+
     debug = args.debug
 
     if debug:
@@ -207,23 +208,28 @@ def main(argv=None):
             level=logging.ERROR,
         )
 
+    resolver = ExpressionResolver(
+        verbose=verbose | args.force_calculator_verbose,
+        force_calculator_verbose=args.force_calculator_verbose,
+        output_graph=args.output_graph,
+    )
+
     if debug is False:
         try:
-            if args.clear or args.gui or str(args.expression).lower() == "shell":
+            if args.clear:
                 clear_assigned_file()
                 print("All assigned var have been cleared.") if verbose is True else None
-            resolver = ExpressionResolver(
-                verbose=verbose | args.force_calculator_verbose,
-                force_calculator_verbose=args.force_calculator_verbose,
-                output_graph=args.output_graph,
-            )
-            if args.list:
+            elif args.list:
                 list_assigned_file()
             elif args.gui:
-                logging.debug("Launch in GUI mode.")
+                clear_assigned_file()
+                logging.debug("Launch in GUI mode.") if verbose is True else None
                 main_gui(resolver=resolver)
             elif str(args.expression).lower() == "shell":
-                logging.debug("""Starting inline shell expression resolver : """)
+                clear_assigned_file()
+                logging.debug(
+                    """Starting inline shell expression resolver : """
+                ) if verbose is True else None
                 shell_expression_resolver(resolver=resolver)
             else:
                 resolve_input(resolver=resolver, expression=args.expression, debug=debug)
@@ -231,21 +237,20 @@ def main(argv=None):
             logging.critical("An exception appened : ")
             logging.error(e)
     else:
-        if args.clear or args.gui or str(args.expression).lower() == "shell":
+        if args.clear:
             clear_assigned_file()
             print("All assigned var have been cleared.") if verbose is True else None
-            resolver = ExpressionResolver(
-                verbose=verbose | args.force_calculator_verbose,
-                force_calculator_verbose=args.force_calculator_verbose,
-                output_graph=args.output_graph,
-            )
-        if args.list:
+        elif args.list:
             list_assigned_file()
         elif args.gui:
-            logging.debug("Launch in GUI mode.")
+            clear_assigned_file()
+            logging.debug("Launch in GUI mode.") if verbose is True else None
             main_gui(resolver=resolver)
         elif str(args.expression).lower() == "shell":
-            logging.debug("""Starting inline shell expression resolver : """)
+            clear_assigned_file()
+            logging.debug(
+                """Starting inline shell expression resolver : """
+            ) if verbose is True else None
             shell_expression_resolver(resolver=resolver)
         else:
             resolve_input(resolver=resolver, expression=args.expression, debug=args.debug)

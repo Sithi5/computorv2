@@ -572,6 +572,7 @@ class Calculator:
                 elem_one = last_two_in_stack[0]
                 elem_two = last_two_in_stack[1]
                 operator = elem
+
                 # CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
                 if (
                     isinstance(elem_one, Variable)
@@ -581,20 +582,42 @@ class Calculator:
                     or isinstance(elem_two, Function)
                     or isinstance(elem_two, Unresolved)
                 ):
-                    # TODO better variable and unresolved management
+                    print("CALC WITH VAR")
+                    print("elem_one = ", elem_one)
+                    print("operator = ", operator)
+                    print("elem_two = ", elem_two)
                     if (
-                        isinstance(elem_one, Real)
-                        and operator.value == SUBSTRACTION_SIGN
-                        and elem_one.value == "0.0"
-                    ):
-                        if isinstance(elem_two, Unresolved):
-                            unresolved = elem_two
+                        (isinstance(elem_one, Real) and isinstance(elem_two, Variable))
+                        or (isinstance(elem_two, Real) and isinstance(elem_one, Variable))
+                    ) and operator.value in MULTIPLICATION_SIGN + DIVISION_SIGN + EXPONENT_SIGN:
+                        # Multiplying var by real
+                        print("here")
+                        if isinstance(elem_one, Variable):
+                            variable = elem_one
+                            real = elem_two
                         else:
-                            unresolved = Unresolved()
-                            unresolved.append(elem_two)
-                        unresolved.insert(0, Operator(value="-"))
-                        result = unresolved
+                            variable = elem_two
+                            real = elem_one
+                        if operator.value == EXPONENT_SIGN:
+                            # TODO not sure of this.
+                            if variable.exponent.value == "1.0":
+                                variable.exponent = real
+                            else:
+                                variable.exponent = self._real_calculator(
+                                    elem_one=real, elem_two=variable.exponent, operator=operator
+                                )
+                        else:
+                            if isinstance(elem_one, Variable):
+                                variable.coefficient = self._real_calculator(
+                                    elem_one=variable.coefficient, elem_two=real, operator=operator
+                                )
+                            else:
+                                variable.coefficient = self._real_calculator(
+                                    elem_one=real, elem_two=variable.coefficient, operator=operator
+                                )
+                        result = variable
                     else:
+                        # Reduced form
                         if self._reduce_form_allowed is False:
                             raise ValueError(
                                 "No reduce form allowed for this non resolved expression."
@@ -672,21 +695,44 @@ class Calculator:
         """
 
         def _get_variable_value(variable: Variable) -> BaseType:
+            """
+            This function return the saved value of a variable.
+            """
             assigned_list = copy.deepcopy(self._assigned_list)
             for elem in assigned_list:
                 if variable.name == elem.name:
-                    # Return a copy
-                    return copy.deepcopy(elem.value)
+                    return elem.value
             raise ValueError("Couln't resolve the variable : ", variable)
 
         def _get_function_value(function: Function) -> list:
+            """
+            This function return the saved value of a function.
+            """
             assigned_list = copy.deepcopy(self._assigned_list)
             for elem in assigned_list:
                 if function.name == elem.name:
-                    return copy.deepcopy(elem.value)
+                    return elem.value
             raise ValueError("Couln't resolve the function : ", function)
 
+        def _resolve_variable_value(variable_value: BaseType, variable: Variable) -> BaseType:
+            """
+            This function resolve a variable to get the value after calculating the coefficient and the exponent.
+            """
+            type_listed_expression = []
+            type_listed_expression.append(variable_value)
+            type_listed_expression.append(Operator(MULTIPLICATION_SIGN))
+            type_listed_expression.append(variable.coefficient)
+            type_listed_expression.append(Operator(EXPONENT_SIGN))
+            type_listed_expression.append(variable.exponent)
+            old_type_listed_expression = self._type_listed_expression
+            ret = self.solve(type_listed_expression=type_listed_expression, verbose=self._verbose)
+            self._type_listed_expression = old_type_listed_expression
+            return ret
+
         def _resolve_function_value(function: Function) -> list:
+            """
+            This function resolve the value of a function by resolving all the var.
+            """
             if isinstance(function.argument, Variable):
                 function_variable_value = _get_variable_value(variable=function.argument)
             elif isinstance(function.argument, Real):
@@ -705,7 +751,9 @@ class Calculator:
             else:
                 for index, elem in enumerate(function.value):
                     if isinstance(elem, Variable) and elem.name == function_variable_name:
-                        function.value[index] = function_variable_value
+                        function.value[index] = _resolve_variable_value(
+                            variable_value=function_variable_value, variable=elem
+                        )
 
             old_type_listed_expression = self._type_listed_expression
             ret = self.solve(type_listed_expression=function.value, verbose=self._verbose)
@@ -718,12 +766,13 @@ class Calculator:
         for index, elem in enumerate(type_listed_expression):
             try:
                 if isinstance(elem, Variable):
-                    self._type_listed_expression[index] = _get_variable_value(variable=elem)
+                    self._type_listed_expression[index] = _resolve_variable_value(
+                        variable_value=_get_variable_value(variable=elem), variable=elem
+                    )
                 elif isinstance(elem, Function):
                     elem.value = _get_function_value(function=elem)
                     if isinstance(elem.argument, Variable):
                         try:
-                            _get_variable_value(variable=elem)
                             self._type_listed_expression[index] = _resolve_function_value(
                                 function=elem
                             )

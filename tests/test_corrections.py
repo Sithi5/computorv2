@@ -47,7 +47,7 @@ def test_corrections():
         resolver = ExpressionResolver()
 
         ret = resolver.solve("f(x) = x * 2")
-        assert str(ret) == "X*2.0"
+        assert str(ret) == "2.0X"
 
         with pytest.raises(ValueError) as e:
             ret = resolver.solve("t = f(x)")
