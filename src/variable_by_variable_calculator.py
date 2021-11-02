@@ -35,7 +35,7 @@ def variable_by_variable_calculator(
         """
         )
     variable = elem_one
-    if operator in ADDITION_SIGN + SUBSTRACTION_SIGN:
+    if operator.value in ADDITION_SIGN + SUBSTRACTION_SIGN:
         if elem_one.exponent != elem_two.exponent:
             raise NotImplementedError(
                 """
@@ -47,7 +47,7 @@ def variable_by_variable_calculator(
             elem_two=elem_two.coefficient,
             operator=operator,
         )
-    elif operator == MULTIPLICATION_SIGN:
+    elif operator.value == MULTIPLICATION_SIGN:
         variable.exponent = real_calculator(
             elem_one=variable.exponent, elem_two=elem_two.exponent, operator=Operator(ADDITION_SIGN)
         )

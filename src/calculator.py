@@ -159,10 +159,11 @@ class Calculator:
                                 verbose=self._verbose,
                             )
                         except NotImplementedError:
-                            unresolved_calculator(
+                            result, last_operator_priority_for_unresolved = unresolved_calculator(
                                 elem_one=elem_one,
                                 elem_two=elem_two,
                                 operator=operator,
+                                last_operator_priority_for_unresolved=last_operator_priority_for_unresolved,
                                 verbose=self._verbose,
                             )
                         # END OF VAR BY VAR CALCULATION
@@ -172,35 +173,13 @@ class Calculator:
                             raise ValueError(
                                 "No reduce form allowed for this non resolved expression."
                             )
-                        first_elem_in_unresolved = None
-                        if isinstance(elem_one, Unresolved):
-                            unresolved = elem_one
-                            elem_in_stack = elem_two
-                        elif isinstance(elem_two, Unresolved):
-                            unresolved = elem_two
-                            elem_in_stack = elem_one
-                        else:
-                            unresolved = Unresolved()
-                            elem_in_stack = elem_two
-                            first_elem_in_unresolved = elem_one
-                        if (
-                            OPERATORS_PRIORITY[operator.value]
-                            > last_operator_priority_for_unresolved
-                            and len(unresolved) > 0
-                        ):
-                            unresolved.insert(0, Operator(value="("))
-                        if first_elem_in_unresolved:
-                            unresolved.append(first_elem_in_unresolved)
-                        if (
-                            OPERATORS_PRIORITY[operator.value]
-                            > last_operator_priority_for_unresolved
-                            and len(unresolved) > 3
-                        ):
-                            unresolved.append(Operator(value=")"))
-                        unresolved.append(operator)
-                        unresolved.append(elem_in_stack)
-                        last_operator_priority_for_unresolved = OPERATORS_PRIORITY[operator.value]
-                        result = unresolved
+                        result, last_operator_priority_for_unresolved = unresolved_calculator(
+                            elem_one=elem_one,
+                            elem_two=elem_two,
+                            operator=operator,
+                            last_operator_priority_for_unresolved=last_operator_priority_for_unresolved,
+                            verbose=self._verbose,
+                        )
                         # END OF UNRESOLVED CALCULATION
                 # END OF CALC WITH VAR/FUNCTION/UNRESOLVER, REDUCE FORM FOR UNRESOLVED CALC
 
