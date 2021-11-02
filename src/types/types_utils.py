@@ -16,7 +16,7 @@ from src.globals_vars import (
     QUESTIONS_SIGN,
     SIGN,
     EQUALS_SIGN,
-    OPEN_PARENTHESES,
+    OPENING_PARENTHESES,
     CLOSING_PARENTHESES,
     MATRIX_MULTIPLICATION_SIGN,
 )
@@ -37,7 +37,7 @@ def check_type_listed_expression_and_add_implicit_cross_operators(
         elif (
             (
                 isinstance(elem, Operator)
-                and elem.value in OPEN_PARENTHESES
+                and elem.value in OPENING_PARENTHESES
                 and not isinstance(last_elem, Operator)
             )
             or (
@@ -50,7 +50,7 @@ def check_type_listed_expression_and_add_implicit_cross_operators(
                 isinstance(last_elem, Operator)
                 and isinstance(elem, Operator)
                 and last_elem.value in CLOSING_PARENTHESES
-                and elem.value in OPEN_PARENTHESES
+                and elem.value in OPENING_PARENTHESES
             )
         ):
             # Add implicit cross operator here
@@ -60,7 +60,7 @@ def check_type_listed_expression_and_add_implicit_cross_operators(
             isinstance(last_elem, Operator)
             and last_elem.value not in CLOSING_PARENTHESES
             and isinstance(elem, Operator)
-            and elem.value not in OPEN_PARENTHESES
+            and elem.value not in OPENING_PARENTHESES
             and (last_elem.value != EQUALS_SIGN or elem.value != QUESTIONS_SIGN)
         ):
             emsg = "The operator '" + last_elem.value + "' is followed by '" + elem.value + "'"
@@ -167,12 +167,12 @@ def sort_type_listed_expression_to_rpi(type_listed_expression: list):
     for elem in type_listed_expression:
         if not isinstance(elem, Operator):
             res.append(elem)
-        elif elem.value in OPEN_PARENTHESES:
+        elif elem.value in OPENING_PARENTHESES:
             stack.append(elem)
         elif elem.value in CLOSING_PARENTHESES:
             try:
                 unstack = stack.pop()
-                while unstack.value not in OPEN_PARENTHESES:
+                while unstack.value not in OPENING_PARENTHESES:
                     res.append(unstack)
                     unstack = stack.pop()
             except IndexError:
@@ -181,7 +181,7 @@ def sort_type_listed_expression_to_rpi(type_listed_expression: list):
             try:
                 unstack = stack[-1]
                 while (
-                    unstack.value not in OPEN_PARENTHESES
+                    unstack.value not in OPENING_PARENTHESES
                     and OPERATORS_PRIORITY[unstack.value] >= OPERATORS_PRIORITY[elem.value]
                 ):
                     res.append(stack.pop())

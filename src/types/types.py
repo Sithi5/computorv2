@@ -1,7 +1,7 @@
 from src.globals_vars import (
     OPERATORS,
     SIGN,
-    OPEN_PARENTHESES,
+    OPENING_PARENTHESES,
     CLOSING_PARENTHESES,
     MATRICE_OPEN_PARENTHESES,
     MATRICE_ROW_SEPARATOR,
@@ -314,7 +314,7 @@ class Operator:
             in "=?"
             + OPERATORS
             + SIGN
-            + OPEN_PARENTHESES
+            + OPENING_PARENTHESES
             + CLOSING_PARENTHESES
             + MATRIX_MULTIPLICATION_SIGN
         ):

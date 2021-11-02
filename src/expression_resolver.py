@@ -26,7 +26,7 @@ from src.globals_vars import (
     QUESTIONS_SIGN,
     SIGN,
     COMMA,
-    OPEN_PARENTHESES,
+    OPENING_PARENTHESES,
     CLOSING_PARENTHESES,
     MATRICE_CLOSING_PARENTHESES,
     MATRICE_OPEN_PARENTHESES,
@@ -126,7 +126,7 @@ class ExpressionResolver:
                 last_operator = c
             elif c.isalnum():
                 last_operator = None
-            elif c in OPEN_PARENTHESES:
+            elif c in OPENING_PARENTHESES:
                 parentheses_count += 1
             elif c in MATRICE_OPEN_PARENTHESES:
                 matrice_parentheses_count += 1
@@ -163,7 +163,7 @@ class ExpressionResolver:
         self.expression = self.expression.replace("\r", "")
         self.expression = self.expression.replace("\n", "")
         # Replace '{' parenthesis type by '(' parenthesis type.
-        self.expression = self.expression.replace("{", OPEN_PARENTHESES)
+        self.expression = self.expression.replace("{", OPENING_PARENTHESES)
         self.expression = self.expression.replace("}", CLOSING_PARENTHESES)
         self.expression = convert_expression_to_upper(input_string=self.expression)
 

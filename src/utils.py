@@ -66,13 +66,13 @@ def convert_signed_number(expression: str, accept_var: bool = False):
     if len(expression) > 1:
         if expression[0] in SIGN and (
             is_real(expression[1])
-            or expression[1] in OPEN_PARENTHESES
+            or expression[1] in OPENING_PARENTHESES
             or (expression[1].isalpha() and accept_var)
         ):
             # Convert first sign : expression = "-5 + 2" --> "(0 - 5) + 2"
             i = 1
             number = ""
-            if expression[i] in OPEN_PARENTHESES:
+            if expression[i] in OPENING_PARENTHESES:
                 while i < len(expression) and (expression[i] not in CLOSING_PARENTHESES):
                     number = number + expression[i]
                     i += 1
@@ -91,7 +91,7 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                 if len(var_name) > 0:
                     expression = "(0" + expression[0] + var_name + ")" + expression[i:]
 
-        for operator in OPERATORS + OPEN_PARENTHESES + MATRICE_OPEN_PARENTHESES + "=":
+        for operator in OPERATORS + OPENING_PARENTHESES + MATRICE_OPEN_PARENTHESES + "=":
             for sign in SIGN:
                 split = expression.split(operator + sign)
                 if len(split) > 1:
@@ -156,7 +156,7 @@ def add_implicit_cross_operator_for_vars(vars_list: list, expression: str):
             # Checking implicit mult after the var
             if splitted_expression[index] and (
                 splitted_expression[index][0].isdecimal() is True
-                or splitted_expression[index][0] in OPEN_PARENTHESES
+                or splitted_expression[index][0] in OPENING_PARENTHESES
             ):
                 splitted_expression[index] = "*" + splitted_expression[index]
             index += 1

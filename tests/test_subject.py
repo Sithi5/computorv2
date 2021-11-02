@@ -99,10 +99,10 @@ def test_subject():
         assert str(ret) == "8.0+X"
 
         ret = resolver.solve("funB(x) = 4 - 5 + (x + 2)^2 -4")
-        assert str(ret) == "(X+2.0)^2.0+-1.0-4.0"
+        assert str(ret) == "(X+2.0)^2.0+-5.0"
 
         ret = resolver.solve("funC(x) = 4x + 5 - 2")
-        assert str(ret) == "4.0X+5.0-2.0"
+        assert str(ret) == "4.0X+3.0"
 
         ret = resolver.solve("funA(2) + funB(4) = ?")
         assert str(ret) == "41.0"

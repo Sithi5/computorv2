@@ -6,7 +6,7 @@ from src.globals_vars import (
     OPERATORS,
     SIGN,
     COMMA,
-    OPEN_PARENTHESES,
+    OPENING_PARENTHESES,
     CLOSING_PARENTHESES,
     MATRICE_CLOSING_PARENTHESES,
     MATRICE_OPEN_PARENTHESES,
@@ -28,7 +28,7 @@ regex_real = re.compile(rf"(\d+{regex_comma}*\d+(?!{regex_comma}))|(\d+(?!{regex
 
 
 operators_string = "\\" + "\\".join(OPERATORS) + "\\" + "\\".join(SIGN)
-parenthesis_string = "\\" + "\\".join(OPEN_PARENTHESES) + "\\" + "\\".join(CLOSING_PARENTHESES)
+parenthesis_string = "\\" + "\\".join(OPENING_PARENTHESES) + "\\" + "\\".join(CLOSING_PARENTHESES)
 operators_parenthesis_string = operators_string + parenthesis_string
 operators_parenthesis_equal_question_string = (
     "\\"
@@ -56,7 +56,7 @@ allowed_char_string = (
     + "\\"
     + "\\".join(SIGN)
     + "\\"
-    + "\\".join(OPEN_PARENTHESES)
+    + "\\".join(OPENING_PARENTHESES)
     + "\\"
     + "\\".join(CLOSING_PARENTHESES)
     + "\\"

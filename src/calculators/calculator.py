@@ -14,7 +14,7 @@ from src.calculators.complex_calculator import complex_calculator
 from src.calculators.matrix_calculator import matrix_calculator
 from src.calculators.variable_by_real_calculator import variable_by_real_calculator
 from src.calculators.variable_by_variable_calculator import variable_by_variable_calculator
-from src.calculators.unresolved_calculator import unresolved_calculator, simplify_unresolved
+from src.calculators.unresolved_calculator import unresolved_calculator
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType) -> bool:
@@ -113,6 +113,107 @@ class Calculator:
                     self._type_listed_expression = old_type_listed_expression
             matrix.pending_calculation = False
         return matrix
+
+    def _resolve_variables_and_functions(self):
+        """
+        Resolve all variables and functions from a type listed expression to their respective value.
+        Raise a ValueError if couln't resolve.
+        Return the new type_listed_expression.
+        """
+
+        def _get_variable_value(variable: Variable) -> BaseType:
+            """
+            This function return the saved value of a variable.
+            """
+            assigned_list = copy.deepcopy(self._assigned_list)
+            for elem in assigned_list:
+                if variable.name == elem.name:
+                    return elem.value
+            raise ValueError("Couln't resolve the variable : ", variable)
+
+        def _get_function_value(function: Function) -> list:
+            """
+            This function return the saved value of a function.
+            """
+            assigned_list = copy.deepcopy(self._assigned_list)
+            for elem in assigned_list:
+                if function.name == elem.name:
+                    return elem.value
+            raise ValueError("Couln't resolve the function : ", function)
+
+        def _resolve_variable_value(variable_value: BaseType, variable: Variable) -> BaseType:
+            """
+            This function resolve a variable to get the value after calculating the coefficient and the exponent.
+            """
+            type_listed_expression = []
+            type_listed_expression.append(variable_value)
+            type_listed_expression.append(Operator(MULTIPLICATION_SIGN))
+            type_listed_expression.append(variable.coefficient)
+            type_listed_expression.append(Operator(EXPONENT_SIGN))
+            type_listed_expression.append(variable.exponent)
+            old_type_listed_expression = self._type_listed_expression
+            ret = self.solve(type_listed_expression=type_listed_expression, verbose=self._verbose)
+            self._type_listed_expression = old_type_listed_expression
+            return ret
+
+        def _resolve_function_value(function: Function) -> list:
+            """
+            This function resolve the value of a function by resolving all the var.
+            """
+            if isinstance(function.argument, Variable):
+                function_variable_value = _get_variable_value(variable=function.argument)
+            elif isinstance(function.argument, Real):
+                function_variable_value = function.argument
+            else:
+                raise ValueError("Couln't resolve the function : ", str(function))
+            function_variable_name = None
+            assigned_list = copy.deepcopy(self._assigned_list)
+            for elem in assigned_list:
+                if str(function.name) == str(elem.name):
+                    function_variable_name = elem.argument.name[:]
+                    function.value = elem.value
+
+            if not function.value or not function_variable_name:
+                raise ValueError("Couln't resolve the function : ", str(function))
+            else:
+                for index, elem in enumerate(function.value):
+                    if isinstance(elem, Variable) and elem.name == function_variable_name:
+                        function.value[index] = _resolve_variable_value(
+                            variable_value=function_variable_value, variable=elem
+                        )
+
+            old_type_listed_expression = self._type_listed_expression
+            ret = self.solve(type_listed_expression=function.value, verbose=self._verbose)
+            self._type_listed_expression = old_type_listed_expression
+            return ret
+
+        type_listed_expression = copy.deepcopy(self._type_listed_expression)
+        value_error: str = ""
+
+        for index, elem in enumerate(type_listed_expression):
+            try:
+                if isinstance(elem, Variable):
+                    self._type_listed_expression[index] = _resolve_variable_value(
+                        variable_value=_get_variable_value(variable=elem), variable=elem
+                    )
+                elif isinstance(elem, Function):
+                    elem.value = _get_function_value(function=elem)
+                    if isinstance(elem.argument, Variable):
+                        try:
+                            self._type_listed_expression[index] = _resolve_function_value(
+                                function=elem
+                            )
+                        except:
+                            self._type_listed_expression[index] = elem.value
+                    else:
+                        self._type_listed_expression[index] = _resolve_function_value(function=elem)
+            except ValueError as e:
+                if value_error == "":
+                    value_error = str(e)
+                else:
+                    value_error += " and " + str(e)
+        if value_error != "":
+            raise ValueError(value_error)
 
     def _resolve_rpi_type_listed_expression(self) -> Union[BaseType, Unresolved]:
         """
@@ -239,107 +340,6 @@ class Calculator:
 
         return stack[0]
 
-    def _resolve_variables_and_functions(self):
-        """
-        Resolve all variables and functions from a type listed expression to their respective value.
-        Raise a ValueError if couln't resolve.
-        Return the new type_listed_expression.
-        """
-
-        def _get_variable_value(variable: Variable) -> BaseType:
-            """
-            This function return the saved value of a variable.
-            """
-            assigned_list = copy.deepcopy(self._assigned_list)
-            for elem in assigned_list:
-                if variable.name == elem.name:
-                    return elem.value
-            raise ValueError("Couln't resolve the variable : ", variable)
-
-        def _get_function_value(function: Function) -> list:
-            """
-            This function return the saved value of a function.
-            """
-            assigned_list = copy.deepcopy(self._assigned_list)
-            for elem in assigned_list:
-                if function.name == elem.name:
-                    return elem.value
-            raise ValueError("Couln't resolve the function : ", function)
-
-        def _resolve_variable_value(variable_value: BaseType, variable: Variable) -> BaseType:
-            """
-            This function resolve a variable to get the value after calculating the coefficient and the exponent.
-            """
-            type_listed_expression = []
-            type_listed_expression.append(variable_value)
-            type_listed_expression.append(Operator(MULTIPLICATION_SIGN))
-            type_listed_expression.append(variable.coefficient)
-            type_listed_expression.append(Operator(EXPONENT_SIGN))
-            type_listed_expression.append(variable.exponent)
-            old_type_listed_expression = self._type_listed_expression
-            ret = self.solve(type_listed_expression=type_listed_expression, verbose=self._verbose)
-            self._type_listed_expression = old_type_listed_expression
-            return ret
-
-        def _resolve_function_value(function: Function) -> list:
-            """
-            This function resolve the value of a function by resolving all the var.
-            """
-            if isinstance(function.argument, Variable):
-                function_variable_value = _get_variable_value(variable=function.argument)
-            elif isinstance(function.argument, Real):
-                function_variable_value = function.argument
-            else:
-                raise ValueError("Couln't resolve the function : ", str(function))
-            function_variable_name = None
-            assigned_list = copy.deepcopy(self._assigned_list)
-            for elem in assigned_list:
-                if str(function.name) == str(elem.name):
-                    function_variable_name = elem.argument.name[:]
-                    function.value = elem.value
-
-            if not function.value or not function_variable_name:
-                raise ValueError("Couln't resolve the function : ", str(function))
-            else:
-                for index, elem in enumerate(function.value):
-                    if isinstance(elem, Variable) and elem.name == function_variable_name:
-                        function.value[index] = _resolve_variable_value(
-                            variable_value=function_variable_value, variable=elem
-                        )
-
-            old_type_listed_expression = self._type_listed_expression
-            ret = self.solve(type_listed_expression=function.value, verbose=self._verbose)
-            self._type_listed_expression = old_type_listed_expression
-            return ret
-
-        type_listed_expression = copy.deepcopy(self._type_listed_expression)
-        value_error: str = ""
-
-        for index, elem in enumerate(type_listed_expression):
-            try:
-                if isinstance(elem, Variable):
-                    self._type_listed_expression[index] = _resolve_variable_value(
-                        variable_value=_get_variable_value(variable=elem), variable=elem
-                    )
-                elif isinstance(elem, Function):
-                    elem.value = _get_function_value(function=elem)
-                    if isinstance(elem.argument, Variable):
-                        try:
-                            self._type_listed_expression[index] = _resolve_function_value(
-                                function=elem
-                            )
-                        except:
-                            self._type_listed_expression[index] = elem.value
-                    else:
-                        self._type_listed_expression[index] = _resolve_function_value(function=elem)
-            except ValueError as e:
-                if value_error == "":
-                    value_error = str(e)
-                else:
-                    value_error += " and " + str(e)
-        if value_error != "":
-            raise ValueError(value_error)
-
     def solve(
         self,
         type_listed_expression: list,
@@ -356,7 +356,6 @@ class Calculator:
         self._type_listed_expression = type_listed_expression
         self._reduce_form_allowed = reduce_form_allowed
 
-        # TODO Organize elem
         print(
             "\nResolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
