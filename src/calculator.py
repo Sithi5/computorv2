@@ -47,7 +47,14 @@ def calc_is_in_var_or_function_or_unresolved(elem_one: BaseType, elem_two: BaseT
     """
     This method take two type in input and return true if at least one element is variable/function/Unresolved type.
     """
-    return isinstance(elem_one, Variable) and isinstance(elem_two, Variable)
+    return (
+        isinstance(elem_one, Variable)
+        or isinstance(elem_one, Function)
+        or isinstance(elem_one, Unresolved)
+        or isinstance(elem_two, Variable)
+        or isinstance(elem_two, Function)
+        or isinstance(elem_two, Unresolved)
+    )
 
 
 def calc_is_var_multiply_or_exponent_by_real(
@@ -128,14 +135,7 @@ class Calculator:
                 operator = elem
 
                 # CALC WITH VAR/FUNCTION/UNRESOLVER, REDUCE FORM FOR UNRESOLVED CALC
-                if (
-                    isinstance(elem_one, Variable)
-                    or isinstance(elem_one, Function)
-                    or isinstance(elem_one, Unresolved)
-                    or isinstance(elem_two, Variable)
-                    or isinstance(elem_two, Function)
-                    or isinstance(elem_two, Unresolved)
-                ):
+                if calc_is_in_var_or_function_or_unresolved(elem_one=elem_one, elem_two=elem_two):
                     if calc_is_var_multiply_or_exponent_by_real(
                         elem_one=elem_one, elem_two=elem_two, operator=operator
                     ):
