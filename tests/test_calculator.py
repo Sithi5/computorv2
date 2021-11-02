@@ -243,19 +243,3 @@ def test_calculator_matrix():
     matrix = resolver.solve(expression="ma = ?")
     expected_result = Matrix(value="[[2,2];[2,2]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
-
-
-def test_calculator_quadratic_equation():
-    pass
-    # try:
-    #     clear_assigned_file()
-    #     resolver = ExpressionResolver(verbose=TESTS_VERBOSE)
-
-    #     ret = resolver.solve(expression="f(x) = -x ^ 2 +2x-3")
-    #     assert str(ret) == "(0.0-X)^2.0+2.0X-3.0"
-    #     ret = resolver.solve(expression="f(x) = 0 ?")
-    #     assert str(ret) == "-8.0"
-    # except Exception:
-    #     clear_assigned_file()
-    #     raise
-    # clear_assigned_file()

@@ -140,6 +140,11 @@ class Calculator:
                 if calc_is_in_var_or_function_or_unresolved(elem_one=elem_one, elem_two=elem_two):
                     if calc_is_var_multiply_or_exponent_by_real(
                         elem_one=elem_one, elem_two=elem_two, operator=operator
+                    ) or (
+                        isinstance(elem_one, Real)  # This is for the format (0.0-VAR)
+                        and isinstance(elem_two, Variable)
+                        and float(elem_one.value) == 0.0
+                        and operator.value == SUBSTRACTION_SIGN
                     ):
                         # VAR BY REAL
                         result = variable_by_real_calculator(

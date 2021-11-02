@@ -339,8 +339,8 @@ class Variable:
         self,
         name: str,
         value: list = None,
-        coefficient: Real = Real("1.0"),
-        exponent: Real = Real("1.0"),
+        coefficient: Real = Real(value="1.0"),
+        exponent: Real = Real(value="1.0"),
     ):
         super().__init__()
         if name.isalpha:
@@ -363,9 +363,12 @@ class Variable:
             value = str(self.value)
         else:
             value = self.name
-        if self.coefficient.value != "1.0":
-            value = str(self.coefficient) + value
-        if self.exponent.value != "1.0":
+        if float(self.coefficient.value) != 1.0:
+            if float(self.coefficient.value) == -1.0:
+                value = "-" + value
+            else:
+                value = str(self.coefficient) + value
+        if float(self.exponent.value) != 1.0:
             value = value + "^" + str(self.exponent)
         return value
 

@@ -37,32 +37,6 @@ def split_expression_parts_from_tokens(tokens: list):
         return (left_part, right_part)
 
 
-def convert_to_tokens(expression: str) -> list:
-    """
-    Convert a string expression into tokens.
-    Numbers and var name will stay in a single token.
-    """
-    tokens = []
-    current_char = 0
-    last_char = 0
-    while current_char < len(expression):
-        # Getting full number
-        if is_real(expression[current_char]):
-            while current_char < len(expression) and (
-                is_real(expression[current_char]) or expression[current_char] in COMMA
-            ):
-                current_char += 1
-        # Getting full var name
-        elif expression[current_char].isalpha():
-            while current_char < len(expression) and (expression[current_char].isalpha()):
-                current_char += 1
-        else:
-            current_char += 1
-        tokens.append(expression[last_char:current_char])
-        last_char = current_char
-    return tokens
-
-
 def convert_expression_to_upper(input_string: str) -> str:
     """
     Convert every alpha char into uppercase except isolated I/i char that will be converted to lowercase because it is imaginary numbers."""

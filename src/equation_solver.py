@@ -16,7 +16,6 @@ from src.globals_vars import *
 from src.types.types import Function, Operator, Real, Unresolved, Variable
 
 from src.utils import (
-    convert_to_tokens,
     convert_signed_number,
     parse_sign,
     get_var_multiplier,
@@ -109,6 +108,9 @@ class EquationSolver:
             except:
                 left_value = 0.0
 
+            print("_push_right_to_left")
+            print("right_value = ", right_value)
+            print("left_value = ", left_value)
             type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(
                 convert_expression_to_type_list(
                     expression=convert_signed_number(
@@ -125,10 +127,12 @@ class EquationSolver:
                     )
                 )
             )
+            print("type_listed_expression = ", type_listed_expression)
             ret = self._calculator.solve(
                 type_listed_expression=type_listed_expression,
                 verbose=self._force_calculator_verbose,
             )
+            print("ret =", ret)
             self._polynom_dict_left[key] = ret.value
 
     def _check_polynom_degree(self):
@@ -226,9 +230,10 @@ class EquationSolver:
             solution_two = f"{-b} / (2 * {a}) - i * {my_sqrt(discriminant)} / (2 * {a})".replace(
                 " ", ""
             )
+
             type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(
                 convert_expression_to_type_list(
-                    expression=convert_signed_number(parse_sign(solution_one), accept_var=True)
+                    expression=convert_signed_number(parse_sign(solution_two), accept_var=True)
                 )
             )
             ret = self._calculator.solve(
@@ -239,7 +244,7 @@ class EquationSolver:
 
     def _solve_polynom_degree_one(self):
         try:
-            b = get_var_multiplier(self._polynom_dict_left["b"], var_name=self.var_name)
+            b = get_var_multiplier(self._polynom_dict_left["b"], var_name=self._var_name)
         except:
             b = 0.0
         try:
@@ -285,11 +290,11 @@ class EquationSolver:
         import matplotlib.pyplot as plt  # type: ignore
 
         try:
-            a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self.var_name)
+            a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self._var_name)
         except:
             a = 0.0
         try:
-            b = get_var_multiplier(self._polynom_dict_left["b"], var_name=self.var_name)
+            b = get_var_multiplier(self._polynom_dict_left["b"], var_name=self._var_name)
         except:
             b = 0.0
         try:
@@ -312,6 +317,7 @@ class EquationSolver:
         """
         This method use the type_listed_expression and dispatch it in two list respectively for the left part of the equation and the right part.
         """
+
         self._equation_left_part = []
         self._equation_right_part = []
         fill_left: bool = True
@@ -398,6 +404,7 @@ class EquationSolver:
             verbose=self._force_calculator_verbose,
             reduce_form_allowed=True,
         )
+
         self._equation_right_part = self._calculator.solve(
             type_listed_expression=self._equation_right_part,
             verbose=self._force_calculator_verbose,
@@ -429,6 +436,10 @@ class EquationSolver:
 
         self._polynom_dict_left = self._get_polynom_dict(str(self._equation_left_part))
         self._polynom_dict_right = self._get_polynom_dict(str(self._equation_right_part))
+
+        print("Polynom_dict_left = ", self._polynom_dict_left)
+        print("Polynom_dict_right = ", self._polynom_dict_right)
+
         self._push_right_to_left()
 
         print("Polynom_dict_left = ", self._polynom_dict_left) if self._verbose is True else None

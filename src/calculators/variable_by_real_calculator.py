@@ -10,12 +10,11 @@ def variable_by_real_calculator(
     elem_two: Union[Variable, Real],
     operator: Operator,
     verbose: bool = False,
-) -> Variable:
+) -> Union[Variable, Real]:
     """
     This function take one Variable and one Real in input and do variable calculation.
-    It return the resulted variable.
+    It return the resulted variable or a real in some case.
     """
-
     print("\nvariable_by_real_calculator calculator :") if verbose is True else None
     print(
         str(elem_one) + " " + str(operator) + " " + str(elem_two) + "\n"
@@ -38,8 +37,10 @@ def variable_by_real_calculator(
         variable = elem_two
         real = elem_one
     if operator.value == EXPONENT_SIGN:
-        # TODO not sure of this.
-        if variable.exponent.value == "1.0":
+        if float(real.value) == 0.0:
+            return Real(value="1.0")
+        elif float(variable.exponent.value) == 1.0:
+            # TODO not sure of this.
             variable.exponent = real
         else:
             variable.exponent = real_calculator(
@@ -48,7 +49,7 @@ def variable_by_real_calculator(
                 operator=operator,
                 verbose=verbose,
             )
-    else:
+    elif operator.value in MULTIPLICATION_SIGN + DIVISION_SIGN:
         if isinstance(elem_one, Variable):
             variable.coefficient = real_calculator(
                 elem_one=variable.coefficient,
@@ -63,4 +64,21 @@ def variable_by_real_calculator(
                 operator=operator,
                 verbose=verbose,
             )
+    elif (
+        operator.value == SUBSTRACTION_SIGN
+        and isinstance(elem_one, Real)
+        and float(elem_one.value) == 0.0
+    ):
+        variable.coefficient = real_calculator(
+            elem_one=variable.coefficient,
+            elem_two=Real(value="-1.0"),
+            operator=Operator(value=MULTIPLICATION_SIGN),
+            verbose=verbose,
+        )
+    else:
+        raise NotImplementedError(
+            """
+        This operations with variable is not implemented yet.
+        """
+        )
     return variable
