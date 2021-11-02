@@ -1,9 +1,9 @@
+import copy
+
 from typing import Union
 
 from src.types.types import *
 from src.globals_vars import *
-from src.calculators.real_calculator import real_calculator
-
 
 def unresolved_calculator(
     elem_one: Union[BaseType, Unresolved, Function, Variable],

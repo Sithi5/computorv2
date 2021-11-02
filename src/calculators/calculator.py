@@ -14,7 +14,7 @@ from src.calculators.complex_calculator import complex_calculator
 from src.calculators.matrix_calculator import matrix_calculator
 from src.calculators.variable_by_real_calculator import variable_by_real_calculator
 from src.calculators.variable_by_variable_calculator import variable_by_variable_calculator
-from src.calculators.unresolved_calculator import unresolved_calculator
+from src.calculators.unresolved_calculator import unresolved_calculator, simplify_unresolved
 
 
 def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType) -> bool:
@@ -355,6 +355,8 @@ class Calculator:
         self._verbose = verbose
         self._type_listed_expression = type_listed_expression
         self._reduce_form_allowed = reduce_form_allowed
+
+        # TODO Organize elem
         print(
             "\nResolving following type_listed_expression : ", self._type_listed_expression
         ) if self._verbose is True else None
@@ -389,6 +391,7 @@ class Calculator:
         if isinstance(result, Matrix):
             # Check for unresolved matrix and resolve it.
             result = self._resolve_inside_matrice(matrix=result)
+
         if isinstance(result, Unresolved) and not reduce_form_allowed:
             raise ValueError("One of the variable/function have an unknow value.")
 

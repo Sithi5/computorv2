@@ -273,12 +273,12 @@ class EquationSolver:
                 b = value
             else:
                 c = value
-        if a != "0.0":
-            self._reduced_form = a
-        if b != "0.0":
-            self._reduced_form = self._reduced_form + "+" + b
-        if c != "0.0":
-            self._reduced_form = self._reduced_form + "+" + c
+        if str(a) != "0.0":
+            self._reduced_form = str(a)
+        if str(b) != "0.0":
+            self._reduced_form = self._reduced_form + "+" + str(b)
+        if str(c) != "0.0":
+            self._reduced_form = self._reduced_form + "+" + str(c)
 
         if len(self._reduced_form) == 0:
             self._reduced_form = "0.0"

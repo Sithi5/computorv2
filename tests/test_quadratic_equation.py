@@ -35,59 +35,57 @@ def test_equation_computorv1_subject():
 
         resolver.solve(expression="f(x) = 5 * X^0 + 4 * X^1 - 9.3 * X^2")
         ret = resolver.solve(expression="f(x)= 1 * X^0 ?")
-        assert ret == ["-0.475131", "0.905239"]
+        assert str(ret) == "['-0.475131', '0.905239']"
 
         resolver.solve(expression="f(x) = 5 * X^0 + 4 * X^1 ")
         ret = resolver.solve(expression="f(x)= 4 * X^0 ?")
-        assert ret == "-0.25"
+        assert str(ret) == "-0.25"
+        with pytest.raises(NotImplementedError) as e:
+            resolver.solve(expression="f(x) = 8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 - 3 * X^0")
+            resolver.solve(expression="f(x) =  3 * X^0 ? ")
+        assert (
+            str(e.value)
+            == "The polynomial degree is strictly greater than 2, the resolver is not implemented yet."
+        )
 
     except Exception:
         clear_assigned_file()
         raise
     clear_assigned_file()
-    # ret = resolver.solve(expression="5 * X^0 + 4 * X^1 = 4 * X^0")
-    # assert ret == "-0.25"
-
-    # with pytest.raises(NotImplementedError) as e:
-    #     ret = resolver.solve(expression="8 * X^0 - 6 * X^1 + 0 * X^2 - 5.6 * X^3 = 3 * X^0")
-    # assert (
-    #     str(e.value)
-    #     == "The polynomial degree is strictly greater than 2, the resolver is not implemented yet."
-    # )
-
-    # ret = resolver.solve(expression="5 + 4 * X + X^2= X^2")
 
 
-# def test_equation_degree_one():
-#     resolver = ExpressionResolver(verbose=False)
+def test_equation_degree_one():
+    resolver = ExpressionResolver(verbose=False)
 
-#     ret = resolver.solve(expression="5 * X^0 + 4 * X^1 = 41 * X^0")
-#     assert ret == "9.0"
+    resolver.solve(expression="f(x) = 5 * X^0 + 4 * X^1")
+    ret = resolver.solve(expression="f(x)= 41 * X^0 ?")
+    assert str(ret) == "9.0"
 
-#     ret = resolver.solve(expression="-51516544 * X^0 + 4241.1 * X^1 + 1213545 = ---41 * X^0 + -X^1")
-#     assert ret == "11858.032106739585"
+    resolver.solve(expression="f(x) = -51516544 * X^0 + 4241.1 * X^1 + 1213545")
+    ret = resolver.solve(expression="f(x)= ---41 * X^0 + -X^1?")
+    assert str(ret) == "11858.032106739585"
 
-#     ret = resolver.solve(expression="X ^1 = X ^ 1")
-#     assert ret == "X can be any real number."
+    # ret = resolver.solve(expression="X ^1 = X ^ 1")
+    # assert str(ret) == "X can be any real number."
 
-#     ret = resolver.solve(expression="X = X")
-#     assert ret == "X can be any real number."
+    # ret = resolver.solve(expression="X = X")
+    # assert str(ret) == "X can be any real number."
 
-#     ret = resolver.solve(expression="X^0 = X^0")
-#     assert ret == "X can be any real number."
+    # ret = resolver.solve(expression="X^0 = X^0")
+    # assert str(ret) == "X can be any real number."
 
-#     ret = resolver.solve(expression="-0x^2 - -X^1  -0X^0    =0")
-#     assert ret == "0.0"
+    # ret = resolver.solve(expression="-0x^2 - -X^1  -0X^0    =0")
+    # assert str(ret) == "0.0"
 
-#     # Multiplier small after var
-#     ret = resolver.solve(expression=" X*0.001=0.000001")
-#     assert ret == "0.001"
+    # # Multiplier small after var
+    # ret = resolver.solve(expression=" X*0.001=0.000001")
+    # assert str(ret) == "0.001"
 
-#     ret = resolver.solve(expression=" X*0.001=-0.000001")
-#     assert ret == "-0.001"
+    # ret = resolver.solve(expression=" X*0.001=-0.000001")
+    # assert str(ret) == "-0.001"
 
-#     ret = resolver.solve(expression="5 * X^0 = 4 * X^0 + 7 * X^1")
-#     assert ret == "0.14285714285714285"
+    # ret = resolver.solve(expression="5 * X^0 = 4 * X^0 + 7 * X^1")
+    # assert str(ret) == "0.14285714285714285"
 
 
 # def test_equation_degree_two():
