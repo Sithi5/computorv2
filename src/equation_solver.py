@@ -171,12 +171,12 @@ class EquationSolver:
 
         discriminant = self._get_discriminant(a, b, c)
         if discriminant > 0:
-            print("The discriminant is strictly positive.")
+            print("The discriminant is strictly positive.") if self._verbose is True else None
         elif discriminant == 0:
-            print("The discriminant is exactly zero.")
+            print("The discriminant is exactly zero.") if self._verbose is True else None
         else:
-            print("The discriminant is strictly negative.")
-        print("discriminant = ", discriminant)
+            print("The discriminant is strictly negative.") if self._verbose is True else None
+        print("discriminant = ", discriminant) if self._verbose is True else None
         if discriminant > 0:
             self.solution = []
             if a == 0:
@@ -206,7 +206,7 @@ class EquationSolver:
             if self.solution == "-0.0":
                 self.solution = "0.0"
         else:
-            print("There is two solutions in complex number.")
+            print("There is two solutions in complex number.") if self._verbose is True else None
             self.solution = []
             discriminant = -discriminant
             solution_one = convert_signed_number(
@@ -279,7 +279,7 @@ class EquationSolver:
             self._reduced_form = "0.0"
         self._reduced_form = parse_sign(self._reduced_form) + "=0.0"
 
-        print("Reduced form : ", self._reduced_form)
+        print("Reduced form : ", self._reduced_form) if self._verbose is True else None
 
     def _create_graph_file(self, graph_name: str = "equation_graph"):
         import matplotlib.pyplot as plt  # type: ignore
@@ -438,7 +438,7 @@ class EquationSolver:
         if self._var_name == "":
             print(
                 "There is no var in the equation, considering there is an X^0(=1), checking if the statement is true"
-            )
+            ) if self._verbose is True else None
             if str(self._equation_left_part) == str(self._equation_right_part):
                 self.solution = "X can be any real number."
             else:
@@ -448,7 +448,7 @@ class EquationSolver:
             self._reducing_form()
             self._check_polynom_degree()
 
-            print("Polynomial degree: ", self._polynom_degree)
+            print("Polynomial degree: ", self._polynom_degree) if self._verbose is True else None
 
             if self._polynom_degree > 2:
                 raise NotImplementedError(

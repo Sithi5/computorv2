@@ -12,9 +12,10 @@ from src.types.types_utils import (
 from src.real_calculator import real_calculator
 from src.complex_calculator import complex_calculator
 from src.matrix_calculator import matrix_calculator
+from src.variable_by_real_calculator import variable_by_real_calculator
 
 
-def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType, operator: BaseType = None) -> bool:
+def calc_is_in_complex(elem_one: BaseType, elem_two: BaseType) -> bool:
     """
     This method take two type in input and return true if the result of the calcul between those two type will be in complex.
     """
@@ -38,6 +39,13 @@ def calc_is_in_real(elem_one: BaseType, elem_two: BaseType) -> bool:
 def calc_is_var_by_var(elem_one: BaseType, elem_two: BaseType) -> bool:
     """
     This method take two type in input and return true if both element are Variable.
+    """
+    return isinstance(elem_one, Variable) and isinstance(elem_two, Variable)
+
+
+def calc_is_in_var_or_function_or_unresolved(elem_one: BaseType, elem_two: BaseType) -> bool:
+    """
+    This method take two type in input and return true if at least one element is variable/function/Unresolved type.
     """
     return isinstance(elem_one, Variable) and isinstance(elem_two, Variable)
 
@@ -119,7 +127,7 @@ class Calculator:
                 elem_two = last_two_in_stack[1]
                 operator = elem
 
-                # CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
+                # CALC WITH VAR/FUNCTION/UNRESOLVER, REDUCE FORM FOR UNRESOLVED CALC
                 if (
                     isinstance(elem_one, Variable)
                     or isinstance(elem_one, Function)
@@ -132,39 +140,12 @@ class Calculator:
                         elem_one=elem_one, elem_two=elem_two, operator=operator
                     ):
                         # VAR BY REAL
-                        if isinstance(elem_one, Variable):
-                            variable = elem_one
-                            real = elem_two
-                        else:
-                            variable = elem_two
-                            real = elem_one
-                        if operator.value == EXPONENT_SIGN:
-                            # TODO not sure of this.
-                            if variable.exponent.value == "1.0":
-                                variable.exponent = real
-                            else:
-                                variable.exponent = real_calculator(
-                                    elem_one=real,
-                                    elem_two=variable.exponent,
-                                    operator=operator,
-                                    verbose=self._verbose,
-                                )
-                        else:
-                            if isinstance(elem_one, Variable):
-                                variable.coefficient = real_calculator(
-                                    elem_one=variable.coefficient,
-                                    elem_two=real,
-                                    operator=operator,
-                                    verbose=self._verbose,
-                                )
-                            else:
-                                variable.coefficient = real_calculator(
-                                    elem_one=real,
-                                    elem_two=variable.coefficient,
-                                    operator=operator,
-                                    verbose=self._verbose,
-                                )
-                        result = variable
+                        result = variable_by_real_calculator(
+                            elem_one=elem_one,
+                            elem_two=elem_two,
+                            operator=operator,
+                            verbose=self._verbose,
+                        )
                         # END OF VAR BY REAL
                     # elif calc_is_var_by_var(elem_one=elem_one, elem_two=elem_two):
                     #     # VAR BY VAR CALCULATION
@@ -206,7 +187,7 @@ class Calculator:
                         last_operator_priority_for_unresolved = OPERATORS_PRIORITY[operator.value]
                         result = unresolved
                         # END OF REDUCED FORM
-                # END OF CALC WITH VAR, REDUCE FORM FOR UNRESOLVED CALC
+                # END OF CALC WITH VAR/FUNCTION/UNRESOLVER, REDUCE FORM FOR UNRESOLVED CALC
 
                 # REAL CALC
                 elif calc_is_in_real(elem_one=elem_one, elem_two=elem_two):

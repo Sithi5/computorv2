@@ -19,7 +19,7 @@ def real_calculator(
         raise ValueError(
             """
             Wrong type in real calculator. Input type should be:
-            Real or Complex.
+            Real.
             """
         )
 
