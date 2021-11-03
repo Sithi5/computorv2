@@ -65,21 +65,33 @@ def test_equation_degree_one():
     ret = resolver.solve(expression="f(x)= ---41 * X^0 + -X^1?")
     assert str(ret) == "11858.032106739585"
 
-    # ret = resolver.solve(expression="X ^1 = X ^ 1")
-    # assert str(ret) == "X can be any real number."
+    resolver.solve(expression="f(x) = X ^1")
+    ret = resolver.solve(expression="f(x) = X ^ 1?")
+    assert str(ret) == "X can be any real number."
 
-    # ret = resolver.solve(expression="X = X")
-    # assert str(ret) == "X can be any real number."
+    resolver.solve(expression="f(x)=X")
+    ret = resolver.solve(expression="f(x)=X?")
+    assert str(ret) == "X can be any real number."
 
-    # ret = resolver.solve(expression="X^0 = X^0")
-    # assert str(ret) == "X can be any real number."
+    resolver.solve(expression="f(x)=X^0")
+    ret = resolver.solve(expression="f(x)=X^0?")
+    assert str(ret) == "X can be any real number."
 
     # ret = resolver.solve(expression="-0x^2 - -X^1  -0X^0    =0")
-    # assert str(ret) == "0.0"
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="f(x)=-0x^2 - -X^1  -0X^0")
+        resolver.solve(expression="f(x)=0?")
+    assert str(e.value) == "('The expression lead to a division by zero : ', 0.0, ' / ', 0.0)"
+    with pytest.raises(ValueError) as e:
+        resolver.solve(expression="y = 0")
+        resolver.solve(expression="f(x)=y?")
+    assert str(e.value) == "('The expression lead to a division by zero : ', 0.0, ' / ', 0.0)"
 
-    # # Multiplier small after var
+    # Multiplier small after var
     # ret = resolver.solve(expression=" X*0.001=0.000001")
-    # assert str(ret) == "0.001"
+    resolver.solve(expression="f(x)=X*0.001")
+    ret = resolver.solve(expression="f(x)=0.000001?")
+    assert str(ret) == "0.001"
 
     # ret = resolver.solve(expression=" X*0.001=-0.000001")
     # assert str(ret) == "-0.001"
