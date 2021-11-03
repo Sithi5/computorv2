@@ -81,7 +81,14 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                     number = number + expression[i]
                     i += 1
             if len(number) > 0:
-                expression = "(0" + expression[0] + number + ")" + expression[i:]
+                expression = (
+                    OPENING_PARENTHESES
+                    + "0"
+                    + expression[0]
+                    + number
+                    + CLOSING_PARENTHESES
+                    + expression[i:]
+                )
             elif accept_var:
                 i = 1
                 var_name = ""
@@ -89,9 +96,22 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                     var_name = var_name + expression[i]
                     i += 1
                 if len(var_name) > 0:
-                    expression = "(0" + expression[0] + var_name + ")" + expression[i:]
+                    expression = (
+                        OPENING_PARENTHESES
+                        + "0"
+                        + expression[0]
+                        + var_name
+                        + CLOSING_PARENTHESES
+                        + expression[i:]
+                    )
 
-        for operator in OPERATORS + OPENING_PARENTHESES + MATRICE_OPEN_PARENTHESES + "=":
+        for operator in (
+            OPERATORS
+            + OPENING_PARENTHESES
+            + MATRIX_OPEN_PARENTHESES
+            + EQUALS_SIGN
+            + MATRIX_ROW_SEPARATOR
+        ):
             for sign in SIGN:
                 split = expression.split(operator + sign)
                 if len(split) > 1:
@@ -108,7 +128,15 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                             i += 1
                         # Replacing signed number by the new sentence
                         if len(number) > 0:
-                            split[index] = operator + "(0" + sign + number + ")" + split[index][i:]
+                            split[index] = (
+                                operator
+                                + OPENING_PARENTHESES
+                                + "0"
+                                + sign
+                                + number
+                                + CLOSING_PARENTHESES
+                                + split[index][i:]
+                            )
                         # If no number, maybe it's a var:
                         elif accept_var:
                             # Getting varname
@@ -121,7 +149,13 @@ def convert_signed_number(expression: str, accept_var: bool = False):
                                 i += 1
                             if len(var_name) > 0:
                                 split[index] = (
-                                    operator + "(0" + sign + var_name + ")" + split[index][i:]
+                                    operator
+                                    + OPENING_PARENTHESES
+                                    + "0"
+                                    + sign
+                                    + var_name
+                                    + CLOSING_PARENTHESES
+                                    + split[index][i:]
                                 )
                             else:
                                 split[index] = operator + sign + split[index][i:]

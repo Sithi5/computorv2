@@ -3,10 +3,10 @@ from src.globals_vars import (
     SIGN,
     OPENING_PARENTHESES,
     CLOSING_PARENTHESES,
-    MATRICE_OPEN_PARENTHESES,
-    MATRICE_ROW_SEPARATOR,
-    MATRICE_COLUMN_SEPARATOR,
-    MATRICE_CLOSING_PARENTHESES,
+    MATRIX_OPEN_PARENTHESES,
+    MATRIX_ROW_SEPARATOR,
+    MATRIX_COLUMN_SEPARATOR,
+    MATRIX_CLOSING_PARENTHESES,
     MATRIX_MULTIPLICATION_SIGN,
 )
 
@@ -186,7 +186,7 @@ class Matrix(BaseType):
             self._value = value
             matrice_column: list = []
             # [*.]
-            if value[0] != MATRICE_OPEN_PARENTHESES or value[-1] != MATRICE_CLOSING_PARENTHESES:
+            if value[0] != MATRIX_OPEN_PARENTHESES or value[-1] != MATRIX_CLOSING_PARENTHESES:
                 raise SyntaxError()
             # Remove first matrix parentheses
             value = value[1:-1]
@@ -208,7 +208,7 @@ class Matrix(BaseType):
                         # Remove matrice_column parentheses
                         matched_matrice_column = matched_matrice_column.group(0)[1:-1]
 
-                        matched_row = matched_matrice_column.split(MATRICE_ROW_SEPARATOR)
+                        matched_row = matched_matrice_column.split(MATRIX_ROW_SEPARATOR)
                         for row in matched_row:
                             if row == "":
                                 # Empty row
@@ -253,7 +253,7 @@ class Matrix(BaseType):
                         matrice_column.append(matrice_row.copy())
                     elif matrix_column_expected is True:
                         raise SyntaxError()
-                    elif value[0] == MATRICE_COLUMN_SEPARATOR:
+                    elif value[0] == MATRIX_COLUMN_SEPARATOR:
                         value = value[1:]
                         matrix_column_expected = True
                         self.n += 1

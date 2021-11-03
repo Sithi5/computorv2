@@ -28,8 +28,8 @@ from src.globals_vars import (
     COMMA,
     OPENING_PARENTHESES,
     CLOSING_PARENTHESES,
-    MATRICE_CLOSING_PARENTHESES,
-    MATRICE_OPEN_PARENTHESES,
+    MATRIX_CLOSING_PARENTHESES,
+    MATRIX_OPEN_PARENTHESES,
 )
 from src.regex import regex_check_forbidden_char
 from src.types.types_utils import (
@@ -128,11 +128,11 @@ class ExpressionResolver:
                 last_operator = None
             elif c in OPENING_PARENTHESES:
                 parentheses_count += 1
-            elif c in MATRICE_OPEN_PARENTHESES:
+            elif c in MATRIX_OPEN_PARENTHESES:
                 matrice_parentheses_count += 1
             elif c in CLOSING_PARENTHESES:
                 parentheses_count -= 1
-            elif c in MATRICE_CLOSING_PARENTHESES:
+            elif c in MATRIX_CLOSING_PARENTHESES:
                 matrice_parentheses_count -= 1
 
             if c in EQUALS_SIGN:

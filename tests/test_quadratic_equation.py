@@ -89,12 +89,10 @@ def test_equation_degree_one():
     ret = resolver.solve(expression="f(x)=0.000001?")
     assert str(ret) == "0.001"
 
-    # ret = resolver.solve(expression=" X*0.001=-0.000001")
     resolver.solve(expression="f(x)=X*0.001")
     ret = resolver.solve(expression="f(x)=-0.000001?")
     assert str(ret) == "-0.001"
 
-    # ret = resolver.solve(expression="5 * X^0 = 4 * X^0 + 7 * X^1"
     resolver.solve(expression="f(x)=5 * X^0 ")
     ret = resolver.solve(expression="f(x)= 4 * X^0 + 7 * X^1?")
     assert str(ret) == "0.14285714285714285"
@@ -196,17 +194,14 @@ def test_equation_degree_two():
     ret = resolver.solve(expression="f(x)= 0?")
     assert ret == ["-3.162278", "3.162278"]
 
-    #     ret = resolver.solve(expression="-x^2 - -0X^1  + 10X^0    =0")
     resolver.solve(expression="f(x)=-x^2 - -0X^1  + 10X^0    ")
     ret = resolver.solve(expression="f(x)= 0?")
     assert ret == ["-3.162278", "3.162278"]
 
-    #     ret = resolver.solve(expression="-x^2 - -0X^1  -0X^0    =0")
     resolver.solve(expression="f(x)=-x^2 - -0X^1  -0X^0    ")
     ret = resolver.solve(expression="f(x)= 0?")
     assert ret == "0.0"
 
-    #     ret = resolver.solve(expression="-0x^2 - -0X^1  -0X^0    =0")
     resolver.solve(expression="f(x)=-0x^2 - -0X^1  -0X^0   ")
     ret = resolver.solve(expression="f(x)= 0?")
     assert ret == "X can be any real number."

@@ -243,3 +243,9 @@ def test_calculator_matrix():
     matrix = resolver.solve(expression="ma = ?")
     expected_result = Matrix(value="[[2,2];[2,2]]")
     assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
+
+    # Check negativ empty sign before numbers
+    matrix = resolver.solve(expression="ma = [[-2,-2]]")
+    matrix = resolver.solve(expression="ma = ?")
+    expected_result = Matrix(value="[[-2,-2]]")
+    assert return_2d_matrix_in_str(matrix=matrix) == return_2d_matrix_in_str(matrix=expected_result)
