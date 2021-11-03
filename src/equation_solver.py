@@ -70,13 +70,13 @@ class EquationSolver:
 
                 if isinstance(previous_elem, Variable):
                     exponent = previous_elem.exponent
-                    if exponent == 1:
+                    if float(str(exponent)) == 1.0:
                         polynom_dict["b"] = (
                             SUBSTRACTION_SIGN + str(previous_elem)
                             if sign == SUBSTRACTION_SIGN
                             else str(previous_elem)
                         )
-                    elif exponent == 2:
+                    elif float(str(exponent)) == 2.0:
                         polynom_dict["a"] = (
                             SUBSTRACTION_SIGN + str(previous_elem)
                             if sign == SUBSTRACTION_SIGN
@@ -436,9 +436,6 @@ class EquationSolver:
 
         self._polynom_dict_left = self._get_polynom_dict(equation_part=self._equation_left_part)
         self._polynom_dict_right = self._get_polynom_dict(equation_part=self._equation_right_part)
-
-        print("Polynom_dict_left = ", self._polynom_dict_left)
-        print("Polynom_dict_right = ", self._polynom_dict_right)
 
         self._push_right_to_left()
 
