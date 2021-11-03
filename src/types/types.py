@@ -63,7 +63,7 @@ class Real(BaseType):
         self.value = value
 
     def __str__(self) -> str:
-        return str(my_round(float(self.value)))
+        return str(my_round(float(self.value), precision=6))
 
 
 class Imaginary(BaseType):

@@ -56,49 +56,54 @@ class EquationSolver:
         else:
             return float(split[1])
 
-    def _get_polynom_dict(self, simplified_part: str) -> dict:
+    def _get_polynom_dict(self, equation_part: str) -> dict:
         polynom_dict = {}
         index = 0
-        part = ""
         sign = "+"
-        while index < len(simplified_part):
-            if simplified_part[index] in SIGN and len(part) > 0:
-                if self._check_have_var(part):
-                    power = self._get_power(part)
-                    if power == 1:
+        for index, elem in enumerate(equation_part):
+            if (isinstance(elem, Operator) and elem.value in SIGN) or index == len(
+                equation_part
+            ) - 1:
+
+                if index == len(equation_part) - 1:  # This case is for the last element.
+                    previous_elem = elem
+
+                if isinstance(previous_elem, Variable):
+                    exponent = previous_elem.exponent
+                    if exponent == 1:
                         polynom_dict["b"] = (
-                            SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                            SUBSTRACTION_SIGN + str(previous_elem)
+                            if sign == SUBSTRACTION_SIGN
+                            else str(previous_elem)
                         )
-                    elif power == 2:
+                    elif exponent == 2:
                         polynom_dict["a"] = (
-                            SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                            SUBSTRACTION_SIGN + str(previous_elem)
+                            if sign == SUBSTRACTION_SIGN
+                            else str(previous_elem)
                         )
                     else:
-                        polynom_dict[str(power)] = (
-                            SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                        polynom_dict[str(exponent)] = (
+                            SUBSTRACTION_SIGN + str(previous_elem)
+                            if sign == SUBSTRACTION_SIGN
+                            else str(previous_elem)
                         )
-                else:
+                elif isinstance(previous_elem, Real):
                     polynom_dict["c"] = (
-                        SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                        SUBSTRACTION_SIGN + f"{float(str(previous_elem)):.10f}"
+                        if sign == SUBSTRACTION_SIGN
+                        else f"{float(str(previous_elem)):.10f}"
                     )
-                part = ""
-            if simplified_part[index] in SIGN:
-                sign = simplified_part[index]
+                else:
+                    raise ValueError(
+                        "There is a problem with the syntax of ",
+                        equation_part,
+                        " inside _get_polynom_dict method.",
+                    )
+            if isinstance(elem, Operator) and elem.value in SIGN:
+                sign = elem.value
             else:
-                part = part + simplified_part[index]
-            index += 1
-        if self._check_have_var(part):
-            power = self._get_power(part)
-            if power == 1:
-                polynom_dict["b"] = SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
-            elif power == 2:
-                polynom_dict["a"] = SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
-            else:
-                polynom_dict[str(power)] = (
-                    SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
-                )
-        else:
-            polynom_dict["c"] = SUBSTRACTION_SIGN + part if sign == SUBSTRACTION_SIGN else part
+                previous_elem = elem
         return polynom_dict
 
     def _push_right_to_left(self):
@@ -108,9 +113,6 @@ class EquationSolver:
             except:
                 left_value = 0.0
 
-            print("_push_right_to_left")
-            print("right_value = ", right_value)
-            print("left_value = ", left_value)
             type_listed_expression = check_type_listed_expression_and_add_implicit_cross_operators(
                 convert_expression_to_type_list(
                     expression=convert_signed_number(
@@ -127,13 +129,11 @@ class EquationSolver:
                     )
                 )
             )
-            print("type_listed_expression = ", type_listed_expression)
             ret = self._calculator.solve(
                 type_listed_expression=type_listed_expression,
                 verbose=self._force_calculator_verbose,
             )
-            print("ret =", ret)
-            self._polynom_dict_left[key] = ret.value
+            self._polynom_dict_left[key] = str(ret)
 
     def _check_polynom_degree(self):
         polynom_max_degree = 0.0
@@ -434,16 +434,17 @@ class EquationSolver:
             self._check_var_exponent(type_listed_expression=self._equation_left_part)
             self._check_var_exponent(type_listed_expression=self._equation_right_part)
 
-        self._polynom_dict_left = self._get_polynom_dict(str(self._equation_left_part))
-        self._polynom_dict_right = self._get_polynom_dict(str(self._equation_right_part))
+        self._polynom_dict_left = self._get_polynom_dict(equation_part=self._equation_left_part)
+        self._polynom_dict_right = self._get_polynom_dict(equation_part=self._equation_right_part)
 
         print("Polynom_dict_left = ", self._polynom_dict_left)
         print("Polynom_dict_right = ", self._polynom_dict_right)
 
         self._push_right_to_left()
 
-        print("Polynom_dict_left = ", self._polynom_dict_left) if self._verbose is True else None
-        print("Polynom_dict_right = ", self._polynom_dict_right) if self._verbose is True else None
+        print(
+            "Pushing right to left = ", self._polynom_dict_left
+        ) if self._verbose is True else None
 
         # Below if is only for equation without var
         if self._var_name == "":
