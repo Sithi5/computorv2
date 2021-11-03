@@ -400,6 +400,9 @@ class Unresolved(list):
     def __init__(self, *arg):
         super().__init__(arg)
         self.type = self.__class__.__name__
+        # core_updated is used to determine if there is any change during the resolving of rpi system to this object.
+        # If there is change, it may be worse it to try solve it again.
+        self.core_updated = False
 
     def __str__(self) -> str:
         return "".join([str(elem) for elem in self])

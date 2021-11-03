@@ -62,4 +62,8 @@ def variable_by_variable_calculator(
             Method not implemented yet.
             """
         )
+    if float(str(variable.exponent)) == 0.0:
+        return Real(value="1.0")
+    if float(str(variable.coefficient)) == 0.0:
+        return Real(value="0.0")
     return variable

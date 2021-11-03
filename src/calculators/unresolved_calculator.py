@@ -1,5 +1,3 @@
-import copy
-
 from typing import Union
 from src.calculators.real_calculator import real_calculator
 from src.calculators.complex_calculator import complex_calculator
@@ -40,6 +38,7 @@ def insert_inside_unresolved(
                 and isinstance(new_elem, Variable)
                 and elem.name == new_elem.name
             ):  # Variables match
+                previous_sign = ADDITION_SIGN
                 if index == 0:
                     previous_operator_priority = OPERATORS_MINIMAL_PRIORITY
                 else:
@@ -47,6 +46,8 @@ def insert_inside_unresolved(
                         previous_operator_priority = OPERATORS_MAXIMAL_PRIORITY
                     else:
                         previous_operator_priority = OPERATORS_PRIORITY[unresolved[index - 1].value]
+                        if unresolved[index - 1].value == SUBSTRACTION_SIGN:
+                            previous_sign = SUBSTRACTION_SIGN
                 if index == len(unresolved) - 1:
                     next_operator_priority = OPERATORS_MINIMAL_PRIORITY
                 else:
@@ -58,11 +59,18 @@ def insert_inside_unresolved(
                     previous_operator_priority == OPERATORS_MINIMAL_PRIORITY
                     and next_operator_priority == OPERATORS_MINIMAL_PRIORITY
                 ):
+                    # Inverting sign if tricks to get the right calc sign.
+                    calc_operator = Operator(value=operator.value)
+                    if previous_sign == SUBSTRACTION_SIGN:
+                        if calc_operator.value == ADDITION_SIGN:
+                            calc_operator.value = SUBSTRACTION_SIGN
+                        elif calc_operator.value == SUBSTRACTION_SIGN:
+                            calc_operator.value = ADDITION_SIGN
                     if isinstance(elem, Complex) or isinstance(new_elem, Complex):
                         unresolved[index] = complex_calculator(
                             elem_one=unresolved[index],
                             elem_two=new_elem,
-                            operator=operator,
+                            operator=calc_operator,
                             verbose=False,
                         )
                     elif isinstance(elem, Variable) and isinstance(new_elem, Variable):
@@ -70,7 +78,7 @@ def insert_inside_unresolved(
                             ret = variable_by_variable_calculator(
                                 elem_one=unresolved[index],
                                 elem_two=new_elem,
-                                operator=operator,
+                                operator=calc_operator,
                                 verbose=False,
                             )
                             unresolved[index] = ret
@@ -80,7 +88,7 @@ def insert_inside_unresolved(
                         unresolved[index] = real_calculator(
                             elem_one=unresolved[index],
                             elem_two=new_elem,
-                            operator=operator,
+                            operator=calc_operator,
                             verbose=False,
                         )
                     return True
@@ -146,6 +154,8 @@ def unresolved_calculator(
     if not insert_inside_unresolved(unresolved=unresolved, operator=operator, new_elem=new_elem):
         unresolved.append(operator)
         unresolved.append(new_elem)
+    else:
+        unresolved.core_updated = True
 
     last_operator_priority_for_unresolved = OPERATORS_PRIORITY[operator.value]
     return (unresolved, last_operator_priority_for_unresolved)

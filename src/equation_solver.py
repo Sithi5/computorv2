@@ -150,8 +150,14 @@ class EquationSolver:
                     continue
             elif key == "c":
                 continue
+            elif not is_natural(n=float(key)):
+                raise NotImplementedError("non natural numbers are not accepted as exponent.")
             elif float(key) > 2 and self._var_name in value and polynom_max_degree < float(key):
-                polynom_max_degree = float(key)
+                raise NotImplementedError(
+                    f"The polynomial degree is strictly greater than 2, the resolver is not implemented yet."
+                )
+            elif float(key) < 0:
+                raise NotImplementedError("Some part of the polynomial var have negative power.")
         self._polynom_degree = polynom_max_degree
 
     def _get_discriminant(self, a: float, b: float, c: float) -> float:
@@ -437,6 +443,13 @@ class EquationSolver:
         self._polynom_dict_left = self._get_polynom_dict(equation_part=self._equation_left_part)
         self._polynom_dict_right = self._get_polynom_dict(equation_part=self._equation_right_part)
 
+        print(
+            "self._polynom_dict_left = ", self._polynom_dict_left
+        ) if self._verbose is True else None
+        print(
+            "self._polynom_dict_right = ", self._polynom_dict_right
+        ) if self._verbose is True else None
+
         self._push_right_to_left()
 
         print(
@@ -459,11 +472,7 @@ class EquationSolver:
 
             print("Polynomial degree: ", self._polynom_degree) if self._verbose is True else None
 
-            if self._polynom_degree > 2:
-                raise NotImplementedError(
-                    f"The polynomial degree is strictly greater than 2, the resolver is not implemented yet."
-                )
-            elif self._polynom_degree == 2:
+            if self._polynom_degree == 2:
                 self._solve_polynom_degree_two()
             else:
                 self._solve_polynom_degree_one()

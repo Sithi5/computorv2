@@ -29,13 +29,13 @@ def variable_by_real_calculator(
             Real and Variable.
             """
         )
-
     if isinstance(elem_one, Variable):
         variable = elem_one
         real = elem_two
     else:
         variable = elem_two
         real = elem_one
+
     if operator.value == EXPONENT_SIGN:
         if float(real.value) == 0.0:
             return Real(value="1.0")
@@ -64,21 +64,34 @@ def variable_by_real_calculator(
                 operator=operator,
                 verbose=verbose,
             )
-    elif (
-        operator.value == SUBSTRACTION_SIGN
-        and isinstance(elem_one, Real)
-        and float(elem_one.value) == 0.0
-    ):
-        variable.coefficient = real_calculator(
-            elem_one=variable.coefficient,
-            elem_two=Real(value="-1.0"),
-            operator=Operator(value=MULTIPLICATION_SIGN),
-            verbose=verbose,
-        )
+    elif operator.value in SIGN:
+        if (
+            operator.value == SUBSTRACTION_SIGN
+            and isinstance(elem_one, Real)
+            and float(elem_one.value) == 0.0
+        ):
+            variable.coefficient = real_calculator(
+                elem_one=variable.coefficient,
+                elem_two=Real(value="-1.0"),
+                operator=Operator(value=MULTIPLICATION_SIGN),
+                verbose=verbose,
+            )
+        elif real.value == "0.0":
+            return variable
+        else:
+            raise NotImplementedError(
+                """
+                This operations with variable is not implemented yet.
+                """
+            )
     else:
         raise NotImplementedError(
             """
-        This operations with variable is not implemented yet.
-        """
+            This operations with variable is not implemented yet.
+            """
         )
+    if float(str(variable.exponent)) == 0.0:
+        return Real(value="1.0")
+    if float(str(variable.coefficient)) == 0.0:
+        return Real(value="0.0")
     return variable

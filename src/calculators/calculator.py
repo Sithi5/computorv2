@@ -224,6 +224,7 @@ class Calculator:
         last_operator_priority_for_unresolved = OPERATORS_MINIMAL_PRIORITY
 
         for elem in self._type_listed_expression:
+
             if not isinstance(elem, Operator):
                 stack.append(elem)
             else:
@@ -239,13 +240,20 @@ class Calculator:
 
                 # CALC WITH VAR/FUNCTION/UNRESOLVER, REDUCE FORM FOR UNRESOLVED CALC
                 if calc_is_in_var_or_function_or_unresolved(elem_one=elem_one, elem_two=elem_two):
-                    if calc_is_var_multiply_or_exponent_by_real(
-                        elem_one=elem_one, elem_two=elem_two, operator=operator
-                    ) or (
-                        isinstance(elem_one, Real)  # This is for the format (0.0-VAR)
-                        and isinstance(elem_two, Variable)
-                        and float(elem_one.value) == 0.0
-                        and operator.value == SUBSTRACTION_SIGN
+                    if (
+                        calc_is_var_multiply_or_exponent_by_real(
+                            elem_one=elem_one, elem_two=elem_two, operator=operator
+                        )
+                        or (
+                            isinstance(elem_one, Real)  # This is for the format (0.0-VAR)
+                            and isinstance(elem_two, Variable)
+                            and float(elem_one.value) == 0.0
+                        )
+                        or (
+                            isinstance(elem_one, Variable)  # This is for the format VAR =/- 0.0
+                            and isinstance(elem_two, Real)
+                            and float(elem_two.value) == 0.0
+                        )
                     ):
                         # VAR BY REAL
                         result = variable_by_real_calculator(
@@ -390,6 +398,12 @@ class Calculator:
         if isinstance(result, Matrix):
             # Check for unresolved matrix and resolve it.
             result = self._resolve_inside_matrice(matrix=result)
+        if isinstance(result, Unresolved) and result.core_updated is True:
+            result = self.solve(
+                type_listed_expression=result,
+                verbose=self._verbose,
+                reduce_form_allowed=reduce_form_allowed,
+            )
 
         if isinstance(result, Unresolved) and not reduce_form_allowed:
             raise ValueError("One of the variable/function have an unknow value.")

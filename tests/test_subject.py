@@ -1,3 +1,5 @@
+import pytest
+
 from src.expression_resolver import ExpressionResolver
 from src.assignment.assigned_file import clear_assigned_file, open_and_deserialize_assigned_list
 
@@ -50,7 +52,12 @@ def test_subject():
         ret = resolver.solve("funA(x) = 2*x^5 + 4x^2 - 5*x + 4")
         assert str(ret) == "2.0X^5.0+4.0X^2.0-5.0X+4.0"
 
-        ret = resolver.solve(" funB(y) =43 * y / (4 % 2 * y)")
+        with pytest.raises(ValueError) as e:
+            resolver.solve(" funB(y) =43 * y / (4 % 2 * y)")
+        assert (
+            str(e.value) == "('The expression lead to a division by zero : ', '43.0', ' / ', '0.0')"
+        )
+
         # assert str(ret) == "43.0*Y/(4.0%2.0*Y)"
         ret = resolver.solve("funC(z) = -2 * z - 5")
         assert str(ret) == "-2.0Z-5.0"
