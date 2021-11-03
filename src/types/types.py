@@ -140,22 +140,28 @@ class Complex(BaseType):
             )
 
     def __str__(self) -> str:
+
         if float(self.imaginary.value) == 0.0 and float(self.real.value) == 0.0:
-            return str(0.0)
+            value = str(0.0)
         elif float(self.real.value) == 0.0:
             if float(self.imaginary.value) == 1.0:
-                return "i"
+                value = "i"
             elif float(self.imaginary.value) == -1.0:
-                return "-i"
+                value = "-i"
             else:
-                return str(self.imaginary) + "i"
+                value = str(self.imaginary) + "i"
         elif float(self.imaginary.value) == 0.0:
-            return str(self.real)
+            value = str(self.real)
         else:
-            if float(self.imaginary.value) > 0.0:
-                return str(self.real) + " + " + str(self.imaginary) + "i"
+            if float(self.imaginary.value) == 1.0:
+                value = str(self.real) + " + " + "i"
+            elif float(self.imaginary.value) == -1.0:
+                value = str(self.real) + " - " + "i"
+            elif float(self.imaginary.value) > 0.0:
+                value = str(self.real) + " + " + str(self.imaginary) + "i"
             else:
-                return str(self.real) + " - " + str(my_abs(float(self.imaginary.value))) + "i"
+                value = str(self.real) + " - " + str(my_abs(float(self.imaginary.value))) + "i"
+        return value
 
 
 class Matrix(BaseType):
