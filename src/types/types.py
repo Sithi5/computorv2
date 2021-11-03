@@ -145,6 +145,8 @@ class Complex(BaseType):
         elif float(self.real.value) == 0.0:
             if float(self.imaginary.value) == 1.0:
                 return "i"
+            elif float(self.imaginary.value) == -1.0:
+                return "-i"
             else:
                 return str(self.imaginary) + "i"
         elif float(self.imaginary.value) == 0.0:

@@ -36,7 +36,7 @@ def variable_by_variable_calculator(
         )
     variable = elem_one
     if operator.value in ADDITION_SIGN + SUBSTRACTION_SIGN:
-        if elem_one.exponent != elem_two.exponent:
+        if str(elem_one.exponent) != str(elem_two.exponent):
             raise NotImplementedError(
                 """
             Cannot add or substract variable of different exponent for the moment.

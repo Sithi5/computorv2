@@ -88,50 +88,73 @@ def test_equation_degree_one():
     assert str(e.value) == "('The expression lead to a division by zero : ', 0.0, ' / ', 0.0)"
 
     # Multiplier small after var
-    # ret = resolver.solve(expression=" X*0.001=0.000001")
     resolver.solve(expression="f(x)=X*0.001")
     ret = resolver.solve(expression="f(x)=0.000001?")
     assert str(ret) == "0.001"
 
     # ret = resolver.solve(expression=" X*0.001=-0.000001")
-    # assert str(ret) == "-0.001"
+    resolver.solve(expression="f(x)=X*0.001")
+    ret = resolver.solve(expression="f(x)=-0.000001?")
+    assert str(ret) == "-0.001"
 
-    # ret = resolver.solve(expression="5 * X^0 = 4 * X^0 + 7 * X^1")
-    # assert str(ret) == "0.14285714285714285"
+    # ret = resolver.solve(expression="5 * X^0 = 4 * X^0 + 7 * X^1"
+    resolver.solve(expression="f(x)=5 * X^0 ")
+    ret = resolver.solve(expression="f(x)= 4 * X^0 + 7 * X^1?")
+    assert str(ret) == "0.14285714285714285"
 
 
-# def test_equation_degree_two():
-#     resolver = ExpressionResolver(verbose=False)
+def test_equation_degree_two():
+    resolver = ExpressionResolver(verbose=False)
 
-#     ret = resolver.solve(expression="x^2+x-2 = 0")
-#     assert ret == ["1.0", "-2.0"]
+    # ret = resolver.solve(expression=" = 0")
+    resolver.solve(expression="f(x)=x^2+x-2 ")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["1.0", "-2.0"]
 
-#     ret = resolver.solve(expression="x^2+3x+2=0")
-#     assert ret == ["-1.0", "-2.0"]
+    resolver.solve(expression="f(x)=x^2+3x+2")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["-1.0", "-2.0"]
 
-#     ret = resolver.solve(expression="x ^2 + x + 1 = 0")
-#     assert ret == ["-0.5+0.866026*i", "-0.5-0.866026*i"]
+    #     ret = resolver.solve(expression=" = 0")
+    resolver.solve(expression="f(x)=x ^2 + x + 1")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["-0.5 + 0.866026i", "-0.5 - 0.866026i"]
 
-#     ret = resolver.solve(expression="4x ^2 + 4x + 1 = 0")
-#     assert ret == "-0.5"
+    #     ret = resolver.solve(expression="4x ^2 + 4x + 1 = 0")
+    resolver.solve(expression="f(x)=4x ^2 + 4x + 1")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == "-0.5"
 
-#     ret = resolver.solve(expression="-x ^2 + 2x - 3 = 0")
-#     assert ret == ["1.0-1.414214*i", "1.0+1.414214*i"]
+    #     ret = resolver.solve(expression="-x ^2 + 2x - 3 = 0")
+    resolver.solve(expression="f(x)=-x ^2 + 2x - 3")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["1.0 - 1.414214i", "1.0 + 1.414214i"]
 
-#     ret = resolver.solve(expression="x ^2 + 4x = 0")
-#     assert ret == ["0.0", "-4.0"]
+    #     ret = resolver.solve(expression="x ^2 + 4x = 0")
+    resolver.solve(expression="f(x)=x ^2 + 4x")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["0.0", "-4.0"]
 
-#     ret = resolver.solve(expression="x ^2 -2x + 1 = 0")
-#     assert ret == "1.0"
+    #     ret = resolver.solve(expression="x ^2 -2x + 1 = 0")
+    resolver.solve(expression="f(x)=x ^2 -2x + 1")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == "1.0"
 
-#     ret = resolver.solve(expression="x ^ 2 + 1= 0")
-#     assert ret == ["i", "-i"]
+    #     ret = resolver.solve(expression="x ^ 2 + 1= 0")
+    resolver.solve(expression="f(x)=x ^ 2 + 1")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["i", "-i"]
 
-#     ret = resolver.solve(expression="x^2 -4x + 4 -1= 0")
-#     assert ret == ["3.0", "1.0"]
+    #     ret = resolver.solve(expression="x^2 -4x + 4 -1= 0")
+    resolver.solve(expression="f(x)=x^2 -4x + 4 -1")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["3.0", "1.0"]
 
-#     ret = resolver.solve(expression="X ^ 2 + X ^1 + x ^2 = 0")
-#     assert ret == ["0.0", "-0.5"]
+    #     ret = resolver.solve(expression="X ^ 2 + X ^1 + x ^2 = 0")
+    resolver.solve(expression="f(x)=X ^ 2 + X ^1 + x ^2")
+    ret = resolver.solve(expression="f(x)= 0?")
+    assert ret == ["0.0", "-0.5"]
+
 
 #     ret = resolver.solve(expression="X ^ 2 + X ^1 - x ^2 = 0")
 #     assert ret == "0.0"
