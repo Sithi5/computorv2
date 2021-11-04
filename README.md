@@ -9,14 +9,23 @@ Improvement of [computorv1](https://github.com/Sithi5/computorv1).
 ## How to install
 
 Create a virtual environment and activate it
+
+On windows:
+
 ```bash
 python -m venv venv
-.\venv\Scripts\activate.bat # on Windows
+.\venv\Scripts\activate.bat
 ```
 
 Install the pre-requirement:
 ```bash
 pip install -U -r pre-requirements.txt
+```
+
+On ubuntu the following package is required to install too:
+
+```
+sudo apt-get install python3-tk
 ```
 
 Execute `setup.py`:
