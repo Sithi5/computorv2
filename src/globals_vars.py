@@ -6,6 +6,8 @@ ASSIGNMENT_DIR_PATH: str = os.path.abspath(os.path.join(__file__, "..", "assignm
 ASSIGNMENT_FILE_NAME: str = "variables.ser"
 ASSIGNMENT_FILE_PATH: str = os.path.join(ASSIGNMENT_DIR_PATH, ASSIGNMENT_FILE_NAME)
 
+GRAPH_DIR_PATH: str = os.path.abspath(os.path.join(__file__, "..", "..", "graphs"))
+
 EQUALS_SIGN = "="
 DIVISION_SIGN = "/"
 MODULO_SIGN = "%"

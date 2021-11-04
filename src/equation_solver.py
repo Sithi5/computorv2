@@ -10,7 +10,8 @@
 #                                                                              #
 # **************************************************************************** #
 
-import re
+import os
+import matplotlib.pyplot as plt  # type: ignore
 
 from src.globals_vars import *
 from src.types.types import Function, Operator, Real, Unresolved, Variable
@@ -293,8 +294,8 @@ class EquationSolver:
         print("Reduced form : ", self._reduced_form) if self._verbose is True else None
 
     def _create_graph_file(self, graph_name: str = "equation_graph"):
-        import matplotlib.pyplot as plt  # type: ignore
 
+        plt.clf()
         try:
             a = get_var_multiplier(self._polynom_dict_left["a"], var_name=self._var_name)
         except:
@@ -316,8 +317,8 @@ class EquationSolver:
         plt.title(
             "".join(self._reduced_form),
         )
-        # show the plot
-        plt.savefig(graph_name + ".png")
+        graph_file_name = graph_name + ".png"
+        plt.savefig(os.path.join(GRAPH_DIR_PATH, graph_file_name))
 
     def _get_equation_parts(self):
         """
