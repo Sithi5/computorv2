@@ -29,7 +29,7 @@ setup(
         "console_scripts": ["computorv2 = computorv2:main"],
     },
     classifiers=[
-        "Development Status :: 2 - Released",
+        "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
