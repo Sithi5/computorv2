@@ -32,7 +32,7 @@ def resolve_input(resolver: ExpressionResolver, expression: str, debug: bool = F
             logging.error("One of the methods needed is not implemented yet : ")
             logging.error(e)
         except Exception as e:
-            logging.critical("An exception appened : ")
+            logging.critical("An exception happened : ")
             logging.error(e)
     else:
         logging.basicConfig(level=logging.DEBUG)

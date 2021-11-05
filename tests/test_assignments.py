@@ -26,8 +26,19 @@ def test_wrong_type_assignment():
 def test_simple_assignment():
     clear_assigned_file()
     resolver = ExpressionResolver()
-    resolver.solve("x=2")
+    ret = resolver.solve("x=2")
+    assert str(ret) == "2.0"
     assigned_list = open_and_deserialize_assigned_list()
     assert len(assigned_list) == 1
     assert assigned_list[0].name == "X"
     assert assigned_list[0].value.value == "2"
+
+    ret = resolver.solve("f(y) = y^3")
+    assert str(ret) == "Y^3.0"
+    assert len(assigned_list) == 1
+    assigned_list = open_and_deserialize_assigned_list()
+    assert assigned_list[1].name == "F"
+    ret = resolver.solve("f(2)")
+    assert str(ret) == "8.0"
+    ret = resolver.solve("f(3) = ?")
+    assert str(ret) == "27.0"

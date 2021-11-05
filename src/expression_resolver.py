@@ -162,6 +162,9 @@ class ExpressionResolver:
         self.expression = self.expression.replace("\t", "")
         self.expression = self.expression.replace("\r", "")
         self.expression = self.expression.replace("\n", "")
+        if self.expression == "":
+            raise ValueError("Nothing to solve.")
+
         # Replace '{' parenthesis type by '(' parenthesis type.
         self.expression = self.expression.replace("{", OPENING_PARENTHESES)
         self.expression = self.expression.replace("}", CLOSING_PARENTHESES)
@@ -241,16 +244,22 @@ class ExpressionResolver:
         Use the solver of the class set by set_solver to solve the expression.
         """
         print("\nEXPRESSION RESOLVER\n") if self.verbose is True else None
-        if expression == "":
-            return "Nothing to solve."
-        else:
-            self.expression = expression
-            self._parse_expression()
-            self._set_solver()
-            result: Union[BaseType, Unresolved] = self._solver.solve(
-                type_listed_expression=self.type_listed_expression,
-                verbose=self.verbose,
-                force_calculator_verbose=self.force_calculator_verbose,
-            )
-            print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self.verbose is True else None
-            return result
+        try :
+            if expression == "":
+                raise ValueError("Nothing to solve.")
+            else:
+                self.expression = expression
+                self._parse_expression()
+                self._set_solver()
+                result: Union[BaseType, Unresolved] = self._solver.solve(
+                    type_listed_expression=self.type_listed_expression,
+                    verbose=self.verbose,
+                    force_calculator_verbose=self.force_calculator_verbose,
+                )
+                print("\nEND OF EXPRESSION RESOLVER\n----------\n") if self.verbose is True else None
+                return result
+        except ValueError as e:
+            if str(e) == "Nothing to solve.":
+                return "Nothing to solve."
+            else:
+                raise

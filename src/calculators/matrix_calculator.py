@@ -130,10 +130,16 @@ def matrix_calculator(
         if operator.value == EXPONENT_SIGN:
             if not isinstance(complex_or_real, Real) or not is_natural(n=complex_or_real.value):
                 raise ValueError("A matrix should be powered by Natural numbers.")
-            if matrix.m != matrix.n:
-                raise NotImplementedError("Powering a matrix only work for square matrix.")
             natural_exponent = float(complex_or_real.value)
-            if natural_exponent > 0:
+            if natural_exponent != 1.0 and matrix.m != matrix.n:
+                raise NotImplementedError("Powering a matrix only work for square matrix.")
+            if natural_exponent == 1:
+                # Nothing to do here.
+                pass
+            elif natural_exponent == 0:
+                # Return by convention the identity matrix
+                return identity_square_matrix_factory(size=matrix.m)
+            elif natural_exponent > 0:
                 while natural_exponent > 1:
                     matrix = matrix_calculator(
                         elem_one=matrix,
@@ -142,9 +148,7 @@ def matrix_calculator(
                         verbose=verbose,
                     )
                     natural_exponent -= 1
-            elif natural_exponent == 0:
-                # Return by convention the identity matrix
-                return identity_square_matrix_factory(size=matrix.m)
+
             else:
                 raise NotImplementedError(
                     "Powering a matrix by a negative number is not implemented yet."

@@ -146,9 +146,9 @@ class Calculator:
             This function resolve a variable to get the value after calculating the coefficient and the exponent.
             """
             type_listed_expression = []
-            type_listed_expression.append(variable_value)
-            type_listed_expression.append(Operator(MULTIPLICATION_SIGN))
             type_listed_expression.append(variable.coefficient)
+            type_listed_expression.append(Operator(MULTIPLICATION_SIGN))
+            type_listed_expression.append(variable_value)
             type_listed_expression.append(Operator(EXPONENT_SIGN))
             type_listed_expression.append(variable.exponent)
             old_type_listed_expression = self._type_listed_expression
